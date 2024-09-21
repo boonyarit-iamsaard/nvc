@@ -1,0 +1,8 @@
+**/*.hbs
+**/.next
+**/.turbo
+**/dist
+**/node_modules
+.git
+.vscode
+pnpm-lock.yaml
