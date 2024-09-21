@@ -1,0 +1,12 @@
+**/*.Dockerfile
+**/.dockerignore
+**/.gitignore
+**/.next
+**/.turbo
+**/Dockerfile
+**/README.md
+**/dist
+**/node_modules
+.git
+.tool-versions
+.vscode
