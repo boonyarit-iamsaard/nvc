@@ -1,9 +1,6 @@
-**/*.Dockerfile
-**/.dockerignore
 **/.gitignore
 **/.next
 **/.turbo
-**/Dockerfile
 **/README.md
 **/dist
 **/node_modules
