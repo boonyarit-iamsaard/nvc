@@ -1,9 +1,8 @@
 {
   "name": "@nvc/typescript-config",
+  "description": "A Collection of internal TypeScript configurations.",
+  "author": "Boonyarit Iamsa-ard <boonyarit.iamsaard@gmail.com>",
   "version": "0.0.0",
   "private": true,
-  "license": "MIT",
-  "publishConfig": {
-    "access": "public"
-  }
+  "license": "MIT"
 }

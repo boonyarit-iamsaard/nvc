@@ -1,7 +1,10 @@
 {
   "name": "@nvc/ui",
+  "description": "A Collection of internal React components.",
+  "author": "Boonyarit Iamsa-ard <boonyarit.iamsaard@gmail.com>",
   "version": "0.0.0",
   "private": true,
+  "license": "MIT",
   "exports": {
     "./button": "./src/button.tsx",
     "./card": "./src/card.tsx",

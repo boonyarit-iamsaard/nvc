@@ -4,21 +4,15 @@ const project = resolve(process.cwd(), "tsconfig.json");
 
 /** @type {import("eslint").Linter.Config} */
 module.exports = {
-  extends: [
-    "eslint:recommended",
-    "prettier",
-    require.resolve("@vercel/style-guide/eslint/next"),
-    "turbo",
-  ],
+  extends: ["eslint:recommended", "prettier"],
+  plugins: ["@typescript-eslint", "simple-import-sort"],
   globals: {
     React: true,
     JSX: true,
   },
   env: {
-    node: true,
     browser: true,
   },
-  plugins: ["only-warn"],
   settings: {
     "import/resolver": {
       typescript: {
@@ -28,8 +22,21 @@ module.exports = {
   },
   ignorePatterns: [
     // Ignore dotfiles
-    ".*.js",
+    ".*.cjs",
+    "dist/",
     "node_modules/",
   ],
-  overrides: [{ files: ["*.js?(x)", "*.ts?(x)"] }],
+  overrides: [
+    {
+      files: [
+        // Force ESLint to detect .tsx files
+        "*.js?(x)",
+        "*.ts?(x)",
+      ],
+    },
+  ],
+  rules: {
+    "simple-import-sort/exports": "error",
+    "simple-import-sort/imports": "error",
+  },
 };

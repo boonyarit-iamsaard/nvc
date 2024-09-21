@@ -4,15 +4,16 @@ const project = resolve(process.cwd(), "tsconfig.json");
 
 /** @type {import("eslint").Linter.Config} */
 module.exports = {
-  extends: ["eslint:recommended", "prettier", "turbo"],
-  plugins: ["only-warn"],
+  env: {
+    node: true,
+    browser: true,
+  },
+  extends: ["eslint:recommended", "next/core-web-vitals", "prettier"],
   globals: {
     React: true,
     JSX: true,
   },
-  env: {
-    node: true,
-  },
+  plugins: ["@typescript-eslint", "simple-import-sort"],
   settings: {
     "import/resolver": {
       typescript: {
@@ -22,13 +23,16 @@ module.exports = {
   },
   ignorePatterns: [
     // Ignore dotfiles
-    ".*.js",
+    ".*.cjs",
     "node_modules/",
-    "dist/",
   ],
   overrides: [
     {
       files: ["*.js?(x)", "*.ts?(x)"],
     },
   ],
+  rules: {
+    "simple-import-sort/exports": "error",
+    "simple-import-sort/imports": "error",
+  },
 };

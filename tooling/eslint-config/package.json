@@ -1,19 +1,21 @@
 {
   "name": "@nvc/eslint-config",
+  "description": "A Collection of internal ESLint configurations.",
+  "author": "Boonyarit Iamsa-ard <boonyarit.iamsaard@gmail.com>",
   "version": "0.0.0",
   "private": true,
+  "license": "MIT",
   "files": [
-    "library.js",
-    "next.js",
-    "react-internal.js"
+    "./express.cjs",
+    "./next.cjs",
+    "./react-internal.cjs"
   ],
   "devDependencies": {
-    "@vercel/style-guide": "^5.2.0",
-    "eslint-config-turbo": "^2.0.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-only-warn": "^1.1.0",
-    "@typescript-eslint/parser": "^7.1.0",
     "@typescript-eslint/eslint-plugin": "^7.1.0",
+    "@typescript-eslint/parser": "^7.1.0",
+    "eslint": "^8",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
     "typescript": "^5.3.3"
   }
 }
