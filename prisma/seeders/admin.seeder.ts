@@ -35,6 +35,7 @@ export async function adminSeeder(prisma: PrismaClient) {
       },
       create: {
         ...rest,
+        email,
         hashedPassword,
       },
     });
