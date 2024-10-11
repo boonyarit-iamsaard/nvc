@@ -8,7 +8,7 @@ CREATE TYPE "Role" AS ENUM ('administrator', 'guest', 'member', 'owner');
 CREATE TABLE "users" (
     "id" TEXT NOT NULL,
     "name" TEXT,
-    "email" TEXT,
+    "email" TEXT NOT NULL,
     "email_verified" TIMESTAMP(3),
     "hashed_password" TEXT NOT NULL,
     "image" TEXT,
