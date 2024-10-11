@@ -1,8 +1,8 @@
 import '~/styles/globals.css';
 
+import type { ReactNode } from 'react';
 import type { Metadata } from 'next';
 
-import { SiteHeader } from '~/components/site-header';
 import { NextAuthProvider } from '~/libs/auth/next-auth-provider';
 import { cn } from '~/libs/cn';
 import { fontSans, fontSerif } from '~/libs/fonts';
@@ -14,28 +14,27 @@ export const metadata: Metadata = {
   icons: [{ rel: 'icon', url: '/favicon.ico' }],
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+type RootLayoutProps = Readonly<{
+  children: ReactNode;
+}>;
+
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body>
-        <TRPCReactProvider>
-          <NextAuthProvider>
-            <div
-              className={cn(
-                'min-h-screen bg-background font-sans antialiased',
-                fontSans.variable,
-                fontSerif.variable,
-              )}
-            >
-              <div className="relative flex min-h-screen flex-col bg-background">
-                <SiteHeader />
-                {children}
-              </div>
-            </div>
-          </NextAuthProvider>
-        </TRPCReactProvider>
+      <body
+        className={cn(
+          'font-sans antialiased',
+          fontSans.variable,
+          fontSerif.variable,
+        )}
+      >
+        <div className="min-h-screen-bg-background">
+          <div className="relative flex min-h-screen flex-col bg-background">
+            <TRPCReactProvider>
+              <NextAuthProvider>{children}</NextAuthProvider>
+            </TRPCReactProvider>
+          </div>
+        </div>
       </body>
     </html>
   );
