@@ -1,0 +1,10 @@
+# Run lint-staged
+echo "🔎 Running lint-staged...";
+pnpm lint-staged ||
+(
+  echo "❌ Lint-staged errors detected. Please fix and commit again.";
+  false;
+)
+
+# If we get here, all checks passed
+echo "✅ All checks passed. Ready to commit.";

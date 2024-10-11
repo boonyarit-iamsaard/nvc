@@ -16,6 +16,7 @@
     "lint": "next lint --fix",
     "lint:check": "next lint",
     "postinstall": "prisma generate",
+    "prepare": "husky || true",
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "typecheck:watch": "tsc --noEmit --watch"
@@ -47,6 +48,8 @@
     "@typescript-eslint/parser": "^8.1.0",
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.2.4",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10",
     "postcss": "^8.4.39",
     "prettier": "^3.3.2",
     "prettier-plugin-tailwindcss": "^0.6.5",
