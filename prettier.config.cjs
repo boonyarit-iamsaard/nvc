@@ -13,6 +13,7 @@ const config = {
     '^~/assets/(.*)$',
     '^~/components/(.*)$',
     '^~/components/ui/(.*)$',
+    '^~/configs/(.*)$',
     '^~/env',
     '^~/libs/(.*)$',
     '^~/server/(.*)$',
