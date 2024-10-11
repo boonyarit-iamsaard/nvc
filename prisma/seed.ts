@@ -1,47 +1,17 @@
-import { hash } from '@node-rs/argon2';
 import { PrismaClient } from '@prisma/client';
-
-import { createUserRequestSchema } from '~/server/api/users/users.schema';
+import { adminSeeder } from 'prisma/seeders/admin.seeder';
 
 const prisma = new PrismaClient();
 
-const admin = {
-  email: process.env.ADMIN_EMAIL,
-  name: process.env.ADMIN_NAME,
-  password: process.env.ADMIN_PASSWORD,
-  role: process.env.ADMIN_ROLE,
-  gender: process.env.ADMIN_GENDER,
-};
-
 async function main() {
-  const { email, name, password, role, gender, image } =
-    createUserRequestSchema.parse(admin);
-  // A recommended minimum parameters - https://thecopenhagenbook.com/password-authentication#password-storage
-  const hashedPassword = await hash(password, {
-    memoryCost: 19456,
-    timeCost: 2,
-    outputLen: 32,
-    parallelism: 1,
-  });
+  console.info('[SEEDER] 🌱 seeding data');
 
-  await prisma.user.upsert({
-    where: { email },
-    update: {
-      name,
-      hashedPassword,
-      image,
-      role,
-      gender,
-    },
-    create: {
-      email,
-      name,
-      hashedPassword,
-      image,
-      role,
-      gender,
-    },
-  });
+  const seeders = [adminSeeder];
+  for (const seeder of seeders) {
+    await seeder(prisma);
+  }
+
+  console.info('[SEEDER] ✅ seeding complete');
 }
 
 main()
