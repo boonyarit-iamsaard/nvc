@@ -5,6 +5,10 @@ const config = {
   darkMode: ['class'],
   content: ['./src/**/*.tsx'],
   theme: {
+    container: {
+      center: true,
+      padding: '2rem',
+    },
     extend: {
       fontFamily: {
         sans: ['var(--font-sans)', ...fontFamily.sans],

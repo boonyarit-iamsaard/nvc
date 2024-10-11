@@ -2,6 +2,8 @@ import '~/styles/globals.css';
 
 import type { Metadata } from 'next';
 
+import { SiteHeader } from '~/components/site-header';
+import { NextAuthProvider } from '~/libs/auth/next-auth-provider';
 import { cn } from '~/libs/cn';
 import { fontSans, fontSerif } from '~/libs/fonts';
 import { TRPCReactProvider } from '~/trpc/react';
@@ -19,17 +21,20 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body>
         <TRPCReactProvider>
-          <div
-            className={cn(
-              'min-h-screen bg-background font-sans antialiased',
-              fontSans.variable,
-              fontSerif.variable,
-            )}
-          >
-            <div className="relative flex min-h-screen flex-col bg-background">
-              {children}
+          <NextAuthProvider>
+            <div
+              className={cn(
+                'min-h-screen bg-background font-sans antialiased',
+                fontSans.variable,
+                fontSerif.variable,
+              )}
+            >
+              <div className="relative flex min-h-screen flex-col bg-background">
+                <SiteHeader />
+                {children}
+              </div>
             </div>
-          </div>
+          </NextAuthProvider>
         </TRPCReactProvider>
       </body>
     </html>
