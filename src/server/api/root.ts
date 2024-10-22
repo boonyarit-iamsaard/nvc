@@ -1,11 +1,6 @@
-import { z } from 'zod';
+import { createCallerFactory, createTRPCRouter } from '~/server/api/trpc';
 
-import { roomTypeRouter } from '~/server/api/room-type/room-type.procedure';
-import {
-  createCallerFactory,
-  createTRPCRouter,
-  publicProcedure,
-} from '~/server/api/trpc';
+import { roomTypeRouter } from './room-type/room-type.router';
 
 /**
  * This is the primary router for your server.
@@ -13,17 +8,6 @@ import {
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  root: publicProcedure
-    .output(
-      z.object({
-        message: z.string(),
-      }),
-    )
-    .query(() => {
-      return {
-        message: 'ok',
-      };
-    }),
   roomType: roomTypeRouter,
 });
 

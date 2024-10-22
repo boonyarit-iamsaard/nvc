@@ -17,3 +17,20 @@ export const seedRoomTypeRequestSchema = createRoomTypeRequestSchema.extend({
   quantity: z.number(),
 });
 export type SeedRoomTypeRequest = z.infer<typeof seedRoomTypeRequestSchema>;
+
+export const getRoomTypeListRequestSchema = z.object({
+  filter: z
+    .object({
+      from: z.string().datetime(),
+      to: z.string().datetime(),
+    })
+    .optional(),
+});
+export type GetRoomTypeListRequest = z.infer<
+  typeof getRoomTypeListRequestSchema
+>;
+
+export const getRoomTypeRequestSchema = z.object({
+  id: z.string().uuid(),
+});
+export type GetRoomTypeRequest = z.infer<typeof getRoomTypeRequestSchema>;

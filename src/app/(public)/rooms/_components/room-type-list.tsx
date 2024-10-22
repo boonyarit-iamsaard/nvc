@@ -4,7 +4,7 @@ import { Button } from '~/components/ui/button';
 import { api } from '~/trpc/react';
 
 export function RoomTypeList() {
-  const [roomTypeList] = api.roomType.list.useSuspenseQuery();
+  const [roomTypeList] = api.roomType.list.useSuspenseQuery({});
 
   return (
     <ul className="space-y-6">

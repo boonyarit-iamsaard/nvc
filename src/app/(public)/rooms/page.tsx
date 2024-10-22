@@ -3,7 +3,7 @@ import { api, HydrateClient } from '~/trpc/server';
 import { RoomTypeList } from './_components/room-type-list';
 
 export default async function Page() {
-  void api.roomType.list.prefetch();
+  void api.roomType.list.prefetch({});
 
   return (
     <HydrateClient>
