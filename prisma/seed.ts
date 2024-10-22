@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { adminSeeder } from 'prisma/seeders/admin.seeder';
-import { roomTypeSeeder } from 'prisma/seeders/room-types.seeder';
+
+import { roomTypeSeeder } from './seeders/room-type.seeder';
 
 const prisma = new PrismaClient();
 

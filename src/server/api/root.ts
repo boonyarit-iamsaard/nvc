@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { roomTypeRouter } from '~/server/api/room-type/room-type.procedure';
 import {
   createCallerFactory,
   createTRPCRouter,
@@ -23,6 +24,7 @@ export const appRouter = createTRPCRouter({
         message: 'ok',
       };
     }),
+  roomType: roomTypeRouter,
 });
 
 // export type definition of API
