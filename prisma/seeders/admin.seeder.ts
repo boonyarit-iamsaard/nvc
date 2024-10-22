@@ -1,7 +1,7 @@
 import { hash } from '@node-rs/argon2';
 import type { PrismaClient } from '@prisma/client';
 
-import { createUserRequestSchema } from '~/server/api/users/users.schema';
+import { createUserRequestSchema } from '~/server/api/user/user.schema';
 
 import { parseData } from '../helper';
 
