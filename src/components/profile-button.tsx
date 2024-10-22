@@ -1,10 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 
-import { Calendar, LogOut, User } from 'lucide-react';
-import { signOut, useSession } from 'next-auth/react';
+import { Calendar, LogOut, ShieldCheckIcon, User } from 'lucide-react';
 
 import { Button } from '~/components/ui/button';
 import {
@@ -17,20 +15,11 @@ import {
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu';
 import { Skeleton } from '~/components/ui/skeleton';
-
-// import { hasAdministrativeRole } from '~/libs/auth/validators/has-administrative-role';
+import { useUserSession } from '~/libs/auth/hooks/use-user-session';
 
 export function ProfileButton() {
-  const router = useRouter();
-  const { data, status } = useSession();
-
-  async function handleSignOut() {
-    const response = await signOut({
-      redirect: false,
-      callbackUrl: '/login',
-    });
-    router.push(response.url);
-  }
+  const { data, status, hasAdministrativeRights, handleSignOut } =
+    useUserSession();
 
   return (
     <DropdownMenu>
@@ -66,14 +55,14 @@ export function ProfileButton() {
             <Calendar className="mr-2 h-4 w-4" />
             <span>Bookings</span>
           </DropdownMenuItem>
-          {/* {hasAdministrativeRole(data?.user?.role) ? (
+          {hasAdministrativeRights ? (
             <DropdownMenuItem asChild>
-              <Link href="/dashboard">
+              <Link href="/admin">
                 <ShieldCheckIcon className="mr-2 h-4 w-4" />
                 <span>Admin</span>
               </Link>
             </DropdownMenuItem>
-          ) : null} */}
+          ) : null}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleSignOut}>
