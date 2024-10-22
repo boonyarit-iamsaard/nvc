@@ -28,12 +28,10 @@ export default function RootLayout({ children }: RootLayoutProps) {
           fontSerif.variable,
         )}
       >
-        <div className="min-h-screen-bg-background">
-          <div className="relative flex min-h-screen flex-col bg-background">
-            <TRPCReactProvider>
-              <NextAuthProvider>{children}</NextAuthProvider>
-            </TRPCReactProvider>
-          </div>
+        <div className="relative flex min-h-screen flex-col bg-background">
+          <TRPCReactProvider>
+            <NextAuthProvider>{children}</NextAuthProvider>
+          </TRPCReactProvider>
         </div>
       </body>
     </html>
