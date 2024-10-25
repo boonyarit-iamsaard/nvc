@@ -51,9 +51,11 @@ export function ProfileButton() {
               <span>Profile</span>
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Calendar className="mr-2 h-4 w-4" />
-            <span>Bookings</span>
+          <DropdownMenuItem asChild>
+            <Link href="/booking">
+              <Calendar className="mr-2 h-4 w-4" />
+              <span>Bookings</span>
+            </Link>
           </DropdownMenuItem>
           {hasAdministrativeRights ? (
             <DropdownMenuItem asChild>

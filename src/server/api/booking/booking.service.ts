@@ -3,7 +3,12 @@ import type { ProtectedContext } from '~/server/api/trpc';
 import type { CreateBookingRequest } from './booking.schema';
 
 export async function list(ctx: ProtectedContext) {
+  const { id } = ctx.session.user;
+
   return ctx.db.booking.findMany({
+    where: {
+      userId: id,
+    },
     include: {
       room: {
         include: {
