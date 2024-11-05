@@ -5,18 +5,40 @@ import type {
   GetRoomTypeRequest,
 } from './room-type.schema';
 
-export async function list(ctx: PublicContext, _input: GetRoomTypeListRequest) {
+export async function list(ctx: PublicContext, input: GetRoomTypeListRequest) {
+  const { filter } = input;
+
   return ctx.db.roomType.findMany({
     include: {
       rate: true,
-      // TODO: filter only available rooms
-      rooms: true,
+      rooms: {
+        where: {
+          bookings: {
+            every: {
+              NOT: {
+                AND: [
+                  {
+                    checkIn: {
+                      lte: filter?.checkOut,
+                    },
+                  },
+                  {
+                    checkOut: {
+                      gte: filter?.checkIn,
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
     },
   });
 }
 
 export async function get(ctx: PublicContext, input: GetRoomTypeRequest) {
-  const { id } = input;
+  const { id, filter } = input;
 
   return ctx.db.roomType.findUnique({
     where: {
@@ -25,7 +47,26 @@ export async function get(ctx: PublicContext, input: GetRoomTypeRequest) {
     include: {
       rate: true,
       rooms: {
-        // TODO: filter only available rooms
+        where: {
+          bookings: {
+            every: {
+              NOT: {
+                AND: [
+                  {
+                    checkIn: {
+                      lte: filter?.checkOut,
+                    },
+                  },
+                  {
+                    checkOut: {
+                      gte: filter?.checkIn,
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        },
         take: 1,
       },
     },
