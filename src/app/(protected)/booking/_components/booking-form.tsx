@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-import { format } from 'date-fns';
+import { differenceInDays, format, startOfDay } from 'date-fns';
 
 import { Button } from '~/components/ui/button';
 import {
@@ -14,25 +14,26 @@ import {
   CardHeader,
   CardTitle,
 } from '~/components/ui/card';
-import type { BookingDateRange } from '~/server/api/booking/booking.schema';
 import {
   bookingDateRangeSchema,
   createBookingRequestSchema,
 } from '~/server/api/booking/booking.schema';
+import type { RoomTypeFilter } from '~/server/api/room-type/room-type.schema';
 import { api } from '~/trpc/react';
 
 export function BookingForm() {
   const router = useRouter();
   const params = useSearchParams();
 
-  const [bookingDateRange, setBookingDateRange] = useState<
-    BookingDateRange | undefined
-  >(undefined);
+  const [filter, setFilter] = useState<RoomTypeFilter | undefined>(undefined);
 
   const id = params.get('id') ?? '';
   const { data: roomType } = api.roomType.get.useQuery(
-    { id },
-    { enabled: !!id },
+    {
+      id,
+      filter,
+    },
+    { enabled: !!id && !!filter?.checkIn && !!filter?.checkOut },
   );
 
   const createBookingMutation = api.booking.create.useMutation({
@@ -48,16 +49,16 @@ export function BookingForm() {
   });
 
   function createBooking() {
-    const parsedData = createBookingRequestSchema.safeParse({
+    const { data, success } = createBookingRequestSchema.safeParse({
       roomId: roomType?.rooms?.[0]?.id,
-      checkIn: bookingDateRange?.checkIn,
-      checkOut: bookingDateRange?.checkOut,
+      checkIn: filter?.checkIn,
+      checkOut: filter?.checkOut,
     });
-    if (!parsedData.success) {
+    if (!success) {
       return;
     }
 
-    const { roomId, checkIn, checkOut } = parsedData.data;
+    const { roomId, checkIn, checkOut } = data;
     createBookingMutation.mutate({
       roomId,
       checkIn,
@@ -65,25 +66,45 @@ export function BookingForm() {
     });
   }
 
-  function formatDate(date?: string) {
+  function formatDisplayDatetime(date?: Date) {
     if (date) {
-      return format(new Date(date), 'dd LLLL yyyy');
+      const formattedDate = format(date, 'LLLL dd, yyyy');
+      const formattedTime = format(date, 'h:mm a');
+
+      return {
+        date: formattedDate,
+        time: formattedTime,
+      };
     }
 
-    return 'N/A';
+    return {
+      date: '',
+      time: '',
+    };
+  }
+
+  function calculateDurationInDays(filter?: RoomTypeFilter) {
+    if (filter?.checkIn && filter?.checkOut) {
+      return differenceInDays(
+        startOfDay(filter.checkOut),
+        startOfDay(filter.checkIn),
+      );
+    }
+
+    return 0;
   }
 
   useEffect(() => {
-    const parsedDateRange = bookingDateRangeSchema.safeParse({
+    const { success, data } = bookingDateRangeSchema.safeParse({
       checkIn: params.get('check-in'),
       checkOut: params.get('check-out'),
     });
 
-    if (parsedDateRange.success) {
-      const checkIn = new Date(parsedDateRange.data.checkIn).toISOString();
-      const checkOut = new Date(parsedDateRange.data.checkOut).toISOString();
+    if (success) {
+      const checkIn = new Date(data.checkIn);
+      const checkOut = new Date(data.checkOut);
 
-      setBookingDateRange({
+      setFilter({
         checkIn,
         checkOut,
       });
@@ -92,19 +113,63 @@ export function BookingForm() {
 
   return (
     <div className="container py-8">
-      <Card className="mx-auto max-w-screen-sm">
+      <Card className="mx-auto max-w-screen-md">
         <CardHeader>
-          <CardTitle>{roomType?.name}</CardTitle>
-          <CardDescription>{roomType?.rooms[0]?.name}</CardDescription>
+          <CardTitle>Your booking details</CardTitle>
+          <CardDescription>
+            Please review your booking information before confirming.
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex items-center justify-between gap-4">
-            <span>Check-in:</span>
-            <span>{formatDate(bookingDateRange?.checkIn)}</span>
+          <div className="space-y-4">
+            <h4 className="font-medium">Room Information</h4>
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Room Type</span>
+                <span className="font-medium">{roomType?.name}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Room Number</span>
+                <span className="font-medium">
+                  {roomType?.rooms?.[0]?.name}
+                </span>
+              </div>
+            </div>
           </div>
-          <div className="flex items-center justify-between gap-4">
-            <span>Check-out:</span>
-            <span>{formatDate(bookingDateRange?.checkOut)}</span>
+
+          <div className="my-4 h-px bg-border"></div>
+
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="text-muted-foreground">Duration</span>
+              <div className="font-medium">
+                {calculateDurationInDays(filter)} nights
+              </div>
+            </div>
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Check-in</span>
+                <div className="text-right">
+                  <div className="font-medium">
+                    {formatDisplayDatetime(filter?.checkIn).date}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    {formatDisplayDatetime(filter?.checkIn).time}
+                  </div>
+                </div>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Check-out</span>
+                <div className="text-right">
+                  <div className="font-medium">
+                    {formatDisplayDatetime(filter?.checkOut).date}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    {formatDisplayDatetime(filter?.checkOut).time}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </CardContent>
         <CardFooter className="justify-end">
