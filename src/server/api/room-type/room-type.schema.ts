@@ -1,8 +1,10 @@
 import { isAfter } from 'date-fns';
 import { z } from 'zod';
 
-// TODO: improve the schema
-export const createRoomTypeRequestSchema = z.object({
+/**
+ * Base schema for creating room types
+ */
+const baseCreateRoomTypeRequestSchema = z.object({
   name: z.string(),
   description: z.string().optional(),
   code: z.string(),
@@ -10,15 +12,27 @@ export const createRoomTypeRequestSchema = z.object({
     weekday: z.number(),
     weekend: z.number(),
   }),
-  maximumCapacity: z.number(),
 });
+
+/**
+ * Schema and type for creating a single room type
+ */
+export const createRoomTypeRequestSchema = baseCreateRoomTypeRequestSchema;
 export type CreateRoomTypeRequest = z.infer<typeof createRoomTypeRequestSchema>;
 
-export const seedRoomTypeRequestSchema = createRoomTypeRequestSchema.extend({
-  quantity: z.number(),
-});
+/**
+ * Schema and type for seeding multiple room types
+ */
+export const seedRoomTypeRequestSchema = baseCreateRoomTypeRequestSchema.extend(
+  {
+    quantity: z.number(),
+  },
+);
 export type SeedRoomTypeRequest = z.infer<typeof seedRoomTypeRequestSchema>;
 
+/**
+ * Schema and type for filtering room types
+ */
 export const roomTypeFilterSchema = z
   .object({
     checkIn: z.date().optional(),
@@ -26,7 +40,6 @@ export const roomTypeFilterSchema = z
   })
   .refine((data) => {
     const { checkIn, checkOut } = data;
-
     if (!checkIn || !checkOut) {
       return false;
     }
@@ -35,6 +48,9 @@ export const roomTypeFilterSchema = z
   });
 export type RoomTypeFilter = z.infer<typeof roomTypeFilterSchema>;
 
+/**
+ * Schemas and types for room type retrieval
+ */
 export const getRoomTypeListRequestSchema = z.object({
   filter: roomTypeFilterSchema.optional(),
 });

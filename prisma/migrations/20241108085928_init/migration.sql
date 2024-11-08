@@ -24,11 +24,10 @@ CREATE TABLE "users" (
 -- CreateTable
 CREATE TABLE "room_types" (
     "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "code" TEXT NOT NULL,
+    "name" VARCHAR(100) NOT NULL,
+    "code" VARCHAR(20) NOT NULL,
     "description" TEXT,
     "rate_id" TEXT NOT NULL,
-    "maximumCapacity" INTEGER NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "deleted_at" TIMESTAMP(3),
@@ -79,6 +78,9 @@ CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
 CREATE INDEX "users_email_idx" ON "users"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "room_types_name_key" ON "room_types"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "room_types_code_key" ON "room_types"("code");
