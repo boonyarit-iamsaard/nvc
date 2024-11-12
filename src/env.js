@@ -1,6 +1,8 @@
 import { createEnv } from '@t3-oss/env-nextjs';
 import { z } from 'zod';
 
+const SUPPORTED_TIMEZONES = Intl.supportedValuesOf('timeZone');
+
 export const env = createEnv({
   /**
    * Specify your server-side environment variables schema here. This way you can ensure the app
@@ -22,6 +24,9 @@ export const env = createEnv({
     NODE_ENV: z
       .enum(['development', 'test', 'production'])
       .default('development'),
+    TZ: z.string().refine((data) => {
+      return SUPPORTED_TIMEZONES.includes(data);
+    }),
   },
 
   /**
@@ -31,6 +36,9 @@ export const env = createEnv({
    */
   client: {
     NEXT_PUBLIC_APP_NAME: z.string(),
+    NEXT_PUBLIC_APP_TZ: z.string().refine((data) => {
+      return SUPPORTED_TIMEZONES.includes(data);
+    }),
     NEXT_PUBLIC_APP_URL: z.string().url(),
     // NEXT_PUBLIC_CLIENTVAR: z.string(),
   },
@@ -44,8 +52,10 @@ export const env = createEnv({
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     NEXT_PUBLIC_APP_NAME: process.env.NEXT_PUBLIC_APP_NAME,
+    NEXT_PUBLIC_APP_TZ: process.env.NEXT_PUBLIC_APP_TZ,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     NODE_ENV: process.env.NODE_ENV,
+    TZ: process.env.TZ,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
