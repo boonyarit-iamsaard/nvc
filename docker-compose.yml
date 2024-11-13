@@ -29,6 +29,15 @@ services:
     networks:
       - nvc-network
 
+  adminer:
+    container_name: nvc-adminer
+    image: adminer:latest
+    restart: always
+    ports:
+      - '8080:8080'
+    networks:
+      - nvc-network
+
 volumes:
   mailpitdata:
     name: nvc-mailpitdata
