@@ -20,18 +20,19 @@ enum Role {
 }
 
 model User {
-  id             String    @id @default(uuid())
+  id             String           @id @default(uuid())
   name           String?
-  email          String    @unique
-  emailVerified  DateTime? @map("email_verified")
-  hashedPassword String    @map("hashed_password")
+  email          String           @unique
+  emailVerified  DateTime?        @map("email_verified")
+  hashedPassword String           @map("hashed_password")
   image          String?
   gender         Gender
-  role           Role      @default(GUEST)
+  role           Role             @default(GUEST)
   bookings       Booking[]
-  createdAt      DateTime  @default(now()) @map("created_at")
-  updatedAt      DateTime  @updatedAt @map("updated_at")
-  deletedAt      DateTime? @map("deleted_at")
+  memberships    UserMembership[]
+  createdAt      DateTime         @default(now()) @map("created_at")
+  updatedAt      DateTime         @updatedAt @map("updated_at")
+  deletedAt      DateTime?        @map("deleted_at")
 
   @@index([email])
   @@map("users")
@@ -90,4 +91,57 @@ model Booking {
   deletedAt DateTime? @map("deleted_at")
 
   @@map("bookings")
+}
+
+model Membership {
+  id        String           @id @default(uuid())
+  name      String           @unique
+  code      String           @unique
+  price     MembershipPrice  @relation(fields: [priceId], references: [id])
+  priceId   String           @unique @map("price_id")
+  users     UserMembership[]
+  createdAt DateTime         @default(now()) @map("created_at")
+  updatedAt DateTime         @updatedAt @map("updated_at")
+  deletedAt DateTime?        @map("deleted_at")
+
+  @@map("memberships")
+}
+
+model MembershipPrice {
+  id         String      @id @default(uuid())
+  male       Int         @default(0) // Price in subunit (e.g. satang for this project) and 0 means not available
+  female     Int         @default(0) // Price in subunit (e.g. satang for this project) and 0 means not available
+  membership Membership?
+  createdAt  DateTime    @default(now()) @map("created_at")
+  updatedAt  DateTime    @updatedAt @map("updated_at")
+  deletedAt  DateTime?   @map("deleted_at")
+
+  @@map("membership_prices")
+}
+
+model MembershipSequence {
+  id                   String    @id @default(uuid())
+  membershipCode       String    @unique @map("membership_code")
+  lastAssignedSequence Int       @default(0) @map("last_assigned_sequence")
+  createdAt            DateTime  @default(now()) @map("created_at")
+  updatedAt            DateTime  @updatedAt @map("updated_at")
+  deletedAt            DateTime? @map("deleted_at")
+
+  @@map("membership_sequences")
+}
+
+model UserMembership {
+  id               String     @id @default(uuid())
+  user             User       @relation(fields: [userId], references: [id])
+  userId           String     @map("user_id")
+  membership       Membership @relation(fields: [membershipId], references: [id])
+  membershipId     String     @map("membership_id")
+  membershipNumber String?    @unique @map("membership_number")
+  startDate        DateTime   @map("start_date")
+  endDate          DateTime   @map("end_date")
+  createdAt        DateTime   @default(now()) @map("created_at")
+  updatedAt        DateTime   @updatedAt @map("updated_at")
+  deletedAt        DateTime?  @map("deleted_at")
+
+  @@map("user_memberships")
 }

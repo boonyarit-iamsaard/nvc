@@ -73,6 +73,58 @@ CREATE TABLE "bookings" (
     CONSTRAINT "bookings_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "memberships" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "code" TEXT NOT NULL,
+    "price_id" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+    "deleted_at" TIMESTAMP(3),
+
+    CONSTRAINT "memberships_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "membership_prices" (
+    "id" TEXT NOT NULL,
+    "male" INTEGER NOT NULL DEFAULT 0,
+    "female" INTEGER NOT NULL DEFAULT 0,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+    "deleted_at" TIMESTAMP(3),
+
+    CONSTRAINT "membership_prices_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "membership_sequences" (
+    "id" TEXT NOT NULL,
+    "membership_code" TEXT NOT NULL,
+    "last_assigned_sequence" INTEGER NOT NULL DEFAULT 0,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+    "deleted_at" TIMESTAMP(3),
+
+    CONSTRAINT "membership_sequences_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "user_memberships" (
+    "id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+    "membership_id" TEXT NOT NULL,
+    "membership_number" TEXT,
+    "start_date" TIMESTAMP(3) NOT NULL,
+    "end_date" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+    "deleted_at" TIMESTAMP(3),
+
+    CONSTRAINT "user_memberships_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
@@ -91,6 +143,21 @@ CREATE UNIQUE INDEX "room_types_price_id_key" ON "room_types"("price_id");
 -- CreateIndex
 CREATE UNIQUE INDEX "rooms_name_key" ON "rooms"("name");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "memberships_name_key" ON "memberships"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "memberships_code_key" ON "memberships"("code");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "memberships_price_id_key" ON "memberships"("price_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "membership_sequences_membership_code_key" ON "membership_sequences"("membership_code");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "user_memberships_membership_number_key" ON "user_memberships"("membership_number");
+
 -- AddForeignKey
 ALTER TABLE "room_types" ADD CONSTRAINT "room_types_price_id_fkey" FOREIGN KEY ("price_id") REFERENCES "room_prices"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -102,3 +169,12 @@ ALTER TABLE "bookings" ADD CONSTRAINT "bookings_user_id_fkey" FOREIGN KEY ("user
 
 -- AddForeignKey
 ALTER TABLE "bookings" ADD CONSTRAINT "bookings_room_id_fkey" FOREIGN KEY ("room_id") REFERENCES "rooms"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "memberships" ADD CONSTRAINT "memberships_price_id_fkey" FOREIGN KEY ("price_id") REFERENCES "membership_prices"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "user_memberships" ADD CONSTRAINT "user_memberships_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "user_memberships" ADD CONSTRAINT "user_memberships_membership_id_fkey" FOREIGN KEY ("membership_id") REFERENCES "memberships"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
