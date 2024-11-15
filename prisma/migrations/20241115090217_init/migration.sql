@@ -15,7 +15,7 @@ CREATE TABLE "users" (
     "gender" "Gender" NOT NULL,
     "role" "Role" NOT NULL DEFAULT 'guest',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
     "deleted_at" TIMESTAMP(3),
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
@@ -27,24 +27,24 @@ CREATE TABLE "room_types" (
     "name" VARCHAR(100) NOT NULL,
     "code" VARCHAR(20) NOT NULL,
     "description" TEXT,
-    "rate_id" TEXT NOT NULL,
+    "price_id" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
     "deleted_at" TIMESTAMP(3),
 
     CONSTRAINT "room_types_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "room_rates" (
+CREATE TABLE "room_prices" (
     "id" TEXT NOT NULL,
-    "weekday" DOUBLE PRECISION NOT NULL,
-    "weekend" DOUBLE PRECISION NOT NULL,
+    "weekday" INTEGER NOT NULL,
+    "weekend" INTEGER NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
     "deleted_at" TIMESTAMP(3),
 
-    CONSTRAINT "room_rates_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "room_prices_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -53,7 +53,7 @@ CREATE TABLE "rooms" (
     "name" TEXT NOT NULL,
     "type_id" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
     "deleted_at" TIMESTAMP(3),
 
     CONSTRAINT "rooms_pkey" PRIMARY KEY ("id")
@@ -67,7 +67,7 @@ CREATE TABLE "bookings" (
     "check_in" TIMESTAMP(3) NOT NULL,
     "check_out" TIMESTAMP(3) NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
     "deleted_at" TIMESTAMP(3),
 
     CONSTRAINT "bookings_pkey" PRIMARY KEY ("id")
@@ -86,13 +86,13 @@ CREATE UNIQUE INDEX "room_types_name_key" ON "room_types"("name");
 CREATE UNIQUE INDEX "room_types_code_key" ON "room_types"("code");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "room_types_rate_id_key" ON "room_types"("rate_id");
+CREATE UNIQUE INDEX "room_types_price_id_key" ON "room_types"("price_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "rooms_name_key" ON "rooms"("name");
 
 -- AddForeignKey
-ALTER TABLE "room_types" ADD CONSTRAINT "room_types_rate_id_fkey" FOREIGN KEY ("rate_id") REFERENCES "room_rates"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "room_types" ADD CONSTRAINT "room_types_price_id_fkey" FOREIGN KEY ("price_id") REFERENCES "room_prices"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "rooms" ADD CONSTRAINT "rooms_type_id_fkey" FOREIGN KEY ("type_id") REFERENCES "room_types"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

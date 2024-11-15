@@ -8,9 +8,9 @@ const baseCreateRoomTypeRequestSchema = z.object({
   name: z.string(),
   description: z.string().optional(),
   code: z.string(),
-  rate: z.object({
-    weekday: z.number(),
-    weekend: z.number(),
+  price: z.object({
+    weekday: z.number().int().nonnegative(),
+    weekend: z.number().int().nonnegative(),
   }),
 });
 

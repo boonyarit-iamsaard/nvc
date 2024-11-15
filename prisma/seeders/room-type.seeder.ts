@@ -7,7 +7,7 @@ import { parseData } from '../helper';
 export async function roomTypeSeeder(prisma: PrismaClient) {
   console.info('[SEEDER] 🌱 seeding room types data');
 
-  const roomTypesData = parseData('room-type.json', seedRoomTypeRequestSchema);
+  const roomTypesData = parseData('room-types.json', seedRoomTypeRequestSchema);
   if (!roomTypesData) {
     console.info('[SEEDER] ⏭️ skipping room types data seeding');
 
@@ -21,14 +21,14 @@ export async function roomTypeSeeder(prisma: PrismaClient) {
   for (const roomType of roomTypes) {
     if (!roomType) continue;
 
-    const { code, rate, quantity, ...rest } = roomType;
+    const { code, price, quantity, ...rest } = roomType;
 
     await prisma.roomType.upsert({
       where: { code },
       update: {
         ...rest,
-        rate: {
-          update: rate,
+        price: {
+          update: price,
         },
         rooms: {
           deleteMany: {},
@@ -42,8 +42,8 @@ export async function roomTypeSeeder(prisma: PrismaClient) {
       create: {
         ...rest,
         code,
-        rate: {
-          create: rate,
+        price: {
+          create: price,
         },
         rooms: {
           createMany: {

@@ -30,7 +30,7 @@ model User {
   role           Role      @default(GUEST)
   bookings       Booking[]
   createdAt      DateTime  @default(now()) @map("created_at")
-  updatedAt      DateTime  @default(now()) @updatedAt @map("updated_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
   deletedAt      DateTime? @map("deleted_at")
 
   @@index([email])
@@ -43,25 +43,25 @@ model RoomType {
   code        String    @unique @db.VarChar(20)
   description String?
   rooms       Room[]
-  rate        RoomRate  @relation(fields: [rateId], references: [id])
-  rateId      String    @unique @map("rate_id")
+  price       RoomPrice @relation(fields: [priceId], references: [id])
+  priceId     String    @unique @map("price_id")
   createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
   deletedAt   DateTime? @map("deleted_at")
 
   @@map("room_types")
 }
 
-model RoomRate {
+model RoomPrice {
   id        String    @id @default(uuid())
-  weekday   Float
-  weekend   Float
+  weekday   Int // Price in subunit (e.g. satang for this project)
+  weekend   Int // Price in subunit (e.g. satang for this project)
   type      RoomType?
   createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
 
-  @@map("room_rates")
+  @@map("room_prices")
 }
 
 model Room {
@@ -71,7 +71,7 @@ model Room {
   typeId    String    @map("type_id")
   bookings  Booking[]
   createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
 
   @@map("rooms")
@@ -86,7 +86,7 @@ model Booking {
   checkIn   DateTime  @map("check_in")
   checkOut  DateTime  @map("check_out")
   createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
 
   @@map("bookings")

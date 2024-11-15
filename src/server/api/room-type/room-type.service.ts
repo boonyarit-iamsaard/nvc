@@ -10,7 +10,7 @@ export async function list(ctx: PublicContext, input: GetRoomTypeListRequest) {
 
   return ctx.db.roomType.findMany({
     include: {
-      rate: true,
+      price: true,
       rooms: {
         where: {
           bookings: {
@@ -45,7 +45,7 @@ export async function get(ctx: PublicContext, input: GetRoomTypeRequest) {
       id,
     },
     include: {
-      rate: true,
+      price: true,
       rooms: {
         where: {
           bookings: {
