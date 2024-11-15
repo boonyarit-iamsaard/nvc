@@ -1,7 +1,24 @@
 import { hash } from '@node-rs/argon2';
-import type { Membership, PrismaClient } from '@prisma/client';
+import type {
+  MembershipPrice,
+  Prisma,
+  PrismaClient,
+  User,
+} from '@prisma/client';
 import { Gender, Role } from '@prisma/client';
 import { addYears, endOfDay, startOfDay, subDays } from 'date-fns';
+
+async function findAllMemberships(prisma: PrismaClient) {
+  return prisma.membership.findMany({
+    include: {
+      price: true,
+    },
+  });
+}
+
+type MembershipWithPrice = Prisma.PromiseReturnType<
+  typeof findAllMemberships
+>[number];
 
 async function hashPassword(password: string) {
   return hash(password, {
@@ -56,24 +73,47 @@ async function createUser(
   });
 }
 
+function getMembershipPrice(
+  userGender: Gender,
+  membershipPrice: MembershipPrice,
+) {
+  return userGender === Gender.FEMALE
+    ? membershipPrice.female
+    : membershipPrice.male;
+}
+
 async function createUserMembership(
   prisma: PrismaClient,
-  userId: string,
-  membership: Membership,
+  user: User,
+  membership: MembershipWithPrice,
 ) {
+  const {
+    id: userId,
+    name: userName = '',
+    email: userEmail,
+    gender: userGender,
+  } = user;
+  const { id: membershipId, code, name: membershipName, price } = membership;
+
   const startDate = startOfDay(new Date());
   const endDate = endOfDay(subDays(addYears(startDate, 1), 1));
-
-  const membershipNumber = await generateMembershipNumber(
-    prisma,
-    membership.code,
-  );
+  const membershipNumber = await generateMembershipNumber(prisma, code);
 
   return prisma.userMembership.create({
     data: {
+      // User information
       userId,
-      membershipId: membership.id,
+      userName,
+      userEmail,
+      userGender,
+
+      // Membership information
+      membershipId,
       membershipNumber,
+      membershipName,
+      membershipPriceAtJoining: getMembershipPrice(userGender, price),
+
+      // Membership duration
       startDate,
       endDate,
     },
@@ -83,11 +123,7 @@ async function createUserMembership(
 export async function userSeeder(prisma: PrismaClient) {
   console.info('[SEEDER] 🌱 seeding users data');
 
-  const memberships = await prisma.membership.findMany({
-    include: {
-      price: true,
-    },
-  });
+  const memberships = await findAllMemberships(prisma);
   if (!memberships.length) {
     console.info('[SEEDER] ⏭️ skipping users data seeding');
 
@@ -107,13 +143,13 @@ export async function userSeeder(prisma: PrismaClient) {
     if (availableForMale) {
       index += 1;
       const user = await createUser(prisma, index, Gender.MALE, Role.MEMBER);
-      await createUserMembership(prisma, user.id, membership);
+      await createUserMembership(prisma, user, membership);
     }
 
     if (availableForFemale) {
       index += 1;
       const user = await createUser(prisma, index, Gender.FEMALE, Role.MEMBER);
-      await createUserMembership(prisma, user.id, membership);
+      await createUserMembership(prisma, user, membership);
     }
   }
 

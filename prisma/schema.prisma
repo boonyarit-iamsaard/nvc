@@ -163,17 +163,22 @@ model MembershipSequence {
 }
 
 model UserMembership {
-  id               String     @id @default(uuid())
-  user             User       @relation(fields: [userId], references: [id])
-  userId           String     @map("user_id")
-  membership       Membership @relation(fields: [membershipId], references: [id])
-  membershipId     String     @map("membership_id")
-  membershipNumber String?    @unique @map("membership_number")
-  startDate        DateTime   @map("start_date")
-  endDate          DateTime   @map("end_date")
-  createdAt        DateTime   @default(now()) @map("created_at")
-  updatedAt        DateTime   @updatedAt @map("updated_at")
-  deletedAt        DateTime?  @map("deleted_at")
+  id                       String      @id @default(uuid())
+  user                     User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId                   String?     @map("user_id")
+  membership               Membership? @relation(fields: [membershipId], references: [id], onDelete: SetNull)
+  membershipId             String?     @map("membership_id")
+  membershipNumber         String?     @unique @map("membership_number")
+  userName                 String?     @map("user_name") // Since user's name can be null, it should be nullable here
+  userEmail                String      @map("user_email")
+  userGender               Gender      @map("user_gender")
+  membershipName           String      @map("membership_name")
+  membershipPriceAtJoining Int         @map("membership_price_at_joining")
+  startDate                DateTime    @map("start_date")
+  endDate                  DateTime    @map("end_date")
+  createdAt                DateTime    @default(now()) @map("created_at")
+  updatedAt                DateTime    @updatedAt @map("updated_at")
+  deletedAt                DateTime?   @map("deleted_at")
 
   @@map("user_memberships")
 }

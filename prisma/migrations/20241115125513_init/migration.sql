@@ -57,7 +57,7 @@ CREATE TABLE "room_prices" (
 CREATE TABLE "rooms" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "type_id" TEXT NOT NULL,
+    "type_id" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
     "deleted_at" TIMESTAMP(3),
@@ -131,9 +131,14 @@ CREATE TABLE "membership_sequences" (
 -- CreateTable
 CREATE TABLE "user_memberships" (
     "id" TEXT NOT NULL,
-    "user_id" TEXT NOT NULL,
-    "membership_id" TEXT NOT NULL,
+    "user_id" TEXT,
+    "membership_id" TEXT,
     "membership_number" TEXT,
+    "user_name" TEXT,
+    "user_email" TEXT NOT NULL,
+    "user_gender" "Gender" NOT NULL,
+    "membership_name" TEXT NOT NULL,
+    "membership_price_at_joining" INTEGER NOT NULL,
     "start_date" TIMESTAMP(3) NOT NULL,
     "end_date" TIMESTAMP(3) NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -180,7 +185,7 @@ CREATE UNIQUE INDEX "user_memberships_membership_number_key" ON "user_membership
 ALTER TABLE "room_types" ADD CONSTRAINT "room_types_price_id_fkey" FOREIGN KEY ("price_id") REFERENCES "room_prices"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "rooms" ADD CONSTRAINT "rooms_type_id_fkey" FOREIGN KEY ("type_id") REFERENCES "room_types"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "rooms" ADD CONSTRAINT "rooms_type_id_fkey" FOREIGN KEY ("type_id") REFERENCES "room_types"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "bookings" ADD CONSTRAINT "bookings_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -192,7 +197,7 @@ ALTER TABLE "bookings" ADD CONSTRAINT "bookings_room_id_fkey" FOREIGN KEY ("room
 ALTER TABLE "memberships" ADD CONSTRAINT "memberships_price_id_fkey" FOREIGN KEY ("price_id") REFERENCES "membership_prices"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "user_memberships" ADD CONSTRAINT "user_memberships_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "user_memberships" ADD CONSTRAINT "user_memberships_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "user_memberships" ADD CONSTRAINT "user_memberships_membership_id_fkey" FOREIGN KEY ("membership_id") REFERENCES "memberships"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "user_memberships" ADD CONSTRAINT "user_memberships_membership_id_fkey" FOREIGN KEY ("membership_id") REFERENCES "memberships"("id") ON DELETE SET NULL ON UPDATE CASCADE;
