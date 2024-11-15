@@ -28,6 +28,7 @@
     "paths": {
       "~/components/*": ["./src/components/*"],
       "~/configs/*": ["./src/configs/*"],
+      "~/features/*": ["./src/features/*"],
       "~/libs/*": ["./src/libs/*"],
       "~/server/*": ["./src/server/*"],
       "~/styles/*": ["./src/styles/*"],
