@@ -1,4 +1,10 @@
 -- CreateEnum
+CREATE TYPE "BookingStatus" AS ENUM ('pending', 'confirmed', 'checked_in', 'checked_out', 'cancelled', 'no_show', 'on_hold', 'expired');
+
+-- CreateEnum
+CREATE TYPE "BookingPaymentStatus" AS ENUM ('pending', 'paid', 'failed', 'refunded', 'disputed', 'cancelled');
+
+-- CreateEnum
 CREATE TYPE "Gender" AS ENUM ('male', 'female');
 
 -- CreateEnum
@@ -62,10 +68,22 @@ CREATE TABLE "rooms" (
 -- CreateTable
 CREATE TABLE "bookings" (
     "id" TEXT NOT NULL,
-    "user_id" TEXT NOT NULL,
-    "room_id" TEXT NOT NULL,
+    "user_id" TEXT,
+    "room_id" TEXT,
     "check_in" TIMESTAMP(3) NOT NULL,
     "check_out" TIMESTAMP(3) NOT NULL,
+    "guest_name" TEXT NOT NULL,
+    "guest_email" TEXT NOT NULL,
+    "guest_membership_number" TEXT,
+    "room_type_name" TEXT NOT NULL,
+    "room_name" TEXT NOT NULL,
+    "weekday_price_at_booking" INTEGER NOT NULL,
+    "weekend_price_at_booking" INTEGER NOT NULL,
+    "total_amount" INTEGER NOT NULL,
+    "discount_amount" INTEGER NOT NULL,
+    "total_amount_after_discount" INTEGER NOT NULL,
+    "booking_status" "BookingStatus" NOT NULL DEFAULT 'pending',
+    "payment_status" "BookingPaymentStatus" NOT NULL DEFAULT 'pending',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
     "deleted_at" TIMESTAMP(3),
@@ -165,10 +183,10 @@ ALTER TABLE "room_types" ADD CONSTRAINT "room_types_price_id_fkey" FOREIGN KEY (
 ALTER TABLE "rooms" ADD CONSTRAINT "rooms_type_id_fkey" FOREIGN KEY ("type_id") REFERENCES "room_types"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "bookings" ADD CONSTRAINT "bookings_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "bookings" ADD CONSTRAINT "bookings_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "bookings" ADD CONSTRAINT "bookings_room_id_fkey" FOREIGN KEY ("room_id") REFERENCES "rooms"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "bookings" ADD CONSTRAINT "bookings_room_id_fkey" FOREIGN KEY ("room_id") REFERENCES "rooms"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "memberships" ADD CONSTRAINT "memberships_price_id_fkey" FOREIGN KEY ("price_id") REFERENCES "membership_prices"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

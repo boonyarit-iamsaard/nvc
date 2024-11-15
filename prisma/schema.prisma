@@ -7,6 +7,26 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum BookingStatus {
+  PENDING     @map("pending")
+  CONFIRMED   @map("confirmed")
+  CHECKED_IN  @map("checked_in")
+  CHECKED_OUT @map("checked_out")
+  CANCELLED   @map("cancelled")
+  NO_SHOW     @map("no_show")
+  ON_HOLD     @map("on_hold")
+  EXPIRED     @map("expired")
+}
+
+enum BookingPaymentStatus {
+  PENDING   @map("pending")
+  PAID      @map("paid")
+  FAILED    @map("failed")
+  REFUNDED  @map("refunded")
+  DISPUTED  @map("disputed")
+  CANCELLED @map("cancelled")
+}
+
 enum Gender {
   MALE   @map("male")
   FEMALE @map("female")
@@ -79,16 +99,28 @@ model Room {
 }
 
 model Booking {
-  id        String    @id @default(uuid())
-  user      User      @relation(fields: [userId], references: [id])
-  userId    String    @map("user_id")
-  room      Room      @relation(fields: [roomId], references: [id])
-  roomId    String    @map("room_id")
-  checkIn   DateTime  @map("check_in")
-  checkOut  DateTime  @map("check_out")
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
-  deletedAt DateTime? @map("deleted_at")
+  id                       String               @id @default(uuid())
+  user                     User?                @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId                   String?              @map("user_id")
+  room                     Room?                @relation(fields: [roomId], references: [id], onDelete: SetNull)
+  roomId                   String?              @map("room_id")
+  checkIn                  DateTime             @map("check_in")
+  checkOut                 DateTime             @map("check_out")
+  guestName                String               @map("guest_name")
+  guestEmail               String               @map("guest_email")
+  guestMembershipNumber    String?              @map("guest_membership_number")
+  roomTypeName             String               @map("room_type_name")
+  roomName                 String               @map("room_name")
+  weekdayPriceAtBooking    Int                  @map("weekday_price_at_booking")
+  weekendPriceAtBooking    Int                  @map("weekend_price_at_booking")
+  totalAmount              Int                  @map("total_amount")
+  discountAmount           Int                  @map("discount_amount")
+  totalAmountAfterDiscount Int                  @map("total_amount_after_discount")
+  bookingStatus            BookingStatus        @default(PENDING) @map("booking_status")
+  paymentStatus            BookingPaymentStatus @default(PENDING) @map("payment_status")
+  createdAt                DateTime             @default(now()) @map("created_at")
+  updatedAt                DateTime             @updatedAt @map("updated_at")
+  deletedAt                DateTime?            @map("deleted_at")
 
   @@map("bookings")
 }
