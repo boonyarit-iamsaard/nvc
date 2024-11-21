@@ -6,6 +6,7 @@ import { parseData } from '../helper';
 const createMembershipSchema = z.object({
   name: z.string().min(1).max(10),
   code: z.string().min(1).max(10),
+  roomDiscount: z.number().int().nonnegative().max(100).optional().default(0),
   price: z.object({
     female: z.number().int().nonnegative(),
     male: z.number().int().nonnegative(),
@@ -28,13 +29,14 @@ export async function membershipSeeder(prisma: PrismaClient) {
   const seedingPromises = memberships.flatMap((membership) => {
     if (!membership) return [];
 
-    const { name, price, code } = membership;
+    const { name, price, code, roomDiscount } = membership;
 
     return [
       prisma.membership.upsert({
         where: { name },
         update: {
           code,
+          roomDiscount,
           price: {
             update: {
               ...price,
@@ -44,6 +46,7 @@ export async function membershipSeeder(prisma: PrismaClient) {
         create: {
           name,
           code,
+          roomDiscount,
           price: {
             create: {
               ...price,

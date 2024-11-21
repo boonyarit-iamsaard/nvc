@@ -126,15 +126,16 @@ model Booking {
 }
 
 model Membership {
-  id        String           @id @default(uuid())
-  name      String           @unique
-  code      String           @unique
-  price     MembershipPrice  @relation(fields: [priceId], references: [id])
-  priceId   String           @unique @map("price_id")
-  users     UserMembership[]
-  createdAt DateTime         @default(now()) @map("created_at")
-  updatedAt DateTime         @updatedAt @map("updated_at")
-  deletedAt DateTime?        @map("deleted_at")
+  id           String           @id @default(uuid())
+  name         String           @unique
+  code         String           @unique
+  price        MembershipPrice  @relation(fields: [priceId], references: [id])
+  priceId      String           @unique @map("price_id")
+  roomDiscount Int              @default(0) @map("room_discount") // Discount in percentage
+  users        UserMembership[]
+  createdAt    DateTime         @default(now()) @map("created_at")
+  updatedAt    DateTime         @updatedAt @map("updated_at")
+  deletedAt    DateTime?        @map("deleted_at")
 
   @@map("memberships")
 }

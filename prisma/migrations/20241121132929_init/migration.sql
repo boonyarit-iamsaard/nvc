@@ -97,6 +97,7 @@ CREATE TABLE "memberships" (
     "name" TEXT NOT NULL,
     "code" TEXT NOT NULL,
     "price_id" TEXT NOT NULL,
+    "room_discount" INTEGER NOT NULL DEFAULT 0,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
     "deleted_at" TIMESTAMP(3),
