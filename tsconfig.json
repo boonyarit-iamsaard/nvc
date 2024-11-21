@@ -30,6 +30,7 @@
       "~/configs/*": ["./src/configs/*"],
       "~/features/*": ["./src/features/*"],
       "~/libs/*": ["./src/libs/*"],
+      "~/providers/*": ["./src/providers/*"],
       "~/server/*": ["./src/server/*"],
       "~/styles/*": ["./src/styles/*"],
       "~/trpc/*": ["./src/trpc/*"],

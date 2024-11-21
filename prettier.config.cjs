@@ -17,6 +17,7 @@ const config = {
     '^~/env',
     '^~/features/(.*)$',
     '^~/libs/(.*)$',
+    '^~/providers/(.*)$',
     '^~/server/(.*)$',
     '^~/styles/(.*)$',
     '^~/trpc/(.*)$',
