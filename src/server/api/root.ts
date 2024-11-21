@@ -1,3 +1,4 @@
+import { usersRouter } from '~/features/users/users.router';
 import { createCallerFactory, createTRPCRouter } from '~/server/api/trpc';
 
 import { bookingRouter } from './booking/booking.router';
@@ -11,6 +12,7 @@ import { roomTypeRouter } from './room-type/room-type.router';
 export const appRouter = createTRPCRouter({
   booking: bookingRouter,
   roomType: roomTypeRouter,
+  user: usersRouter,
 });
 
 // export type definition of API

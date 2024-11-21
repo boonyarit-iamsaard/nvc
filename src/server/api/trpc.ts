@@ -18,6 +18,8 @@ import { MembershipsRepository } from '~/features/memberships/memberships.reposi
 import { MembershipsService } from '~/features/memberships/memberships.service';
 import { RoomTypesRepository } from '~/features/room-types/room-types.repository';
 import { RoomTypesService } from '~/features/room-types/room-types.service';
+import { UsersRepository } from '~/features/users/users.repository';
+import { UsersService } from '~/features/users/users.service';
 import { getServerAuthSession } from '~/server/auth';
 import { db } from '~/server/db';
 
@@ -33,6 +35,7 @@ export function createServiceContext(db: PrismaClient) {
   const bookingsRepository = new BookingsRepository(db);
   const membershipsRepository = new MembershipsRepository(db);
   const roomTypesRepository = new RoomTypesRepository(db);
+  const usersRepository = new UsersRepository(db);
 
   /**
    * Services
@@ -41,11 +44,13 @@ export function createServiceContext(db: PrismaClient) {
   const bookingsService = new BookingsService(bookingsRepository, db);
   const membershipsService = new MembershipsService(membershipsRepository);
   const roomTypesService = new RoomTypesService(roomTypesRepository);
+  const usersService = new UsersService(usersRepository);
 
   return {
     bookingsService,
     membershipsService,
     roomTypesService,
+    usersService,
   };
 }
 
