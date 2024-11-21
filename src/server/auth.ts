@@ -7,6 +7,14 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import { loginRequestSchema } from '~/server/api/auth/auth.schema';
 import { db } from '~/server/db';
 
+export type SessionMembership = {
+  membershipName: string;
+  membershipNumber: string;
+  roomDiscount: number;
+  startDate: Date;
+  endDate: Date;
+};
+
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
  * object and keep type safety.
@@ -25,6 +33,7 @@ declare module 'next-auth' {
       name: string | null;
       role: Role;
       gender: Gender;
+      membership?: SessionMembership;
       // ...other properties
     };
     // } & DefaultSession['user'];
@@ -40,6 +49,7 @@ declare module 'next-auth' {
     name: string | null;
     role: Role;
     gender: Gender;
+    membership?: SessionMembership;
     // ...other properties
   }
 }
@@ -52,8 +62,8 @@ declare module 'next-auth/jwt' {
     id: string;
     gender: Gender;
     role: Role;
+    membership?: SessionMembership;
     // ...other properties
-    // role: UserRole;
   }
 }
 
@@ -77,6 +87,7 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.role = user.role;
         token.gender = user.gender;
+        token.membership = user.membership;
       }
 
       return token;
@@ -85,6 +96,7 @@ export const authOptions: NextAuthOptions = {
       session.user.role = token.role;
       session.user.gender = token.gender;
       session.user.id = token.id;
+      session.user.membership = token.membership;
 
       return session;
     },
@@ -108,17 +120,47 @@ export const authOptions: NextAuthOptions = {
         },
       },
       async authorize(credentials) {
-        const result = loginRequestSchema.safeParse(credentials);
-        if (!result.success) {
+        const { data, success } = loginRequestSchema.safeParse(credentials);
+        if (!success) {
           throw new Error('invalid credentials');
         }
-        // FIXME: should this be wrapped in a try/catch block to handle both the db error and the
-        // non-existent user error?
+
         const user = await db.user.findUnique({
           where: {
-            email: result.data.email,
+            email: data.email,
+          },
+          include: {
+            memberships: {
+              where: {
+                startDate: {
+                  lte: new Date(),
+                },
+                endDate: {
+                  gte: new Date(),
+                },
+                deletedAt: {
+                  equals: null,
+                },
+              },
+              take: 1,
+              orderBy: {
+                endDate: 'desc',
+              },
+              select: {
+                membershipName: true,
+                membershipNumber: true,
+                startDate: true,
+                endDate: true,
+                membership: {
+                  select: {
+                    roomDiscount: true,
+                  },
+                },
+              },
+            },
           },
         });
+
         if (!user) {
           throw new Error('invalid credentials');
         }
@@ -128,22 +170,47 @@ export const authOptions: NextAuthOptions = {
           throw new Error('invalid credentials');
         }
 
-        const isValidPassword = await verify(
-          hashedPassword,
-          result.data.password,
-        );
+        const isValidPassword = await verify(hashedPassword, data.password);
         if (!isValidPassword) {
           throw new Error('invalid credentials');
         }
 
-        const { id, email, name, role, gender, image } = user;
-        return {
+        const { id, email, name, role, gender, image, memberships } = user;
+
+        const result = {
           id,
           email,
           name,
           role,
           gender,
           image,
+        };
+
+        if (!memberships.length) {
+          return result;
+        }
+
+        const activeMembership = memberships[0];
+        if (!activeMembership) {
+          return result;
+        }
+
+        const { roomDiscount } = activeMembership?.membership ?? {};
+        if (!roomDiscount) {
+          return result;
+        }
+
+        const membership: SessionMembership = {
+          membershipName: activeMembership.membershipName,
+          membershipNumber: activeMembership.membershipNumber,
+          roomDiscount,
+          startDate: activeMembership.startDate,
+          endDate: activeMembership.endDate,
+        };
+
+        return {
+          ...result,
+          membership,
         };
       },
     }),
