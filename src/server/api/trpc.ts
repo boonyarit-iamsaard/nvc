@@ -14,6 +14,8 @@ import { ZodError } from 'zod';
 
 import { BookingsRepository } from '~/features/bookings/bookings.repository';
 import { BookingsService } from '~/features/bookings/bookings.service';
+import { MembershipsRepository } from '~/features/memberships/memberships.repository';
+import { MembershipsService } from '~/features/memberships/memberships.service';
 import { RoomTypesRepository } from '~/features/room-types/room-types.repository';
 import { RoomTypesService } from '~/features/room-types/room-types.service';
 import { getServerAuthSession } from '~/server/auth';
@@ -29,6 +31,7 @@ export function createServiceContext(db: PrismaClient) {
    * Repositories
    */
   const bookingsRepository = new BookingsRepository(db);
+  const membershipsRepository = new MembershipsRepository(db);
   const roomTypesRepository = new RoomTypesRepository(db);
 
   /**
@@ -36,10 +39,12 @@ export function createServiceContext(db: PrismaClient) {
    */
   // TODO: Inject users service and rooms service to bookings service instead of db
   const bookingsService = new BookingsService(bookingsRepository, db);
+  const membershipsService = new MembershipsService(membershipsRepository);
   const roomTypesService = new RoomTypesService(roomTypesRepository);
 
   return {
     bookingsService,
+    membershipsService,
     roomTypesService,
   };
 }
