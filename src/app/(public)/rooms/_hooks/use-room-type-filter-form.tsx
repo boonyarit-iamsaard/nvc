@@ -3,13 +3,12 @@ import { setHours, startOfHour } from 'date-fns';
 import type { DateRange } from 'react-day-picker';
 import { useForm } from 'react-hook-form';
 
-import type { RoomTypeFilter } from '~/server/api/room-type/room-type.schema';
-import { roomTypeFilterSchema } from '~/server/api/room-type/room-type.schema';
+import type { RoomTypeFilter } from '~/features/room-types/room-types.schema';
+import { roomTypeFilterSchema } from '~/features/room-types/room-types.schema';
 
 export function useRoomTypeFilterForm(
   onSubmit?: (filter: RoomTypeFilter) => void,
 ) {
-  // TODO: implement form validation and error handling
   const form = useForm<RoomTypeFilter>({
     resolver: zodResolver(roomTypeFilterSchema),
   });

@@ -7,12 +7,37 @@
  * need to use are documented accordingly near the end.
  */
 
+import type { PrismaClient } from '@prisma/client';
 import { initTRPC, TRPCError } from '@trpc/server';
 import superjson from 'superjson';
 import { ZodError } from 'zod';
 
+import { RoomTypesRepository } from '~/features/room-types/room-types.repository';
+import { RoomTypesService } from '~/features/room-types/room-types.service';
 import { getServerAuthSession } from '~/server/auth';
 import { db } from '~/server/db';
+
+/**
+ * 0. SERVICES CONTEXT
+ *
+ * This section defines the "services" that are available in the backend API.
+ */
+export function createServiceContext(db: PrismaClient) {
+  /**
+   * Repositories
+   */
+  const roomTypesRepository = new RoomTypesRepository(db);
+  /**
+   * Services
+   */
+  const roomTypesService = new RoomTypesService(roomTypesRepository);
+
+  return {
+    roomTypesService,
+  };
+}
+
+export type ServiceContext = ReturnType<typeof createServiceContext>;
 
 /**
  * 1. CONTEXT
@@ -27,10 +52,12 @@ import { db } from '~/server/db';
  * @see https://trpc.io/docs/server/context
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
+  const services = createServiceContext(db);
   const session = await getServerAuthSession();
 
   return {
     db,
+    services,
     session,
     ...opts,
   };
@@ -124,6 +151,7 @@ export const protectedProcedure = t.procedure
     if (!ctx.session?.user) {
       throw new TRPCError({ code: 'UNAUTHORIZED' });
     }
+
     return next({
       ctx: {
         // infers the `session` as non-nullable

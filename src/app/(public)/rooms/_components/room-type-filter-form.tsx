@@ -3,7 +3,7 @@
 import { Button } from '~/components/ui/button';
 import { DateRangePicker } from '~/components/ui/date-range-picker';
 import { Form } from '~/components/ui/form';
-import type { RoomTypeFilter } from '~/server/api/room-type/room-type.schema';
+import type { RoomTypeFilter } from '~/features/room-types/room-types.schema';
 
 import { useRoomTypeFilterForm } from '../_hooks/use-room-type-filter-form';
 

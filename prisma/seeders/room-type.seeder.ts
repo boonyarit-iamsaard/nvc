@@ -1,6 +1,6 @@
 import type { PrismaClient } from '@prisma/client';
 
-import { seedRoomTypeRequestSchema } from '~/server/api/room-type/room-type.schema';
+import { seedRoomTypeRequestSchema } from '~/features/room-types/room-types.schema';
 
 import { parseData } from '../helper';
 

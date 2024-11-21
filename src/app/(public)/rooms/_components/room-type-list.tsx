@@ -8,7 +8,7 @@ import { setHours, startOfHour } from 'date-fns';
 
 import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
-import type { RoomTypeFilter } from '~/server/api/room-type/room-type.schema';
+import type { RoomTypeFilter } from '~/features/room-types/room-types.schema';
 import { api } from '~/trpc/react';
 
 import { RoomTypeFilterForm } from './room-type-filter-form';
@@ -20,9 +20,10 @@ export function RoomTypeList() {
   const [filter, setFilter] = useState<RoomTypeFilter>();
 
   // TODO: implement error states
-  const { data: roomTypeList, isLoading } = api.roomType.list.useQuery({
-    filter,
-  });
+  const { data: roomTypeList, isLoading } =
+    api.roomType.getRoomTypeList.useQuery({
+      filter,
+    });
 
   function handleChooseRoom(id: string) {
     if (!filter?.checkIn || !filter?.checkOut) {
