@@ -120,19 +120,32 @@ async function createUserMembership(
   });
 }
 
-export async function userSeeder(prisma: PrismaClient) {
-  console.info('[SEEDER] 🌱 seeding users data');
+export async function usersFactory(prisma: PrismaClient) {
+  console.info('[FACTORY] 🌱 starting factory users data');
 
   const memberships = await findAllMemberships(prisma);
   if (!memberships.length) {
-    console.info('[SEEDER] ⏭️ skipping users data seeding');
+    console.info('[FACTORY] ⏭️ skipping factory users data');
 
     return;
   }
 
   await prisma.$transaction([
     prisma.userMembership.deleteMany({}),
-    prisma.user.deleteMany({}),
+    prisma.user.deleteMany({
+      where: {
+        NOT: {
+          OR: [
+            {
+              role: Role.OWNER,
+            },
+            {
+              role: Role.ADMINISTRATOR,
+            },
+          ],
+        },
+      },
+    }),
   ]);
 
   let index = 0;
@@ -156,5 +169,5 @@ export async function userSeeder(prisma: PrismaClient) {
   await createUser(prisma, index + 1, Gender.MALE);
   await createUser(prisma, index + 2, Gender.FEMALE);
 
-  console.info('[SEEDER] ✅ users data seeded');
+  console.info('[FACTORY] ✅ factory users data complete');
 }

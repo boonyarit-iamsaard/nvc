@@ -1,9 +1,9 @@
 import { PrismaClient } from '@prisma/client';
 
+import { usersFactory } from './factories/users.factory';
 import { adminSeeder } from './seeders/admin.seeder';
 import { membershipSeeder } from './seeders/membership.seeder';
 import { roomTypeSeeder } from './seeders/room-type.seeder';
-import { userSeeder } from './seeders/user.seeder';
 
 const prisma = new PrismaClient();
 
@@ -13,7 +13,6 @@ async function main() {
   const seeders: ((prisma: PrismaClient) => Promise<void>)[] = [
     roomTypeSeeder,
     membershipSeeder,
-    userSeeder,
     adminSeeder,
   ];
   for (const seeder of seeders) {
@@ -25,6 +24,25 @@ async function main() {
   }
 
   console.info('[SEEDER] ✅ seeding complete');
+
+  if (process.env.NODE_ENV === 'development') {
+    console.info('-----------------------------------');
+
+    const factories: ((prisma: PrismaClient) => Promise<void>)[] = [
+      usersFactory,
+    ];
+    for (const factory of factories) {
+      await factory(prisma);
+
+      if (factories.length > 1) {
+        console.info('-----------------------------------');
+      }
+    }
+
+    console.info('-----------------------------------');
+
+    console.info('[FACTORY] ✅ factory complete');
+  }
 }
 
 main()
@@ -32,7 +50,7 @@ main()
     await prisma.$disconnect();
   })
   .catch(async (e) => {
-    console.error(e);
+    console.error(JSON.stringify(e, null, 2));
 
     await prisma.$disconnect();
 
