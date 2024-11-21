@@ -72,7 +72,7 @@ CREATE TABLE "bookings" (
     "room_id" TEXT,
     "check_in" TIMESTAMP(3) NOT NULL,
     "check_out" TIMESTAMP(3) NOT NULL,
-    "guest_name" TEXT NOT NULL,
+    "guest_name" TEXT,
     "guest_email" TEXT NOT NULL,
     "guest_membership_number" TEXT,
     "room_type_name" TEXT NOT NULL,

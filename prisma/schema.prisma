@@ -106,9 +106,9 @@ model Booking {
   roomId                   String?              @map("room_id")
   checkIn                  DateTime             @map("check_in")
   checkOut                 DateTime             @map("check_out")
-  guestName                String               @map("guest_name")
+  guestName                String?              @map("guest_name")
   guestEmail               String               @map("guest_email")
-  guestMembershipNumber    String?              @map("guest_membership_number")
+  guestMembershipNumber    String?              @map("guest_membership_number") // Since non-member can make a booking, it should be nullable here
   roomTypeName             String               @map("room_type_name")
   roomName                 String               @map("room_name")
   weekdayPriceAtBooking    Int                  @map("weekday_price_at_booking")
