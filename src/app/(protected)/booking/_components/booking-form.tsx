@@ -17,39 +17,42 @@ import {
 import {
   bookingDateRangeSchema,
   createBookingRequestSchema,
-} from '~/server/api/booking/booking.schema';
-import type { RoomTypeFilter } from '~/server/api/room-type/room-type.schema';
+} from '~/features/bookings/bookings.schema';
+import type { RoomTypeFilter } from '~/features/room-types/room-types.schema';
+import { useUserSession } from '~/libs/auth/hooks/use-user-session';
 import { api } from '~/trpc/react';
 
 export function BookingForm() {
   const router = useRouter();
   const params = useSearchParams();
+  const { data: userSession } = useUserSession();
 
   const [filter, setFilter] = useState<RoomTypeFilter | undefined>(undefined);
 
   const id = params.get('id') ?? '';
-  const { data: roomType } = api.roomType.get.useQuery(
+  const { data: roomType } = api.roomType.getRoomType.useQuery(
     {
       id,
       filter,
     },
-    { enabled: !!id && !!filter?.checkIn && !!filter?.checkOut },
+    {
+      enabled: !!id && !!filter?.checkIn && !!filter?.checkOut,
+    },
   );
 
-  const createBookingMutation = api.booking.create.useMutation({
-    onError(error) {
-      // TODO: display error toast
-      console.error('error', JSON.stringify(error, null, 2));
+  const createBookingMutation = api.booking.createBooking.useMutation({
+    onError() {
+      // TODO: handle error
     },
-    onSuccess(data) {
-      // TODO: display success toast
-      console.log('success', JSON.stringify(data, null, 2));
+    onSuccess() {
+      // TODO: display success message
       router.replace('/booking');
     },
   });
 
   function createBooking() {
     const { data, success } = createBookingRequestSchema.safeParse({
+      userId: userSession?.user?.id,
       roomId: roomType?.rooms?.[0]?.id,
       checkIn: filter?.checkIn,
       checkOut: filter?.checkOut,
@@ -58,8 +61,9 @@ export function BookingForm() {
       return;
     }
 
-    const { roomId, checkIn, checkOut } = data;
+    const { userId, roomId, checkIn, checkOut } = data;
     createBookingMutation.mutate({
+      userId,
       roomId,
       checkIn,
       checkOut,

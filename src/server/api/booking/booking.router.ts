@@ -1,12 +1,23 @@
-import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
-
-import { createBookingRequestSchema } from './booking.schema';
-import { create, list } from './booking.service';
+import {
+  createBookingRequestSchema,
+  getUserBookingListRequestSchema,
+} from '~/features/bookings/bookings.schema';
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from '~/server/api/trpc';
 
 export const bookingRouter = createTRPCRouter({
-  list: protectedProcedure.query(({ ctx }) => list(ctx)),
+  getUserBookingList: publicProcedure
+    .input(getUserBookingListRequestSchema)
+    .query(({ ctx, input }) => {
+      return ctx.services.bookingsService.getUserBookingList(input);
+    }),
 
-  create: protectedProcedure
+  createBooking: protectedProcedure
     .input(createBookingRequestSchema)
-    .mutation(({ ctx, input }) => create(ctx, input)),
+    .mutation(({ ctx, input }) => {
+      return ctx.services.bookingsService.createBooking(input);
+    }),
 });

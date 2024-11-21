@@ -12,6 +12,8 @@ import { initTRPC, TRPCError } from '@trpc/server';
 import superjson from 'superjson';
 import { ZodError } from 'zod';
 
+import { BookingsRepository } from '~/features/bookings/bookings.repository';
+import { BookingsService } from '~/features/bookings/bookings.service';
 import { RoomTypesRepository } from '~/features/room-types/room-types.repository';
 import { RoomTypesService } from '~/features/room-types/room-types.service';
 import { getServerAuthSession } from '~/server/auth';
@@ -26,13 +28,18 @@ export function createServiceContext(db: PrismaClient) {
   /**
    * Repositories
    */
+  const bookingsRepository = new BookingsRepository(db);
   const roomTypesRepository = new RoomTypesRepository(db);
+
   /**
    * Services
    */
+  // TODO: Inject users service and rooms service to bookings service instead of db
+  const bookingsService = new BookingsService(bookingsRepository, db);
   const roomTypesService = new RoomTypesService(roomTypesRepository);
 
   return {
+    bookingsService,
     roomTypesService,
   };
 }
