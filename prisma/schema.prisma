@@ -168,7 +168,7 @@ model UserMembership {
   userId                   String?     @map("user_id")
   membership               Membership? @relation(fields: [membershipId], references: [id], onDelete: SetNull)
   membershipId             String?     @map("membership_id")
-  membershipNumber         String?     @unique @map("membership_number")
+  membershipNumber         String      @map("membership_number")
   userName                 String?     @map("user_name") // Since user's name can be null, it should be nullable here
   userEmail                String      @map("user_email")
   userGender               Gender      @map("user_gender")

@@ -133,7 +133,7 @@ CREATE TABLE "user_memberships" (
     "id" TEXT NOT NULL,
     "user_id" TEXT,
     "membership_id" TEXT,
-    "membership_number" TEXT,
+    "membership_number" TEXT NOT NULL,
     "user_name" TEXT,
     "user_email" TEXT NOT NULL,
     "user_gender" "Gender" NOT NULL,
@@ -177,9 +177,6 @@ CREATE UNIQUE INDEX "memberships_price_id_key" ON "memberships"("price_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "membership_sequences_membership_code_key" ON "membership_sequences"("membership_code");
-
--- CreateIndex
-CREATE UNIQUE INDEX "user_memberships_membership_number_key" ON "user_memberships"("membership_number");
 
 -- AddForeignKey
 ALTER TABLE "room_types" ADD CONSTRAINT "room_types_price_id_fkey" FOREIGN KEY ("price_id") REFERENCES "room_prices"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
