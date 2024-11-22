@@ -10,8 +10,8 @@ import type { BookingsService } from './bookings.service';
 
 export const bookingDateRangeSchema = z
   .object({
-    checkIn: z.string().datetime(),
-    checkOut: z.string().datetime(),
+    checkIn: z.coerce.date(),
+    checkOut: z.coerce.date(),
   })
   .refine(
     (value) => {
@@ -38,36 +38,43 @@ export const bookingDateRangeSchema = z
     },
   );
 
-export const createBookingRequestSchema = z.object({
+export const saveBookingRequestSchema = z.object({
   userId: z.string().uuid(),
-  roomId: z.string(),
-  checkIn: z.string().datetime(),
-  checkOut: z.string().datetime(),
+  roomId: z.string().uuid(),
+  checkIn: z.coerce.date(),
+  checkOut: z.coerce.date(),
+  guestName: z.string().min(1).nullish().default(null),
+  guestEmail: z.string().email(),
+  guestMembershipName: z.string().min(1).nullish().default(null),
+  guestMembershipNumber: z.string().min(1).nullish().default(null),
+  roomTypeName: z.string().min(1),
+  roomName: z.string().min(1),
+  weekdayCount: z.number().int().nonnegative(),
+  weekendCount: z.number().int().nonnegative(),
+  weekdayPriceAtBooking: z.number().int().nonnegative(),
+  weekendPriceAtBooking: z.number().int().nonnegative(),
+  baseAmount: z.number().int().nonnegative(),
+  discountAmount: z.number().int().nonnegative(),
+  discountPercentage: z
+    .number()
+    .int()
+    .nonnegative()
+    .max(100)
+    .optional()
+    .default(0),
+  totalAmount: z.number().int().nonnegative(),
+  bookingStatus: z.nativeEnum(BookingStatus).optional().default('PENDING'),
+  paymentStatus: z
+    .nativeEnum(BookingPaymentStatus)
+    .optional()
+    .default('PENDING'),
 });
-
-export const saveBookingRequestSchema = createBookingRequestSchema.merge(
-  z.object({
-    guestName: z.string().min(1).nullable(),
-    guestEmail: z.string().email(),
-    guestMembershipNumber: z.string().optional().nullable(),
-    roomTypeName: z.string(),
-    roomName: z.string(),
-    weekdayPriceAtBooking: z.number().int().positive(),
-    weekendPriceAtBooking: z.number().int().positive(),
-    totalAmount: z.number().int().positive(),
-    discountAmount: z.number().int().min(0),
-    totalAmountAfterDiscount: z.number().int().positive(),
-    bookingStatus: z.nativeEnum(BookingStatus).default('PENDING'),
-    paymentStatus: z.nativeEnum(BookingPaymentStatus).default('PENDING'),
-  }),
-);
 
 export const getUserBookingListRequestSchema = z.object({
   userId: z.string().uuid(),
 });
 
 export type BookingDateRange = z.infer<typeof bookingDateRangeSchema>;
-export type CreateBookingRequest = z.infer<typeof createBookingRequestSchema>;
 export type SaveBookingRequest = z.infer<typeof saveBookingRequestSchema>;
 export type GetUserBookingListRequest = z.infer<
   typeof getUserBookingListRequestSchema
