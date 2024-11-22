@@ -1,8 +1,5 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-
 import { Button } from '~/components/ui/button';
 import {
   Card,
@@ -12,62 +9,15 @@ import {
   CardHeader,
   CardTitle,
 } from '~/components/ui/card';
-import { bookingDateRangeSchema } from '~/features/bookings/bookings.schema';
-import type { RoomTypeFilter } from '~/features/room-types/room-types.schema';
 import { formatCurrency } from '~/libs/currency';
 import { formatDisplayDatetime } from '~/libs/date';
-import { api } from '~/trpc/react';
 
 import { useBookingForm } from '../_hooks/use-booking-form';
 import { BookingFormPlaceholder } from './booking-form-placeholder';
 
 export function BookingForm() {
-  const router = useRouter();
-  const params = useSearchParams();
-
-  const [filter, setFilter] = useState<RoomTypeFilter | undefined>(undefined);
-
-  const id = params.get('id');
-
-  const { bookingDetails, isLoading } = useBookingForm({
-    roomTypeId: id,
-    checkIn: filter?.checkIn ?? null,
-    checkOut: filter?.checkOut ?? null,
-  });
-
-  const createBookingMutation = api.booking.createBooking.useMutation({
-    onError(error) {
-      console.error(error);
-    },
-    async onSuccess() {
-      router.replace('/bookings');
-    },
-  });
-
-  function handleSubmit() {
-    if (!bookingDetails) {
-      return;
-    }
-
-    createBookingMutation.mutate(bookingDetails);
-  }
-
-  useEffect(() => {
-    const { success, data } = bookingDateRangeSchema.safeParse({
-      checkIn: params.get('check-in'),
-      checkOut: params.get('check-out'),
-    });
-
-    if (success) {
-      const checkIn = new Date(data.checkIn);
-      const checkOut = new Date(data.checkOut);
-
-      setFilter({
-        checkIn,
-        checkOut,
-      });
-    }
-  }, [params]);
+  const { bookingDetails, isLoading, isSubmitting, handleSubmit } =
+    useBookingForm();
 
   if (isLoading) {
     return <BookingFormPlaceholder />;
@@ -76,7 +26,7 @@ export function BookingForm() {
   if (!bookingDetails) {
     return (
       <div className="container py-12">
-        <Card className="flex items-center justify-center p-8">
+        <Card className="flex items-center justify-center border-border p-8">
           <div className="text-lg">No booking details available</div>
         </Card>
       </div>
@@ -85,11 +35,11 @@ export function BookingForm() {
 
   return (
     <div className="container py-12">
-      <Card>
+      <Card className="overflow-hidden border-border">
         <CardHeader className="border-b border-border bg-muted">
-          <CardTitle>Your booking details</CardTitle>
+          <CardTitle>Booking Details</CardTitle>
           <CardDescription>
-            Please review your booking information before confirming.
+            Please review your booking details before proceeding
           </CardDescription>
         </CardHeader>
 
@@ -180,15 +130,8 @@ export function BookingForm() {
         </CardContent>
 
         <CardFooter className="flex justify-end border-t border-border pt-6">
-          <Button
-            size="lg"
-            className="px-8 py-3 text-lg"
-            onClick={handleSubmit}
-            disabled={createBookingMutation.isPending}
-          >
-            {createBookingMutation.isPending
-              ? 'Confirming...'
-              : 'Confirm Booking'}
+          <Button onClick={handleSubmit} disabled={isSubmitting}>
+            {isSubmitting ? 'Booking...' : 'Book Now'}
           </Button>
         </CardFooter>
       </Card>
