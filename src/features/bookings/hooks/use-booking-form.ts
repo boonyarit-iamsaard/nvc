@@ -7,7 +7,7 @@ import type { RoomTypeFilter } from '~/features/room-types/room-types.schema';
 import { useUserSession } from '~/libs/auth/hooks/use-user-session';
 import { api } from '~/trpc/react';
 
-import { getBookingDetails } from '../_helpers/get-booking-details';
+import { getBookingDetails } from '../helpers/get-booking-details';
 
 type UseBookingFormResult = {
   bookingDetails: SaveBookingRequest | null;

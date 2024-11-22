@@ -12,7 +12,7 @@ import {
 import { formatCurrency } from '~/libs/currency';
 import { formatDisplayDatetime } from '~/libs/date';
 
-import { useBookingForm } from '../_hooks/use-booking-form';
+import { useBookingForm } from '../hooks/use-booking-form';
 import { BookingFormPlaceholder } from './booking-form-placeholder';
 
 export function BookingForm() {
