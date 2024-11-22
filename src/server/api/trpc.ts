@@ -40,8 +40,7 @@ export function createServiceContext(db: PrismaClient) {
   /**
    * Services
    */
-  // TODO: Inject users service and rooms service to bookings service instead of db
-  const bookingsService = new BookingsService(bookingsRepository, db);
+  const bookingsService = new BookingsService(bookingsRepository);
   const membershipsService = new MembershipsService(membershipsRepository);
   const roomTypesService = new RoomTypesService(roomTypesRepository);
   const usersService = new UsersService(usersRepository);

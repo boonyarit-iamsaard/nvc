@@ -1,7 +1,7 @@
+import { bookingRouter } from '~/features/bookings/bookings.router';
 import { usersRouter } from '~/features/users/users.router';
 import { createCallerFactory, createTRPCRouter } from '~/server/api/trpc';
 
-import { bookingRouter } from './booking/booking.router';
 import { roomTypeRouter } from './room-type/room-type.router';
 
 /**
