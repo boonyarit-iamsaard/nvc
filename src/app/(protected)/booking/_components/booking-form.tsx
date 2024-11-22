@@ -1,9 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-
-import { differenceInDays, format, startOfDay } from 'date-fns';
+import { useSearchParams } from 'next/navigation';
 
 import { Button } from '~/components/ui/button';
 import {
@@ -14,88 +12,43 @@ import {
   CardHeader,
   CardTitle,
 } from '~/components/ui/card';
-import {
-  bookingDateRangeSchema,
-  createBookingRequestSchema,
-} from '~/features/bookings/bookings.schema';
+import { bookingDateRangeSchema } from '~/features/bookings/bookings.schema';
 import type { RoomTypeFilter } from '~/features/room-types/room-types.schema';
-import { useUserSession } from '~/libs/auth/hooks/use-user-session';
+import { formatCurrency } from '~/libs/currency';
+import { formatDisplayDatetime } from '~/libs/date';
 import { api } from '~/trpc/react';
 
+import { useBookingForm } from '../_hooks/use-booking-form';
+import { BookingFormPlaceholder } from './booking-form-placeholder';
+
 export function BookingForm() {
-  const router = useRouter();
   const params = useSearchParams();
-  const { data: userSession } = useUserSession();
 
   const [filter, setFilter] = useState<RoomTypeFilter | undefined>(undefined);
 
-  const id = params.get('id') ?? '';
-  const { data: roomType } = api.roomType.getRoomType.useQuery(
-    {
-      id,
-      filter,
-    },
-    {
-      enabled: !!id && !!filter?.checkIn && !!filter?.checkOut,
-    },
-  );
+  const id = params.get('id');
+
+  const { bookingDetails, isLoading } = useBookingForm({
+    roomTypeId: id,
+    checkIn: filter?.checkIn ?? null,
+    checkOut: filter?.checkOut ?? null,
+  });
 
   const createBookingMutation = api.booking.createBooking.useMutation({
-    onError() {
-      // TODO: handle error
+    onError(error) {
+      console.error(error);
     },
-    onSuccess() {
-      // TODO: display success message
-      router.replace('/booking');
+    onSuccess(data) {
+      console.log(data);
     },
   });
 
-  function createBooking() {
-    const { data, success } = createBookingRequestSchema.safeParse({
-      userId: userSession?.user?.id,
-      roomId: roomType?.rooms?.[0]?.id,
-      checkIn: filter?.checkIn,
-      checkOut: filter?.checkOut,
-    });
-    if (!success) {
+  function handleSubmit() {
+    if (!bookingDetails) {
       return;
     }
 
-    const { userId, roomId, checkIn, checkOut } = data;
-    createBookingMutation.mutate({
-      userId,
-      roomId,
-      checkIn,
-      checkOut,
-    });
-  }
-
-  function formatDisplayDatetime(date?: Date) {
-    if (date) {
-      const formattedDate = format(date, 'LLLL dd, yyyy');
-      const formattedTime = format(date, 'h:mm a');
-
-      return {
-        date: formattedDate,
-        time: formattedTime,
-      };
-    }
-
-    return {
-      date: '',
-      time: '',
-    };
-  }
-
-  function calculateDurationInDays(filter?: RoomTypeFilter) {
-    if (filter?.checkIn && filter?.checkOut) {
-      return differenceInDays(
-        startOfDay(filter.checkOut),
-        startOfDay(filter.checkIn),
-      );
-    }
-
-    return 0;
+    createBookingMutation.mutate(bookingDetails);
   }
 
   useEffect(() => {
@@ -115,74 +68,126 @@ export function BookingForm() {
     }
   }, [params]);
 
+  if (isLoading) {
+    return <BookingFormPlaceholder />;
+  }
+
+  if (!bookingDetails) {
+    return (
+      <div className="container py-12">
+        <Card className="flex items-center justify-center p-8">
+          <div className="text-lg">No booking details available</div>
+        </Card>
+      </div>
+    );
+  }
+
   return (
-    <div className="container py-8">
-      <Card className="mx-auto max-w-screen-md">
-        <CardHeader>
+    <div className="container py-12">
+      <Card>
+        <CardHeader className="border-b border-border bg-muted">
           <CardTitle>Your booking details</CardTitle>
           <CardDescription>
             Please review your booking information before confirming.
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
+
+        <CardContent className="space-y-6 p-6">
+          <div className="space-y-3">
             <h4 className="font-medium">Room Information</h4>
             <div className="space-y-2">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Room Type</span>
-                <span className="font-medium">{roomType?.name}</span>
+                <span className="font-medium">
+                  {bookingDetails.roomTypeName}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Room Number</span>
-                <span className="font-medium">
-                  {roomType?.rooms?.[0]?.name}
-                </span>
+                <span className="font-medium">{bookingDetails.roomName}</span>
               </div>
             </div>
           </div>
 
-          <div className="my-4 h-px bg-border"></div>
+          <div className="h-px bg-border" />
 
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">Duration</span>
-              <div className="font-medium">
-                {calculateDurationInDays(filter)} nights
+          <div className="space-y-3">
+            <h4 className="font-medium">Stay Duration</h4>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">Duration</span>
+                <div className="text-lg font-medium">
+                  {bookingDetails.weekdayCount + bookingDetails.weekendCount}{' '}
+                  nights
+                </div>
               </div>
-            </div>
-            <div className="space-y-2">
-              <div className="flex justify-between">
+              <div className="flex items-center justify-between">
                 <span className="text-muted-foreground">Check-in</span>
                 <div className="text-right">
-                  <div className="font-medium">
-                    {formatDisplayDatetime(filter?.checkIn).date}
+                  <div className="text-lg font-medium">
+                    {formatDisplayDatetime(bookingDetails.checkIn).date}
                   </div>
                   <div className="text-sm text-muted-foreground">
-                    {formatDisplayDatetime(filter?.checkIn).time}
+                    {formatDisplayDatetime(bookingDetails.checkIn).time}
                   </div>
                 </div>
               </div>
-              <div className="flex justify-between">
+              <div className="flex items-center justify-between">
                 <span className="text-muted-foreground">Check-out</span>
                 <div className="text-right">
-                  <div className="font-medium">
-                    {formatDisplayDatetime(filter?.checkOut).date}
+                  <div className="text-lg font-medium">
+                    {formatDisplayDatetime(bookingDetails.checkOut).date}
                   </div>
                   <div className="text-sm text-muted-foreground">
-                    {formatDisplayDatetime(filter?.checkOut).time}
+                    {formatDisplayDatetime(bookingDetails.checkOut).time}
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+
+          <div className="h-px bg-border" />
+
+          <div className="space-y-3">
+            <h4 className="font-medium text-muted-foreground">Summary</h4>
+            <div className="space-y-2.5">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Room Rate</span>
+                <span>{formatCurrency(bookingDetails.baseAmount)} THB</span>
+              </div>
+              {bookingDetails.discountAmount > 0 && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Member Benefit</span>
+                  <span className="text-emerald-600">
+                    -{formatCurrency(bookingDetails.discountAmount)} THB
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="h-px bg-border" />
+
+          <div>
+            <div className="flex justify-between">
+              <span className="font-medium">Total</span>
+              <span className="text-lg font-medium">
+                {formatCurrency(bookingDetails.totalAmount)} THB
+              </span>
             </div>
           </div>
         </CardContent>
-        <CardFooter className="justify-end">
+
+        <CardFooter className="flex justify-end border-t border-border pt-6">
           <Button
-            type="button"
+            size="lg"
+            className="px-8 py-3 text-lg"
+            onClick={handleSubmit}
             disabled={createBookingMutation.isPending}
-            onClick={createBooking}
           >
-            Confirm Booking
+            {createBookingMutation.isPending
+              ? 'Confirming...'
+              : 'Confirm Booking'}
           </Button>
         </CardFooter>
       </Card>
