@@ -10,32 +10,32 @@ export class RoomTypesRepository {
 
   getRoomTypeList({ filter }: GetRoomTypeListRequest) {
     return this.db.roomType.findMany({
-      where: {
-        rooms: {
-          some: {
-            bookings: {
-              every: {
-                NOT: {
-                  AND: [
-                    {
-                      checkIn: {
-                        lte: filter?.checkOut,
-                      },
-                    },
-                    {
-                      checkOut: {
-                        gte: filter?.checkIn,
-                      },
-                    },
-                  ],
-                },
-              },
-            },
-          },
-        },
-      },
       include: {
-        rooms: true,
+        rooms: {
+          where:
+            filter?.checkIn && filter?.checkOut
+              ? {
+                  NOT: {
+                    bookings: {
+                      some: {
+                        AND: [
+                          {
+                            checkIn: {
+                              lte: filter.checkOut,
+                            },
+                          },
+                          {
+                            checkOut: {
+                              gte: filter.checkIn,
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  },
+                }
+              : undefined,
+        },
         price: true,
       },
     });

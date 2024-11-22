@@ -63,9 +63,11 @@ export function RoomTypeList() {
                       <h2 className="font-serif text-lg font-semibold">
                         {roomType.name}
                       </h2>
-                      <Badge variant="outline">
-                        {roomType.rooms.length} available rooms
-                      </Badge>
+                      {filter && !isLoading && (
+                        <Badge variant="outline">
+                          {roomType.rooms.length} available rooms
+                        </Badge>
+                      )}
                     </div>
 
                     <p>{roomType.description}</p>
