@@ -52,7 +52,7 @@ export function ProfileButton() {
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link href="/booking">
+            <Link href="/bookings">
               <Calendar className="mr-2 h-4 w-4" />
               <span>Bookings</span>
             </Link>

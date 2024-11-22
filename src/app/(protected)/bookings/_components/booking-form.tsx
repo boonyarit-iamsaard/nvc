@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import { Button } from '~/components/ui/button';
 import {
@@ -22,6 +22,7 @@ import { useBookingForm } from '../_hooks/use-booking-form';
 import { BookingFormPlaceholder } from './booking-form-placeholder';
 
 export function BookingForm() {
+  const router = useRouter();
   const params = useSearchParams();
 
   const [filter, setFilter] = useState<RoomTypeFilter | undefined>(undefined);
@@ -38,8 +39,8 @@ export function BookingForm() {
     onError(error) {
       console.error(error);
     },
-    onSuccess(data) {
-      console.log(data);
+    async onSuccess() {
+      router.replace('/bookings');
     },
   });
 

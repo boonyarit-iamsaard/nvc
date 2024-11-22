@@ -21,9 +21,7 @@ export function RoomTypeList() {
 
   // TODO: implement error states
   const { data: roomTypeList, isLoading } =
-    api.roomType.getRoomTypeList.useQuery({
-      filter,
-    });
+    api.roomType.getRoomTypeList.useQuery({ filter });
 
   function handleChooseRoom(id: string) {
     if (!filter?.checkIn || !filter?.checkOut) {
@@ -38,7 +36,7 @@ export function RoomTypeList() {
     params.set('check-in', checkIn.toISOString());
     params.set('check-out', checkOut.toISOString());
 
-    const url = `/booking/create?${params.toString()}`;
+    const url = `/bookings/create?${params.toString()}`;
 
     router.push(url);
   }
