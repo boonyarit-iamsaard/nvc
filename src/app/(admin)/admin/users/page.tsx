@@ -1,4 +1,7 @@
-import { UserList } from '~/features/users/components/user-list';
+import { Plus } from 'lucide-react';
+
+import { Button } from '~/components/ui/button';
+import { UsersTable } from '~/features/users/components/users-table';
 import { api } from '~/trpc/server';
 
 export default async function Page() {
@@ -6,8 +9,14 @@ export default async function Page() {
 
   return (
     <div className="container space-y-6 py-12">
-      <h1 className="text-2xl font-bold">Users</h1>
-      <UserList />
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold">Users</h1>
+        <Button>
+          <Plus className="mr-2 h-4 w-4" />
+          Add user
+        </Button>
+      </div>
+      <UsersTable />
     </div>
   );
 }

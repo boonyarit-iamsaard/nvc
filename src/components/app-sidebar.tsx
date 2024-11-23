@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import { Calendar, Home, Inbox } from 'lucide-react';
+import { Home, LayoutDashboard, Users } from 'lucide-react';
 
 import { Icons } from '~/components/icons';
 import {
@@ -17,19 +17,19 @@ import {
 
 const items = [
   {
-    title: 'Back to Home',
+    title: 'Back to home',
     url: '/',
     icon: Home,
   },
   {
     title: 'Dashboard',
     url: '/admin',
-    icon: Inbox,
+    icon: LayoutDashboard,
   },
   {
     title: 'Users',
     url: '/admin/users',
-    icon: Calendar,
+    icon: Users,
   },
 ];
 
