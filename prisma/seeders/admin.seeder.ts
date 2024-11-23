@@ -1,14 +1,14 @@
 import { hash } from '@node-rs/argon2';
 import type { PrismaClient } from '@prisma/client';
 
-import { createUserRequestSchema } from '~/features/users/users.schema';
+import { seedAdminRequestSchema } from '~/features/users/users.schema';
 
 import { parseData } from '../helper';
 
 export async function adminSeeder(prisma: PrismaClient) {
   console.info('[SEEDER] 🌱 seeding admin data');
 
-  const adminData = parseData('admin.json', createUserRequestSchema);
+  const adminData = parseData('admin.json', seedAdminRequestSchema);
   if (!adminData) {
     console.info('[SEEDER] ⏭️ skipping admin data seeding');
 
