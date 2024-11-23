@@ -9,11 +9,13 @@ export class RoomTypesRepository {
   constructor(private readonly db: PrismaClient) {}
 
   getRoomTypeList({ filter }: GetRoomTypeListRequest) {
+    const { checkIn, checkOut, userId } = filter ?? {};
+
     return this.db.roomType.findMany({
       include: {
         rooms: {
           where:
-            filter?.checkIn && filter?.checkOut
+            checkIn && checkOut
               ? {
                   NOT: {
                     bookings: {
@@ -21,12 +23,12 @@ export class RoomTypesRepository {
                         AND: [
                           {
                             checkIn: {
-                              lte: filter.checkOut,
+                              lte: checkOut,
                             },
                           },
                           {
                             checkOut: {
-                              gte: filter.checkIn,
+                              gte: checkIn,
                             },
                           },
                         ],
@@ -37,11 +39,43 @@ export class RoomTypesRepository {
               : undefined,
         },
         price: true,
+        _count:
+          checkIn && checkOut && userId
+            ? {
+                select: {
+                  rooms: {
+                    where: {
+                      bookings: {
+                        some: {
+                          AND: [
+                            {
+                              checkIn: {
+                                lte: checkOut,
+                              },
+                            },
+                            {
+                              checkOut: {
+                                gte: checkIn,
+                              },
+                            },
+                            {
+                              userId,
+                            },
+                          ],
+                        },
+                      },
+                    },
+                  },
+                },
+              }
+            : undefined,
       },
     });
   }
 
   getRoomType({ id, filter }: GetRoomTypeRequest) {
+    const { checkIn, checkOut } = filter ?? {};
+
     return this.db.roomType.findUnique({
       where: {
         id,
@@ -49,26 +83,29 @@ export class RoomTypesRepository {
       include: {
         price: true,
         rooms: {
-          where: {
-            bookings: {
-              every: {
-                NOT: {
-                  AND: [
-                    {
-                      checkIn: {
-                        lte: filter?.checkOut,
+          where:
+            checkIn && checkOut
+              ? {
+                  NOT: {
+                    bookings: {
+                      some: {
+                        AND: [
+                          {
+                            checkIn: {
+                              lte: checkOut,
+                            },
+                          },
+                          {
+                            checkOut: {
+                              gte: checkIn,
+                            },
+                          },
+                        ],
                       },
                     },
-                    {
-                      checkOut: {
-                        gte: filter?.checkIn,
-                      },
-                    },
-                  ],
-                },
-              },
-            },
-          },
+                  },
+                }
+              : undefined,
           take: 1,
         },
       },

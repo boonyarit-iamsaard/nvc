@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 import { setHours, startOfHour } from 'date-fns';
+import { CircleAlert } from 'lucide-react';
 
 import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
@@ -18,6 +19,7 @@ export function RoomTypeList() {
   const router = useRouter();
 
   const [filter, setFilter] = useState<RoomTypeFilter>();
+  const [overlappedBookings, setOverlappedBookings] = useState<number>(0);
 
   // TODO: implement error states
   const { data: roomTypeList, isLoading } =
@@ -41,9 +43,31 @@ export function RoomTypeList() {
     router.push(url);
   }
 
+  useEffect(() => {
+    const overlappedBookings = roomTypeList?.reduce((acc, roomType) => {
+      return acc + roomType._count?.rooms;
+    }, 0);
+
+    setOverlappedBookings(overlappedBookings ?? 0);
+
+    return () => {
+      setOverlappedBookings(0);
+    };
+  }, [roomTypeList]);
+
   return (
     <div className="space-y-8">
       <RoomTypeFilterForm onSubmit={setFilter} />
+
+      {overlappedBookings > 0 ? (
+        <div className="flex items-center gap-2 rounded-lg border border-destructive/50 bg-destructive/10 px-6 py-4 text-destructive shadow-sm">
+          <CircleAlert className="h-4 w-4" />
+          <span className="text-sm font-medium">
+            You have {overlappedBookings} overlapping bookings for the selected
+            dates
+          </span>
+        </div>
+      ) : null}
 
       <ul className="space-y-6">
         {isLoading
@@ -63,7 +87,7 @@ export function RoomTypeList() {
                       <h2 className="font-serif text-lg font-semibold">
                         {roomType.name}
                       </h2>
-                      {filter && !isLoading && (
+                      {roomType.rooms.length > 0 && (
                         <Badge variant="outline">
                           {roomType.rooms.length} available rooms
                         </Badge>
@@ -86,8 +110,11 @@ export function RoomTypeList() {
                         <Button
                           type="button"
                           onClick={() => handleChooseRoom(roomType.id)}
+                          disabled={roomType.rooms.length === 0}
                         >
-                          Choose this room
+                          {roomType.rooms.length === 0
+                            ? 'No rooms available'
+                            : 'Choose Room'}
                         </Button>
                       </div>
                     </div>

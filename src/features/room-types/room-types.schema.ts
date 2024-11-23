@@ -25,6 +25,7 @@ export const roomTypeFilterSchema = z
   .object({
     checkIn: z.date().optional(),
     checkOut: z.date().optional(),
+    userId: z.string().uuid().optional(),
   })
   .refine((data) => {
     const { checkIn, checkOut } = data;

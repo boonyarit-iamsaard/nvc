@@ -5,10 +5,12 @@ import { useForm } from 'react-hook-form';
 
 import type { RoomTypeFilter } from '~/features/room-types/room-types.schema';
 import { roomTypeFilterSchema } from '~/features/room-types/room-types.schema';
+import { useUserSession } from '~/libs/auth/hooks/use-user-session';
 
 export function useRoomTypeFilterForm(
   onSubmit?: (filter: RoomTypeFilter) => void,
 ) {
+  const { data: userSession } = useUserSession();
   const form = useForm<RoomTypeFilter>({
     resolver: zodResolver(roomTypeFilterSchema),
   });
@@ -35,6 +37,7 @@ export function useRoomTypeFilterForm(
     onSubmit?.({
       checkIn: startOfHour(setHours(checkIn, 13)),
       checkOut: startOfHour(setHours(checkOut, 12)),
+      userId: userSession?.user.id,
     });
   }
 

@@ -27,6 +27,7 @@ export function useBookingForm(): UseBookingFormResult {
   const { data: roomType, isLoading: isLoadingRoomType } =
     api.roomType.getRoomType.useQuery({
       id: params.get('id') ?? '',
+      filter,
     });
 
   const createBookingMutation = api.booking.createBooking.useMutation({
