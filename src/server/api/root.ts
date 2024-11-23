@@ -12,7 +12,7 @@ import { roomTypeRouter } from './room-type/room-type.router';
 export const appRouter = createTRPCRouter({
   booking: bookingRouter,
   roomType: roomTypeRouter,
-  user: usersRouter,
+  users: usersRouter,
 });
 
 // export type definition of API
