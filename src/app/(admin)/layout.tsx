@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 
-import { SiteHeader } from '~/components/site-header';
+import { AppSidebar } from '~/components/app-sidebar';
+import { SidebarProvider, SidebarTrigger } from '~/components/ui/sidebar';
 
 type AdminLayoutProps = {
   children: ReactNode;
@@ -8,9 +9,14 @@ type AdminLayoutProps = {
 
 export default function AdminLayout({ children }: Readonly<AdminLayoutProps>) {
   return (
-    <>
-      <SiteHeader />
-      <main className="flex-1">{children}</main>
-    </>
+    <SidebarProvider>
+      <AppSidebar />
+      <main className="flex-1">
+        <div className="flex h-14 items-center p-2">
+          <SidebarTrigger />
+        </div>
+        {children}
+      </main>
+    </SidebarProvider>
   );
 }
