@@ -14,6 +14,7 @@ import { ZodError } from 'zod';
 
 import { BookingsRepository } from '~/features/bookings/bookings.repository';
 import { BookingsService } from '~/features/bookings/bookings.service';
+import { EmailsService } from '~/features/emails/emails.service';
 import { MembershipsRepository } from '~/features/memberships/memberships.repository';
 import { MembershipsService } from '~/features/memberships/memberships.service';
 import { RoomTypesRepository } from '~/features/room-types/room-types.repository';
@@ -40,6 +41,8 @@ export function createServiceContext(db: PrismaClient) {
   /**
    * Services
    */
+  const emailsService = new EmailsService();
+
   const bookingsService = new BookingsService(bookingsRepository);
   const membershipsService = new MembershipsService(membershipsRepository);
   const roomTypesService = new RoomTypesService(roomTypesRepository);
@@ -47,6 +50,7 @@ export function createServiceContext(db: PrismaClient) {
 
   return {
     bookingsService,
+    emailsService,
     membershipsService,
     roomTypesService,
     usersService,

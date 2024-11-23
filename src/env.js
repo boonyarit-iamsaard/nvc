@@ -9,7 +9,17 @@ export const env = createEnv({
    * isn't built with invalid env vars.
    */
   server: {
+    APP_NAME: z.string().min(1),
+    APP_TIMEZONE: z.string().refine((data) => {
+      return SUPPORTED_TIMEZONES.includes(data);
+    }),
     DATABASE_URL: z.string().url(),
+    MAIL_HOST: z.string().min(1),
+    MAIL_PORT: z.coerce.number().nonnegative(),
+    MAIL_USER: z.string().min(1),
+    MAIL_PASSWORD: z.string().min(1),
+    MAIL_FROM_NAME: z.string().min(1),
+    MAIL_FROM_ADDRESS: z.string().email(),
     NEXTAUTH_SECRET:
       process.env.NODE_ENV === 'production'
         ? z.string()
@@ -24,9 +34,6 @@ export const env = createEnv({
     NODE_ENV: z
       .enum(['development', 'test', 'production'])
       .default('development'),
-    TZ: z.string().refine((data) => {
-      return SUPPORTED_TIMEZONES.includes(data);
-    }),
   },
 
   /**
@@ -36,7 +43,7 @@ export const env = createEnv({
    */
   client: {
     NEXT_PUBLIC_APP_NAME: z.string(),
-    NEXT_PUBLIC_APP_TZ: z.string().refine((data) => {
+    NEXT_PUBLIC_APP_TIMEZONE: z.string().refine((data) => {
       return SUPPORTED_TIMEZONES.includes(data);
     }),
     NEXT_PUBLIC_APP_URL: z.string().url(),
@@ -48,14 +55,21 @@ export const env = createEnv({
    * middlewares) or client-side so we need to destruct manually.
    */
   runtimeEnv: {
+    APP_NAME: process.env.APP_NAME,
+    APP_TIMEZONE: process.env.APP_TIMEZONE,
     DATABASE_URL: process.env.DATABASE_URL,
+    MAIL_HOST: process.env.MAIL_HOST,
+    MAIL_PORT: process.env.MAIL_PORT,
+    MAIL_USER: process.env.MAIL_USER,
+    MAIL_PASSWORD: process.env.MAIL_PASSWORD,
+    MAIL_FROM_ADDRESS: process.env.MAIL_FROM_ADDRESS,
+    MAIL_FROM_NAME: process.env.MAIL_FROM_NAME,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     NEXT_PUBLIC_APP_NAME: process.env.NEXT_PUBLIC_APP_NAME,
-    NEXT_PUBLIC_APP_TZ: process.env.NEXT_PUBLIC_APP_TZ,
+    NEXT_PUBLIC_APP_TIMEZONE: process.env.NEXT_PUBLIC_APP_TIMEZONE,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     NODE_ENV: process.env.NODE_ENV,
-    TZ: process.env.TZ,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
