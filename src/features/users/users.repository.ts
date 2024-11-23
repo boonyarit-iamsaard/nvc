@@ -1,5 +1,7 @@
 import type { PrismaClient } from '@prisma/client';
 
+import type { SaveUserRequest } from '~/features/users/users.schema';
+
 export class UsersRepository {
   constructor(private readonly db: PrismaClient) {}
 
@@ -35,6 +37,12 @@ export class UsersRepository {
           },
         },
       },
+    });
+  }
+
+  createUser(user: SaveUserRequest) {
+    return this.db.user.create({
+      data: user,
     });
   }
 }
