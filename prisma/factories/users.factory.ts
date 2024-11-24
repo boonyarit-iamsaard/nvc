@@ -5,8 +5,12 @@ import type {
   PrismaClient,
   User,
 } from '@prisma/client';
-import { Gender, Role } from '@prisma/client';
+import { Gender, Role, VerificationType } from '@prisma/client';
 import { addYears, endOfDay, startOfDay, subDays } from 'date-fns';
+
+import { TokenService } from '~/core/token';
+import { TokenRepository } from '~/core/token/token.repository';
+import { env } from '~/env';
 
 async function findAllMemberships(prisma: PrismaClient) {
   return prisma.membership.findMany({
@@ -54,10 +58,36 @@ async function generateMembershipNumber(
   return `${membershipCode}${newSequence.toString().padStart(4, '0')}`;
 }
 
+async function createUserVerification(
+  prisma: PrismaClient,
+  userId: string,
+  now: Date,
+) {
+  const tokenRepository = new TokenRepository(prisma);
+  const tokenService = new TokenService(tokenRepository);
+  const expiresAt = tokenService.parseExpiry(env.EMAIL_VERIFICATION_EXPIRES_IN);
+  if (!expiresAt) {
+    console.warn(
+      '[FACTORY] 🚫 invalid email verification duration:',
+      env.EMAIL_VERIFICATION_EXPIRES_IN,
+    );
+
+    throw new Error('Failed to create user verification');
+  }
+
+  await tokenService.create({
+    userId,
+    type: VerificationType.EMAIL_VERIFICATION,
+    timestamp: now.getTime(),
+    expiresIn: env.EMAIL_VERIFICATION_EXPIRES_IN,
+  });
+}
+
 async function createUser(
   prisma: PrismaClient,
   index: number,
   gender: Gender,
+  now: Date,
   role: Role = Role.GUEST,
 ) {
   const hashedPassword = await hashPassword('password');
@@ -69,17 +99,10 @@ async function createUser(
       hashedPassword,
       gender,
       role,
+      emailVerifiedAt: now,
+      firstLoginAt: now,
     },
   });
-}
-
-function getMembershipPrice(
-  userGender: Gender,
-  membershipPrice: MembershipPrice,
-) {
-  return userGender === Gender.FEMALE
-    ? membershipPrice.female
-    : membershipPrice.male;
 }
 
 async function createUserMembership(
@@ -120,54 +143,64 @@ async function createUserMembership(
   });
 }
 
+function getMembershipPrice(
+  userGender: Gender,
+  membershipPrice: MembershipPrice,
+) {
+  return userGender === Gender.FEMALE
+    ? membershipPrice.female
+    : membershipPrice.male;
+}
+
 export async function usersFactory(prisma: PrismaClient) {
   console.info('[FACTORY] 🌱 starting factory users data');
 
   const memberships = await findAllMemberships(prisma);
   if (!memberships.length) {
     console.info('[FACTORY] ⏭️ skipping factory users data');
-
     return;
   }
 
-  await prisma.$transaction([
-    prisma.userMembership.deleteMany({}),
-    prisma.user.deleteMany({
-      where: {
-        NOT: {
-          OR: [
-            {
-              role: Role.OWNER,
-            },
-            {
-              role: Role.ADMINISTRATOR,
-            },
-          ],
-        },
-      },
-    }),
-  ]);
-
+  const timestamp = new Date().getTime();
+  const now = new Date(timestamp);
   let index = 0;
+
   for (const membership of memberships) {
     const availableForMale = membership.price.male > 0;
     const availableForFemale = membership.price.female > 0;
 
     if (availableForMale) {
       index += 1;
-      const user = await createUser(prisma, index, Gender.MALE, Role.MEMBER);
+      const user = await createUser(
+        prisma,
+        index,
+        Gender.MALE,
+        now,
+        Role.MEMBER,
+      );
+      await createUserVerification(prisma, user.id, now);
       await createUserMembership(prisma, user, membership);
     }
 
     if (availableForFemale) {
       index += 1;
-      const user = await createUser(prisma, index, Gender.FEMALE, Role.MEMBER);
+      const user = await createUser(
+        prisma,
+        index,
+        Gender.FEMALE,
+        now,
+        Role.MEMBER,
+      );
+      await createUserVerification(prisma, user.id, now);
       await createUserMembership(prisma, user, membership);
     }
   }
 
-  await createUser(prisma, index + 1, Gender.MALE);
-  await createUser(prisma, index + 2, Gender.FEMALE);
+  const maleGuest = await createUser(prisma, index + 1, Gender.MALE, now);
+  await createUserVerification(prisma, maleGuest.id, now);
+
+  const femaleGuest = await createUser(prisma, index + 2, Gender.FEMALE, now);
+  await createUserVerification(prisma, femaleGuest.id, now);
 
   console.info('[FACTORY] ✅ factory users data complete');
 }

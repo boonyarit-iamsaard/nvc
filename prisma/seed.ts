@@ -8,6 +8,18 @@ import { roomTypeSeeder } from './seeders/room-type.seeder';
 const prisma = new PrismaClient();
 
 async function main() {
+  console.info('[SEEDER] 🧹 deleting existing data');
+
+  await prisma.$transaction([
+    prisma.roomType.deleteMany({}),
+    prisma.membership.deleteMany({}),
+    prisma.userMembership.deleteMany({}),
+    prisma.userVerification.deleteMany({}),
+    prisma.user.deleteMany({}),
+  ]);
+
+  console.info('[SEEDER] ✅ existing data deleted');
+
   console.info('[SEEDER] 🌱 seeding data');
 
   const seeders: ((prisma: PrismaClient) => Promise<void>)[] = [

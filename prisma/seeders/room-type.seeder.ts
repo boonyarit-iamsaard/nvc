@@ -23,23 +23,8 @@ export async function roomTypeSeeder(prisma: PrismaClient) {
 
     const { code, price, quantity, ...rest } = roomType;
 
-    await prisma.roomType.upsert({
-      where: { code },
-      update: {
-        ...rest,
-        price: {
-          update: price,
-        },
-        rooms: {
-          deleteMany: {},
-          createMany: {
-            data: Array.from({ length: quantity }).map((_, index) => ({
-              name: `${code}-${index + 1}`,
-            })),
-          },
-        },
-      },
-      create: {
+    await prisma.roomType.create({
+      data: {
         ...rest,
         code,
         price: {

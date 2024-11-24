@@ -10,12 +10,16 @@ CREATE TYPE "Gender" AS ENUM ('male', 'female');
 -- CreateEnum
 CREATE TYPE "Role" AS ENUM ('administrator', 'guest', 'member', 'owner');
 
+-- CreateEnum
+CREATE TYPE "VerificationType" AS ENUM ('email_verification', 'password_reset');
+
 -- CreateTable
 CREATE TABLE "users" (
     "id" TEXT NOT NULL,
     "name" TEXT,
     "email" TEXT NOT NULL,
-    "email_verified" TIMESTAMP(3),
+    "email_verified_at" TIMESTAMP(3),
+    "first_login_at" TIMESTAMP(3),
     "hashed_password" TEXT NOT NULL,
     "image" TEXT,
     "gender" "Gender" NOT NULL,
@@ -84,7 +88,7 @@ CREATE TABLE "bookings" (
     "weekend_price_at_booking" INTEGER NOT NULL,
     "base_amount" INTEGER NOT NULL,
     "discount_amount" INTEGER NOT NULL,
-    "discount_percentage" INTEGER NOT NULL,
+    "discount_percentage" INTEGER NOT NULL DEFAULT 0,
     "total_amount" INTEGER NOT NULL,
     "booking_status" "BookingStatus" NOT NULL DEFAULT 'pending',
     "payment_status" "BookingPaymentStatus" NOT NULL DEFAULT 'pending',
@@ -153,6 +157,19 @@ CREATE TABLE "user_memberships" (
     CONSTRAINT "user_memberships_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "user_verifications" (
+    "id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+    "token" TEXT NOT NULL,
+    "type" "VerificationType" NOT NULL,
+    "expires_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "invalid_at" TIMESTAMP(3),
+
+    CONSTRAINT "user_verifications_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
@@ -183,6 +200,15 @@ CREATE UNIQUE INDEX "memberships_price_id_key" ON "memberships"("price_id");
 -- CreateIndex
 CREATE UNIQUE INDEX "membership_sequences_membership_code_key" ON "membership_sequences"("membership_code");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "user_verifications_token_key" ON "user_verifications"("token");
+
+-- CreateIndex
+CREATE INDEX "user_verifications_token_idx" ON "user_verifications"("token");
+
+-- CreateIndex
+CREATE INDEX "user_verifications_user_id_idx" ON "user_verifications"("user_id");
+
 -- AddForeignKey
 ALTER TABLE "room_types" ADD CONSTRAINT "room_types_price_id_fkey" FOREIGN KEY ("price_id") REFERENCES "room_prices"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -203,3 +229,6 @@ ALTER TABLE "user_memberships" ADD CONSTRAINT "user_memberships_user_id_fkey" FO
 
 -- AddForeignKey
 ALTER TABLE "user_memberships" ADD CONSTRAINT "user_memberships_membership_id_fkey" FOREIGN KEY ("membership_id") REFERENCES "memberships"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "user_verifications" ADD CONSTRAINT "user_verifications_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

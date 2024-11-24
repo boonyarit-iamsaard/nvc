@@ -80,6 +80,9 @@ importers:
       lucide-react:
         specifier: ^0.451.0
         version: 0.451.0(react@18.3.1)
+      ms:
+        specifier: ^2.1.3
+        version: 2.1.3
       next:
         specifier: ^14.2.4
         version: 14.2.15(@babel/core@7.24.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -132,6 +135,9 @@ importers:
       '@types/eslint':
         specifier: ^8.56.10
         version: 8.56.12
+      '@types/ms':
+        specifier: ^0.7.34
+        version: 0.7.34
       '@types/node':
         specifier: ^20.14.10
         version: 20.16.11
@@ -1604,6 +1610,9 @@ packages:
 
   '@types/json5@0.0.29':
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
+
+  '@types/ms@0.7.34':
+    resolution: {integrity: sha512-nG96G3Wp6acyAgJqGasjODb+acrI7KltPiRxzHPXnP3NgI28bpQDRv53olbqGXbfcgF5aiiHmO3xpwEpS5Ld9g==}
 
   '@types/node@20.16.11':
     resolution: {integrity: sha512-y+cTCACu92FyA5fgQSAI8A1H429g7aSK2HsO7K4XYUWc4dY5IUz55JSDIYT6/VsOLfGy8vmvQYC2hfb0iF16Uw==}
@@ -5289,6 +5298,8 @@ snapshots:
   '@types/json-schema@7.0.15': {}
 
   '@types/json5@0.0.29': {}
+
+  '@types/ms@0.7.34': {}
 
   '@types/node@20.16.11':
     dependencies:

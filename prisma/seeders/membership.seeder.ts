@@ -32,35 +32,19 @@ export async function membershipSeeder(prisma: PrismaClient) {
     const { name, price, code, roomDiscount } = membership;
 
     return [
-      prisma.membership.upsert({
-        where: { name },
-        update: {
-          code,
-          roomDiscount,
-          price: {
-            update: {
-              ...price,
-            },
-          },
-        },
-        create: {
+      prisma.membership.create({
+        data: {
           name,
           code,
           roomDiscount,
           price: {
-            create: {
-              ...price,
-            },
+            create: price,
           },
         },
       }),
 
-      prisma.membershipSequence.upsert({
-        where: { membershipCode: code },
-        update: {
-          lastAssignedSequence: 0,
-        },
-        create: {
+      prisma.membershipSequence.create({
+        data: {
           membershipCode: code,
           lastAssignedSequence: 0,
         },

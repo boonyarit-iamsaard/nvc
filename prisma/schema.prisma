@@ -39,20 +39,27 @@ enum Role {
   OWNER         @map("owner")
 }
 
+enum VerificationType {
+  EMAIL_VERIFICATION @map("email_verification")
+  PASSWORD_RESET     @map("password_reset")
+}
+
 model User {
-  id             String           @id @default(uuid())
-  name           String?
-  email          String           @unique
-  emailVerified  DateTime?        @map("email_verified")
-  hashedPassword String           @map("hashed_password")
-  image          String?
-  gender         Gender
-  role           Role             @default(GUEST)
-  bookings       Booking[]
-  memberships    UserMembership[]
-  createdAt      DateTime         @default(now()) @map("created_at")
-  updatedAt      DateTime         @updatedAt @map("updated_at")
-  deletedAt      DateTime?        @map("deleted_at")
+  id              String             @id @default(uuid())
+  name            String?
+  email           String             @unique
+  emailVerifiedAt DateTime?          @map("email_verified_at")
+  firstLoginAt    DateTime?          @map("first_login_at")
+  hashedPassword  String             @map("hashed_password")
+  image           String?
+  gender          Gender
+  role            Role               @default(GUEST)
+  bookings        Booking[]
+  memberships     UserMembership[]
+  verifications   UserVerification[]
+  createdAt       DateTime           @default(now()) @map("created_at")
+  updatedAt       DateTime           @updatedAt @map("updated_at")
+  deletedAt       DateTime?          @map("deleted_at")
 
   @@index([email])
   @@map("users")
@@ -186,4 +193,20 @@ model UserMembership {
   deletedAt                DateTime?   @map("deleted_at")
 
   @@map("user_memberships")
+}
+
+model UserVerification {
+  id        String           @id @default(uuid())
+  userId    String           @map("user_id")
+  token     String           @unique
+  type      VerificationType
+  expiresAt DateTime         @map("expires_at")
+  createdAt DateTime         @default(now()) @map("created_at")
+  invalidAt DateTime?        @map("invalid_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([token])
+  @@index([userId])
+  @@map("user_verifications")
 }
