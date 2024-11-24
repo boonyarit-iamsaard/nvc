@@ -20,10 +20,22 @@ export const saveUserRequestSchema = createUserRequestSchema.extend({
   hashedPassword: z.string(),
 });
 
+export const updateUserRequestSchema = z.object({
+  id: z.string().uuid(),
+  user: createUserRequestSchema,
+});
+
+export const getUserRequestSchema = z.object({
+  id: z.string().uuid(),
+});
+
 export type CreateUserRequest = z.infer<typeof createUserRequestSchema>;
 export type SeedAdminRequest = z.infer<typeof seedAdminRequestSchema>;
 export type SaveUserRequest = z.infer<typeof saveUserRequestSchema>;
+export type UpdateUserRequest = z.infer<typeof updateUserRequestSchema>;
+export type GetUserRequest = z.infer<typeof getUserRequestSchema>;
 
 export type GetUserListResponse = Prisma.PromiseReturnType<
   UsersService['getUserList']
 >;
+export type GetUserResponse = Prisma.PromiseReturnType<UsersService['getUser']>;

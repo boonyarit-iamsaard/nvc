@@ -1,6 +1,10 @@
 import type { PrismaClient } from '@prisma/client';
 
-import type { SaveUserRequest } from '~/features/users/users.schema';
+import type {
+  GetUserRequest,
+  SaveUserRequest,
+  UpdateUserRequest,
+} from '~/features/users/users.schema';
 
 export class UsersRepository {
   constructor(private readonly db: PrismaClient) {}
@@ -40,9 +44,46 @@ export class UsersRepository {
     });
   }
 
+  getUser({ id }: GetUserRequest) {
+    return this.db.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        image: true,
+        role: true,
+        gender: true,
+      },
+    });
+  }
+
   createUser(user: SaveUserRequest) {
     return this.db.user.create({
       data: user,
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        image: true,
+        role: true,
+        gender: true,
+      },
+    });
+  }
+
+  updateUser({ id, user }: UpdateUserRequest) {
+    return this.db.user.update({
+      where: { id },
+      data: user,
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        image: true,
+        role: true,
+        gender: true,
+      },
     });
   }
 }

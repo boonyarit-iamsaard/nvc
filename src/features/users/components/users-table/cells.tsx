@@ -1,5 +1,7 @@
 'use client';
 
+import Link from 'next/link';
+
 import type { Gender } from '@prisma/client';
 import type { VariantProps } from 'class-variance-authority';
 import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
@@ -51,22 +53,24 @@ export function ActionsCell({ row }: CellProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
+        <Button variant="ghost" size="icon" className="size-8 p-0">
           <span className="sr-only">Open menu</span>
-          <MoreHorizontal className="h-4 w-4" />
+          <MoreHorizontal className="size-4" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        <DropdownMenuItem onClick={() => console.log('Edit user:', user.id)}>
-          <Pencil className="mr-2 h-4 w-4" />
-          Edit user
+        <DropdownMenuItem asChild>
+          <Link href={`/admin/users/edit/${user.id}`}>
+            <Pencil className="mr-2 size-4" />
+            Edit user
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => console.log('Delete user:', user.id)}
           className="text-destructive focus:bg-destructive/10 focus:text-destructive"
         >
-          <Trash2 className="mr-2 h-4 w-4" />
+          <Trash2 className="mr-2 size-4" />
           Delete user
         </DropdownMenuItem>
       </DropdownMenuContent>

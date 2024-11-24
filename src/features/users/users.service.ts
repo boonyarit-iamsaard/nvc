@@ -1,6 +1,10 @@
 import { hash } from '@node-rs/argon2';
 
-import type { CreateUserRequest } from '~/features/users/users.schema';
+import type {
+  CreateUserRequest,
+  GetUserRequest,
+  UpdateUserRequest,
+} from '~/features/users/users.schema';
 
 import type { UsersRepository } from './users.repository';
 
@@ -11,19 +15,27 @@ export class UsersService {
     return this.usersRepository.getUserList();
   }
 
-  async createUser(user: CreateUserRequest) {
+  getUser(input: GetUserRequest) {
+    return this.usersRepository.getUser(input);
+  }
+
+  async createUser(input: CreateUserRequest) {
     const initialPassword = this.generatePassword();
     const hashedPassword = await this.hashPassword(initialPassword);
 
-    const createdUser = await this.usersRepository.createUser({
-      ...user,
+    const user = await this.usersRepository.createUser({
+      ...input,
       hashedPassword,
     });
 
     return {
-      user: createdUser,
+      user,
       initialPassword,
     };
+  }
+
+  async updateUser(input: UpdateUserRequest) {
+    return this.usersRepository.updateUser(input);
   }
 
   private generatePassword(): string {
