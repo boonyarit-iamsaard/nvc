@@ -43,7 +43,7 @@ export const saveBookingRequestSchema = z.object({
   roomId: z.string().uuid(),
   checkIn: z.coerce.date(),
   checkOut: z.coerce.date(),
-  guestName: z.string().min(1).nullish().default(null),
+  guestName: z.string().min(1),
   guestEmail: z.string().email(),
   guestMembershipName: z.string().min(1).nullish().default(null),
   guestMembershipNumber: z.string().min(1).nullish().default(null),

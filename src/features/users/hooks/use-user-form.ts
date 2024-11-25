@@ -81,7 +81,7 @@ export function useUserForm({ id }: UseUserFormParams): UseUserFormReturn {
     if (user) {
       form.reset({
         email: user.email,
-        name: user.name ?? '',
+        name: user.name,
         image: user.image ?? '',
         role: user.role,
         gender: user.gender,

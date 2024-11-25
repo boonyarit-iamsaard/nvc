@@ -104,7 +104,7 @@ export function getBookingDetails({
 export function getGuestDetails(user: Session['user']) {
   return {
     userId: user.id,
-    guestName: user.name ?? null,
+    guestName: user.name,
     guestEmail: user.email,
     guestMembershipName: user.membership?.membershipName ?? null,
     guestMembershipNumber: user.membership?.membershipNumber ?? null,

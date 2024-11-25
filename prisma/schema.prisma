@@ -46,7 +46,7 @@ enum VerificationType {
 
 model User {
   id              String             @id @default(uuid())
-  name            String?
+  name            String
   email           String             @unique
   emailVerifiedAt DateTime?          @map("email_verified_at")
   firstLoginAt    DateTime?          @map("first_login_at")
@@ -113,7 +113,7 @@ model Booking {
   roomId                String?              @map("room_id")
   checkIn               DateTime             @map("check_in")
   checkOut              DateTime             @map("check_out")
-  guestName             String?              @map("guest_name")
+  guestName             String               @map("guest_name")
   guestEmail            String               @map("guest_email")
   guestMembershipName   String?              @map("guest_membership_name") // Since non-member can make a booking, it should be nullable here
   guestMembershipNumber String?              @map("guest_membership_number") // Since non-member can make a booking, it should be nullable here
@@ -181,7 +181,7 @@ model UserMembership {
   membership               Membership? @relation(fields: [membershipId], references: [id], onDelete: SetNull)
   membershipId             String?     @map("membership_id")
   membershipNumber         String      @map("membership_number")
-  userName                 String?     @map("user_name") // Since user's name can be null, it should be nullable here
+  userName                 String      @map("user_name")
   userEmail                String      @map("user_email")
   userGender               Gender      @map("user_gender")
   membershipName           String      @map("membership_name")

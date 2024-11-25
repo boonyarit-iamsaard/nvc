@@ -16,7 +16,7 @@ CREATE TYPE "VerificationType" AS ENUM ('email_verification', 'password_reset');
 -- CreateTable
 CREATE TABLE "users" (
     "id" TEXT NOT NULL,
-    "name" TEXT,
+    "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "email_verified_at" TIMESTAMP(3),
     "first_login_at" TIMESTAMP(3),
@@ -76,7 +76,7 @@ CREATE TABLE "bookings" (
     "room_id" TEXT,
     "check_in" TIMESTAMP(3) NOT NULL,
     "check_out" TIMESTAMP(3) NOT NULL,
-    "guest_name" TEXT,
+    "guest_name" TEXT NOT NULL,
     "guest_email" TEXT NOT NULL,
     "guest_membership_name" TEXT,
     "guest_membership_number" TEXT,
@@ -143,7 +143,7 @@ CREATE TABLE "user_memberships" (
     "user_id" TEXT,
     "membership_id" TEXT,
     "membership_number" TEXT NOT NULL,
-    "user_name" TEXT,
+    "user_name" TEXT NOT NULL,
     "user_email" TEXT NOT NULL,
     "user_gender" "Gender" NOT NULL,
     "membership_name" TEXT NOT NULL,

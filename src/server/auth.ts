@@ -30,7 +30,7 @@ declare module 'next-auth' {
       id: string;
       email: string;
       image: string | null;
-      name: string | null;
+      name: string;
       role: Role;
       gender: Gender;
       membership?: SessionMembership;
@@ -46,7 +46,7 @@ declare module 'next-auth' {
     id: string;
     email: string;
     image: string | null;
-    name: string | null;
+    name: string;
     role: Role;
     gender: Gender;
     membership?: SessionMembership;

@@ -117,7 +117,7 @@ async function createUserMembership(
 ) {
   const {
     id: userId,
-    name: userName = '',
+    name: userName,
     email: userEmail,
     gender: userGender,
   } = user;

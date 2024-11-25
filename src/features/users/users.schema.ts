@@ -6,7 +6,7 @@ import type { UsersService } from '~/features/users/users.service';
 
 export const createUserRequestSchema = z.object({
   email: z.string().email(),
-  name: z.string(),
+  name: z.string().min(1),
   image: z.string().optional(),
   role: z.nativeEnum(Role).optional().default(Role.GUEST),
   gender: z.nativeEnum(Gender),
