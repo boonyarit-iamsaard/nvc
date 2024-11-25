@@ -2,30 +2,26 @@ import { randomBytes } from 'crypto';
 
 import ms from 'ms';
 
-import type { TokenRepository } from './token.repository';
-import type { TokenPayload, TokenVerificationResult } from './token.types';
+import type { VerificationsRepository } from './verifications.repository';
+import type {
+  VerificationPayload,
+  VerificationResult,
+} from './verifications.schema';
 
-function generateToken(length = 32): string {
-  const bytes = randomBytes(Math.ceil((length * 3) / 4));
-  return bytes
-    .toString('base64')
-    .slice(0, length)
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_');
-}
+export class VerificationsService {
+  constructor(
+    private readonly verificationsRepository: VerificationsRepository,
+  ) {}
 
-export class TokenService {
-  constructor(private readonly tokenRepository: TokenRepository) {}
-
-  async create(payload: TokenPayload): Promise<string> {
-    const token = generateToken();
+  async create(payload: VerificationPayload): Promise<string> {
+    const token = this.generateToken();
     const expiresAt = this.parseExpiry(payload.expiresIn);
 
     if (!expiresAt) {
-      throw new Error('Invalid expiration duration');
+      throw new Error(`Invalid expiration duration: ${payload.expiresIn}`);
     }
 
-    await this.tokenRepository.createVerification({
+    await this.verificationsRepository.createVerification({
       userId: payload.userId,
       token,
       type: payload.type,
@@ -38,15 +34,16 @@ export class TokenService {
 
   async verify(
     token: string,
-    payload: TokenPayload,
-  ): Promise<TokenVerificationResult> {
+    payload: VerificationPayload,
+  ): Promise<VerificationResult> {
     try {
       const { userId, type } = payload;
-      const verification = await this.tokenRepository.findValidVerification({
-        userId,
-        token,
-        type,
-      });
+      const verification =
+        await this.verificationsRepository.findValidVerification({
+          userId,
+          token,
+          type,
+        });
 
       if (!verification) {
         return {
@@ -55,7 +52,7 @@ export class TokenService {
         };
       }
 
-      await this.tokenRepository.invalidateVerification(token);
+      await this.verificationsRepository.invalidateVerification(token);
 
       return {
         isValid: true,
@@ -83,5 +80,14 @@ export class TokenService {
     } catch {
       return null;
     }
+  }
+
+  private generateToken(length = 32): string {
+    const bytes = randomBytes(Math.ceil((length * 3) / 4));
+    return bytes
+      .toString('base64')
+      .slice(0, length)
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_');
   }
 }

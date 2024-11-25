@@ -1,6 +1,6 @@
 import type { PrismaClient, VerificationType } from '@prisma/client';
 
-export class TokenRepository {
+export class VerificationsRepository {
   constructor(private readonly db: PrismaClient) {}
 
   async createVerification(data: {

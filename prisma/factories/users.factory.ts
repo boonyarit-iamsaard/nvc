@@ -8,8 +8,10 @@ import type {
 import { Gender, Role, VerificationType } from '@prisma/client';
 import { addYears, endOfDay, startOfDay, subDays } from 'date-fns';
 
-import { TokenService } from '~/core/token';
-import { TokenRepository } from '~/core/token/token.repository';
+import {
+  VerificationsRepository,
+  VerificationsService,
+} from '~/core/verifications';
 import { env } from '~/env';
 
 async function findAllMemberships(prisma: PrismaClient) {
@@ -63,19 +65,22 @@ async function createUserVerification(
   userId: string,
   now: Date,
 ) {
-  const tokenRepository = new TokenRepository(prisma);
-  const tokenService = new TokenService(tokenRepository);
-  const expiresAt = tokenService.parseExpiry(env.EMAIL_VERIFICATION_EXPIRES_IN);
+  const verificationRepository = new VerificationsRepository(prisma);
+  const verificationService = new VerificationsService(verificationRepository);
+
+  const expiresAt = verificationService.parseExpiry(
+    env.EMAIL_VERIFICATION_EXPIRES_IN,
+  );
   if (!expiresAt) {
     console.warn(
       '[FACTORY] 🚫 invalid email verification duration:',
       env.EMAIL_VERIFICATION_EXPIRES_IN,
     );
 
-    throw new Error('Failed to create user verification');
+    return;
   }
 
-  await tokenService.create({
+  await verificationService.create({
     userId,
     type: VerificationType.EMAIL_VERIFICATION,
     timestamp: now.getTime(),

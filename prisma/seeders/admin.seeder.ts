@@ -2,8 +2,10 @@ import { hash } from '@node-rs/argon2';
 import type { PrismaClient } from '@prisma/client';
 import { VerificationType } from '@prisma/client';
 
-import { TokenService } from '~/core/token';
-import { TokenRepository } from '~/core/token/token.repository';
+import {
+  VerificationsRepository,
+  VerificationsService,
+} from '~/core/verifications';
 import { env } from '~/env';
 import { seedAdminRequestSchema } from '~/features/users/users.schema';
 
@@ -12,17 +14,19 @@ import { parseData } from '../helper';
 export async function adminSeeder(prisma: PrismaClient) {
   console.info('[SEEDER] 🌱 seeding admin data');
 
-  const tokenRepository = new TokenRepository(prisma);
-  const tokenService = new TokenService(tokenRepository);
+  const verificationRepository = new VerificationsRepository(prisma);
+  const verificationService = new VerificationsService(verificationRepository);
 
   const adminData = parseData('admin.json', seedAdminRequestSchema);
   if (!adminData) {
     console.info('[SEEDER] ⏭️ skipping admin data seeding');
+
     return;
   }
 
-  const now = new Date();
-  const expiresAt = tokenService.parseExpiry(env.EMAIL_VERIFICATION_EXPIRES_IN);
+  const expiresAt = verificationService.parseExpiry(
+    env.EMAIL_VERIFICATION_EXPIRES_IN,
+  );
   if (!expiresAt) {
     console.warn(
       '[SEEDER] 🚫 invalid email verification duration:',
@@ -32,6 +36,7 @@ export async function adminSeeder(prisma: PrismaClient) {
     return;
   }
 
+  const now = new Date();
   const admins = Array.isArray(adminData) ? adminData : [adminData];
   for (const admin of admins) {
     if (!admin) continue;
@@ -53,7 +58,7 @@ export async function adminSeeder(prisma: PrismaClient) {
       },
     });
 
-    await tokenService.create({
+    await verificationService.create({
       userId: user.id,
       type: VerificationType.EMAIL_VERIFICATION,
       timestamp: now.getTime(),
