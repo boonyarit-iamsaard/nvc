@@ -1,5 +1,10 @@
 import { hash } from '@node-rs/argon2';
+import { VerificationType } from '@prisma/client';
 
+import type { VerificationsService } from '~/core/verifications/verifications.service';
+import { env } from '~/env';
+import type { EmailsService } from '~/features/emails/emails.service';
+import { renderEmailVerificationTemplate } from '~/features/emails/templates/email-verification.template';
 import type {
   CreateUserRequest,
   GetUserRequest,
@@ -9,7 +14,11 @@ import type {
 import type { UsersRepository } from './users.repository';
 
 export class UsersService {
-  constructor(private readonly usersRepository: UsersRepository) {}
+  constructor(
+    private readonly emailsService: EmailsService,
+    private readonly usersRepository: UsersRepository,
+    private readonly verificationsService: VerificationsService,
+  ) {}
 
   getUserList() {
     return this.usersRepository.getUserList();
@@ -28,10 +37,27 @@ export class UsersService {
       hashedPassword,
     });
 
-    return {
-      user,
+    const token = await this.verificationsService.create({
+      userId: user.id,
+      type: VerificationType.EMAIL_VERIFICATION,
+      expiresIn: env.EMAIL_VERIFICATION_EXPIRES_IN,
+    });
+
+    const verificationUrl = `${env.APP_URL}/verify-email?token=${token}`;
+    const html = await renderEmailVerificationTemplate({
+      name: user.name,
+      email: user.email,
       initialPassword,
-    };
+      verificationUrl,
+    });
+
+    await this.emailsService.sendEmail({
+      to: user.email,
+      subject: 'Welcome to Naturist Vacation Club - Verify Your Email',
+      html,
+    });
+
+    return user;
   }
 
   async updateUser(input: UpdateUserRequest) {

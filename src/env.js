@@ -13,6 +13,7 @@ export const env = createEnv({
     APP_TIMEZONE: z.string().refine((data) => {
       return SUPPORTED_TIMEZONES.includes(data);
     }),
+    APP_URL: z.string().url(),
     DATABASE_URL: z.string().url(),
     MAIL_HOST: z.string().min(1),
     MAIL_PORT: z.coerce.number().nonnegative(),
@@ -59,6 +60,7 @@ export const env = createEnv({
   runtimeEnv: {
     APP_NAME: process.env.APP_NAME,
     APP_TIMEZONE: process.env.APP_TIMEZONE,
+    APP_URL: process.env.APP_URL,
     DATABASE_URL: process.env.DATABASE_URL,
     MAIL_HOST: process.env.MAIL_HOST,
     MAIL_PORT: process.env.MAIL_PORT,

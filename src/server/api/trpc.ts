@@ -12,6 +12,8 @@ import { initTRPC, TRPCError } from '@trpc/server';
 import superjson from 'superjson';
 import { ZodError } from 'zod';
 
+import { VerificationsRepository } from '~/core/verifications/verifications.repository';
+import { VerificationsService } from '~/core/verifications/verifications.service';
 import { BookingsRepository } from '~/features/bookings/bookings.repository';
 import { BookingsService } from '~/features/bookings/bookings.service';
 import { EmailsService } from '~/features/emails/emails.service';
@@ -37,16 +39,24 @@ export function createServiceContext(db: PrismaClient) {
   const membershipsRepository = new MembershipsRepository(db);
   const roomTypesRepository = new RoomTypesRepository(db);
   const usersRepository = new UsersRepository(db);
+  const verificationsRepository = new VerificationsRepository(db);
 
   /**
    * Services
    */
   const emailsService = new EmailsService();
+  const verificationsService = new VerificationsService(
+    verificationsRepository,
+  );
 
   const bookingsService = new BookingsService(bookingsRepository);
   const membershipsService = new MembershipsService(membershipsRepository);
   const roomTypesService = new RoomTypesService(roomTypesRepository);
-  const usersService = new UsersService(usersRepository);
+  const usersService = new UsersService(
+    emailsService,
+    usersRepository,
+    verificationsService,
+  );
 
   return {
     bookingsService,
@@ -54,6 +64,7 @@ export function createServiceContext(db: PrismaClient) {
     membershipsService,
     roomTypesService,
     usersService,
+    verificationsService,
   };
 }
 

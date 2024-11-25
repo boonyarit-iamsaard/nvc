@@ -4,7 +4,11 @@ import type SMTPTransport from 'nodemailer/lib/smtp-transport';
 
 import { env } from '~/env';
 
-import { renderSampleEmailTemplate } from './templates/sample-email.template';
+export type SendMailParams = {
+  subject: string;
+  to: string | string[];
+  html: string;
+};
 
 export class EmailsService {
   private readonly transporter: Transporter<
@@ -30,11 +34,7 @@ export class EmailsService {
     });
   }
 
-  async sendEmail(): Promise<SMTPTransport.SentMessageInfo> {
-    const to = ['boonyarit.iamsaard@gmail.com'];
-    const subject = 'Welcome to Naturist Vacation Club';
-    const html = await renderSampleEmailTemplate();
-
+  async sendEmail({ to, subject, html }: SendMailParams) {
     return this.transporter.sendMail({
       from: this.mailFrom,
       to,
