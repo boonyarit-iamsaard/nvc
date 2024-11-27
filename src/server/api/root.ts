@@ -1,3 +1,4 @@
+import { authRouter } from '~/core/auth/auth.router';
 import { bookingRouter } from '~/features/bookings/bookings.router';
 import { usersRouter } from '~/features/users/users.router';
 import { createCallerFactory, createTRPCRouter } from '~/server/api/trpc';
@@ -10,6 +11,7 @@ import { roomTypeRouter } from './room-type/room-type.router';
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
+  auth: authRouter,
   booking: bookingRouter,
   roomType: roomTypeRouter,
   users: usersRouter,
