@@ -198,13 +198,12 @@ model UserMembership {
 model UserVerification {
   id        String           @id @default(uuid())
   userId    String           @map("user_id")
+  user      User             @relation(fields: [userId], references: [id])
   token     String           @unique
   type      VerificationType
   expiresAt DateTime         @map("expires_at")
   createdAt DateTime         @default(now()) @map("created_at")
   invalidAt DateTime?        @map("invalid_at")
-
-  user User @relation(fields: [userId], references: [id])
 
   @@index([token])
   @@index([userId])
