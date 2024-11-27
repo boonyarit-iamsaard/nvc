@@ -2,10 +2,11 @@ import { randomBytes } from 'crypto';
 
 import ms from 'ms';
 
+import { InvalidTokenError } from './exceptions/invalid-token.exception';
 import type { VerificationsRepository } from './verifications.repository';
 import type {
-  VerificationPayload,
-  VerificationResult,
+  CreateVerificationInput,
+  VerifyTokenInput,
 } from './verifications.schema';
 
 export class VerificationsService {
@@ -13,55 +14,48 @@ export class VerificationsService {
     private readonly verificationsRepository: VerificationsRepository,
   ) {}
 
-  async create(payload: VerificationPayload): Promise<string> {
-    const token = this.generateToken();
-    const expiresAt = this.parseExpiry(payload.expiresIn);
+  async createVerification(input: CreateVerificationInput): Promise<string> {
+    const { expiresIn, timestamp, type, userId } = input;
 
+    const token = this.generateVerificationToken();
+    const invalidAt = timestamp ? new Date(timestamp) : undefined;
+    const expiresAt = this.parseExpiry(expiresIn);
     if (!expiresAt) {
-      throw new Error(`Invalid expiration duration: ${payload.expiresIn}`);
+      throw new Error(`Invalid expiration duration: ${expiresIn}`);
     }
 
     await this.verificationsRepository.createVerification({
-      userId: payload.userId,
+      userId,
       token,
-      type: payload.type,
+      type,
       expiresAt,
-      invalidAt: payload.timestamp ? new Date(payload.timestamp) : undefined,
+      invalidAt,
     });
 
     return token;
   }
 
-  async verify(
-    token: string,
-    payload: VerificationPayload,
-  ): Promise<VerificationResult> {
-    try {
-      const { userId, type } = payload;
-      const verification =
-        await this.verificationsRepository.findValidVerification({
-          userId,
-          token,
-          type,
-        });
+  async verifyToken(input: VerifyTokenInput): Promise<boolean> {
+    const { token, type } = input;
 
+    try {
+      const verification = await this.verificationsRepository.findVerification({
+        token,
+        type,
+      });
       if (!verification) {
-        return {
-          isValid: false,
-          error: 'Invalid token',
-        };
+        throw new InvalidTokenError();
       }
 
       await this.verificationsRepository.invalidateVerification(token);
 
-      return {
-        isValid: true,
-      };
+      return true;
     } catch (error) {
-      return {
-        isValid: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
-      };
+      if (error instanceof InvalidTokenError) {
+        throw error;
+      }
+
+      throw new Error(error instanceof Error ? error.message : 'Unknown error');
     }
   }
 
@@ -72,7 +66,7 @@ export class VerificationsService {
 
     try {
       const milliseconds = ms(duration);
-      if (!milliseconds || milliseconds <= 0) {
+      if (!milliseconds) {
         return null;
       }
 
@@ -82,12 +76,13 @@ export class VerificationsService {
     }
   }
 
-  private generateToken(length = 32): string {
+  private generateVerificationToken(length = 32): string {
     const bytes = randomBytes(Math.ceil((length * 3) / 4));
     return bytes
       .toString('base64')
       .slice(0, length)
       .replace(/\+/g, '-')
-      .replace(/\//g, '_');
+      .replace(/\//g, '_')
+      .replace(/=/g, '');
   }
 }

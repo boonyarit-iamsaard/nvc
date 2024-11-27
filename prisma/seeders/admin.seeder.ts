@@ -38,6 +38,7 @@ export async function adminSeeder(prisma: PrismaClient) {
 
   const now = new Date();
   const admins = Array.isArray(adminData) ? adminData : [adminData];
+
   for (const admin of admins) {
     if (!admin) continue;
 
@@ -58,12 +59,19 @@ export async function adminSeeder(prisma: PrismaClient) {
       },
     });
 
-    await verificationService.create({
-      userId: user.id,
-      type: VerificationType.EMAIL_VERIFICATION,
-      timestamp: now.getTime(),
-      expiresIn: env.EMAIL_VERIFICATION_EXPIRES_IN,
-    });
+    try {
+      await verificationService.createVerification({
+        userId: user.id,
+        type: VerificationType.EMAIL_VERIFICATION,
+        timestamp: now.getTime(),
+        expiresIn: env.EMAIL_VERIFICATION_EXPIRES_IN,
+      });
+    } catch (error) {
+      console.warn(
+        '[SEEDER] 🚫 Failed to create email verification:',
+        error instanceof Error ? error.message : 'Unknown error',
+      );
+    }
   }
 
   console.info('[SEEDER] ✅ admin data seeded');

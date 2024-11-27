@@ -37,7 +37,7 @@ export class UsersService {
       hashedPassword,
     });
 
-    const token = await this.verificationsService.create({
+    const token = await this.verificationsService.createVerification({
       userId: user.id,
       type: VerificationType.EMAIL_VERIFICATION,
       expiresIn: env.EMAIL_VERIFICATION_EXPIRES_IN,

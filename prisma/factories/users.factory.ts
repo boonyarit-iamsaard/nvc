@@ -80,12 +80,19 @@ async function createUserVerification(
     return;
   }
 
-  await verificationService.create({
-    userId,
-    type: VerificationType.EMAIL_VERIFICATION,
-    timestamp: now.getTime(),
-    expiresIn: env.EMAIL_VERIFICATION_EXPIRES_IN,
-  });
+  try {
+    await verificationService.createVerification({
+      userId,
+      type: VerificationType.EMAIL_VERIFICATION,
+      timestamp: now.getTime(),
+      expiresIn: env.EMAIL_VERIFICATION_EXPIRES_IN,
+    });
+  } catch (error) {
+    console.warn(
+      '[FACTORY] 🚫 Failed to create email verification:',
+      error instanceof Error ? error.message : 'Unknown error',
+    );
+  }
 }
 
 async function createUser(
@@ -126,6 +133,7 @@ async function createUserMembership(
   const startDate = startOfDay(new Date());
   const endDate = endOfDay(subDays(addYears(startDate, 1), 1));
   const membershipNumber = await generateMembershipNumber(prisma, code);
+  const membershipPriceAtJoining = getMembershipPrice(userGender, price);
 
   return prisma.userMembership.create({
     data: {
@@ -139,7 +147,7 @@ async function createUserMembership(
       membershipId,
       membershipNumber,
       membershipName,
-      membershipPriceAtJoining: getMembershipPrice(userGender, price),
+      membershipPriceAtJoining,
 
       // Membership duration
       startDate,

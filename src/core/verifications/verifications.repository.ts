@@ -1,42 +1,42 @@
-import type { PrismaClient, VerificationType } from '@prisma/client';
+import type { PrismaClient } from '@prisma/client';
+
+import type {
+  SaveVerificationInput,
+  VerifyTokenInput,
+} from '~/core/verifications/verifications.schema';
 
 export class VerificationsRepository {
   constructor(private readonly db: PrismaClient) {}
 
-  async createVerification(data: {
-    userId: string;
-    token: string;
-    type: VerificationType;
-    expiresAt: Date;
-    invalidAt?: Date;
-  }) {
-    return this.db.userVerification.create({
-      data: {
-        userId: data.userId,
-        token: data.token,
-        type: data.type,
-        expiresAt: data.expiresAt,
-        invalidAt: data.invalidAt,
-      },
-    });
-  }
-
-  async findValidVerification(data: {
-    userId: string;
-    token: string;
-    type: VerificationType;
-  }) {
+  async findVerification(input: VerifyTokenInput) {
+    const { token, type } = input;
     const now = new Date();
 
     return this.db.userVerification.findFirst({
       where: {
-        userId: data.userId,
-        token: data.token,
-        type: data.type,
+        token,
+        type,
         expiresAt: {
           gt: now,
         },
         invalidAt: null,
+      },
+      include: {
+        user: true,
+      },
+    });
+  }
+
+  async createVerification(input: SaveVerificationInput) {
+    const { userId, token, type, expiresAt, invalidAt } = input;
+
+    return this.db.userVerification.create({
+      data: {
+        userId,
+        token,
+        type,
+        expiresAt,
+        invalidAt,
       },
     });
   }
