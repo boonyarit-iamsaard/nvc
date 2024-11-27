@@ -2,10 +2,8 @@ import { hash } from '@node-rs/argon2';
 import type { PrismaClient } from '@prisma/client';
 import { VerificationType } from '@prisma/client';
 
-import {
-  VerificationsRepository,
-  VerificationsService,
-} from '~/core/verifications';
+import { VerificationsRepository } from '~/core/verifications/verifications.repository';
+import { VerificationsService } from '~/core/verifications/verifications.service';
 import { env } from '~/env';
 import { seedAdminRequestSchema } from '~/features/users/users.schema';
 
