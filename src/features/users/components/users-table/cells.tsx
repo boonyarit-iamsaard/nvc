@@ -16,12 +16,12 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu';
-import type { GetUserListResponse } from '~/features/users/users.schema';
+import type { GetUserListResult } from '~/features/users/users.schema';
 import { capitalize } from '~/libs/string';
 
 type CellProps = Readonly<{
   row: {
-    original: GetUserListResponse[number];
+    original: GetUserListResult[number];
   };
 }>;
 

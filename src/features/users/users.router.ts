@@ -1,7 +1,7 @@
 import {
-  createUserRequestSchema,
+  createUserInputSchema,
   getUserRequestSchema,
-  updateUserRequestSchema,
+  updateUserInputSchema,
 } from '~/features/users/users.schema';
 import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
 
@@ -17,13 +17,13 @@ export const usersRouter = createTRPCRouter({
     }),
 
   createUser: protectedProcedure
-    .input(createUserRequestSchema)
+    .input(createUserInputSchema)
     .mutation(({ ctx, input }) => {
       return ctx.services.usersService.createUser(input);
     }),
 
   updateUser: protectedProcedure
-    .input(updateUserRequestSchema)
+    .input(updateUserInputSchema)
     .mutation(({ ctx, input }) => {
       return ctx.services.usersService.updateUser(input);
     }),

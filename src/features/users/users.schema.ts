@@ -4,7 +4,7 @@ import { z } from 'zod';
 
 import type { UsersService } from '~/features/users/users.service';
 
-export const createUserRequestSchema = z.object({
+export const createUserInputSchema = z.object({
   email: z.string().email(),
   name: z.string().min(1),
   image: z.string().optional(),
@@ -12,30 +12,30 @@ export const createUserRequestSchema = z.object({
   gender: z.nativeEnum(Gender),
 });
 
-export const seedAdminRequestSchema = createUserRequestSchema.extend({
+export const seedAdminInputSchema = createUserInputSchema.extend({
   password: z.string(),
 });
 
-export const saveUserRequestSchema = createUserRequestSchema.extend({
+export const saveUserInputSchema = createUserInputSchema.extend({
   hashedPassword: z.string(),
 });
 
-export const updateUserRequestSchema = z.object({
+export const updateUserInputSchema = z.object({
   id: z.string().uuid(),
-  user: createUserRequestSchema,
+  user: createUserInputSchema,
 });
 
 export const getUserRequestSchema = z.object({
   id: z.string().uuid(),
 });
 
-export type CreateUserRequest = z.infer<typeof createUserRequestSchema>;
-export type SeedAdminRequest = z.infer<typeof seedAdminRequestSchema>;
-export type SaveUserRequest = z.infer<typeof saveUserRequestSchema>;
-export type UpdateUserRequest = z.infer<typeof updateUserRequestSchema>;
-export type GetUserRequest = z.infer<typeof getUserRequestSchema>;
+export type CreateUserInput = z.infer<typeof createUserInputSchema>;
+export type SeedAdminInput = z.infer<typeof seedAdminInputSchema>;
+export type SaveUserInput = z.infer<typeof saveUserInputSchema>;
+export type UpdateUserInput = z.infer<typeof updateUserInputSchema>;
+export type GetUserInput = z.infer<typeof getUserRequestSchema>;
 
-export type GetUserListResponse = Prisma.PromiseReturnType<
+export type GetUserListResult = Prisma.PromiseReturnType<
   UsersService['getUserList']
 >;
-export type GetUserResponse = Prisma.PromiseReturnType<UsersService['getUser']>;
+export type GetUserResult = Prisma.PromiseReturnType<UsersService['getUser']>;

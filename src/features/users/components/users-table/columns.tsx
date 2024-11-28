@@ -2,11 +2,11 @@
 
 import type { ColumnDef } from '@tanstack/react-table';
 
-import type { GetUserListResponse } from '~/features/users/users.schema';
+import type { GetUserListResult } from '~/features/users/users.schema';
 
 import { ActionsCell, GenderCell, RoleCell } from './cells';
 
-export const columns: ColumnDef<GetUserListResponse[number]>[] = [
+export const columns: ColumnDef<GetUserListResult[number]>[] = [
   {
     accessorKey: 'name',
     header: 'Name',

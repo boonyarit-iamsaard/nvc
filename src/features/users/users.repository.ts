@@ -1,9 +1,9 @@
 import type { PrismaClient } from '@prisma/client';
 
 import type {
-  GetUserRequest,
-  SaveUserRequest,
-  UpdateUserRequest,
+  GetUserInput,
+  SaveUserInput,
+  UpdateUserInput,
 } from '~/features/users/users.schema';
 
 export class UsersRepository {
@@ -44,7 +44,7 @@ export class UsersRepository {
     });
   }
 
-  getUser({ id }: GetUserRequest) {
+  getUser({ id }: GetUserInput) {
     return this.db.user.findUnique({
       where: { id },
       select: {
@@ -58,7 +58,7 @@ export class UsersRepository {
     });
   }
 
-  createUser(user: SaveUserRequest) {
+  createUser(user: SaveUserInput) {
     return this.db.user.create({
       data: user,
       select: {
@@ -72,7 +72,7 @@ export class UsersRepository {
     });
   }
 
-  updateUser({ id, user }: UpdateUserRequest) {
+  updateUser({ id, user }: UpdateUserInput) {
     return this.db.user.update({
       where: { id },
       data: user,

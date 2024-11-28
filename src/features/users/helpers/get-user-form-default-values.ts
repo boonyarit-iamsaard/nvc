@@ -1,16 +1,16 @@
 import { Gender, Role } from '@prisma/client';
 
-import type { CreateUserRequest, GetUserResponse } from '../users.schema';
+import type { CreateUserInput, GetUserResult } from '../users.schema';
 
 type GetUserFormDefaultValuesParams = {
   id?: string;
-  getUser: (params: { id: string }) => Promise<GetUserResponse>;
+  getUser: (params: { id: string }) => Promise<GetUserResult>;
 };
 
 export async function getUserFormDefaultValues({
   id,
   getUser,
-}: GetUserFormDefaultValuesParams): Promise<CreateUserRequest> {
+}: GetUserFormDefaultValuesParams): Promise<CreateUserInput> {
   if (id) {
     const user = await getUser({ id });
     if (user) {

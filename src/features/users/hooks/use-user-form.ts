@@ -7,19 +7,19 @@ import { useForm } from 'react-hook-form';
 import { api } from '~/trpc/react';
 
 import { getUserFormDefaultValues } from '../helpers/get-user-form-default-values';
-import type { CreateUserRequest } from '../users.schema';
-import { createUserRequestSchema } from '../users.schema';
+import type { CreateUserInput } from '../users.schema';
+import { createUserInputSchema } from '../users.schema';
 
 type UseUserFormParams = {
   id?: string;
 };
 
 type UseUserFormReturn = {
-  form: UseFormReturn<CreateUserRequest>;
+  form: UseFormReturn<CreateUserInput>;
   isEditMode: boolean;
   isLoading: boolean;
   isSubmitting: boolean;
-  handleSubmit: (data: CreateUserRequest) => void;
+  handleSubmit: (data: CreateUserInput) => void;
 };
 
 export function useUserForm({ id }: UseUserFormParams): UseUserFormReturn {
@@ -49,8 +49,8 @@ export function useUserForm({ id }: UseUserFormParams): UseUserFormReturn {
   const isSubmitting =
     createUserMutation.isPending || updateUserMutation.isPending;
 
-  const form = useForm<CreateUserRequest>({
-    resolver: zodResolver(createUserRequestSchema),
+  const form = useForm<CreateUserInput>({
+    resolver: zodResolver(createUserInputSchema),
     defaultValues: () =>
       getUserFormDefaultValues({
         id,
@@ -60,7 +60,7 @@ export function useUserForm({ id }: UseUserFormParams): UseUserFormReturn {
 
   const { isLoading: isFormLoading } = form.formState;
 
-  function handleSubmit(data: CreateUserRequest) {
+  function handleSubmit(data: CreateUserInput) {
     if (isEditMode && id) {
       updateUserMutation.mutate({
         id,

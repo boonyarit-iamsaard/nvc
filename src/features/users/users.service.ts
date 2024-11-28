@@ -6,9 +6,9 @@ import { env } from '~/env';
 import type { EmailsService } from '~/features/emails/emails.service';
 import { renderEmailVerificationTemplate } from '~/features/emails/templates/email-verification.template';
 import type {
-  CreateUserRequest,
-  GetUserRequest,
-  UpdateUserRequest,
+  CreateUserInput,
+  GetUserInput,
+  UpdateUserInput,
 } from '~/features/users/users.schema';
 
 import type { UsersRepository } from './users.repository';
@@ -24,11 +24,11 @@ export class UsersService {
     return this.usersRepository.getUserList();
   }
 
-  getUser(input: GetUserRequest) {
+  getUser(input: GetUserInput) {
     return this.usersRepository.getUser(input);
   }
 
-  async createUser(input: CreateUserRequest) {
+  async createUser(input: CreateUserInput) {
     const initialPassword = this.generatePassword();
     const hashedPassword = await this.hashPassword(initialPassword);
 
@@ -60,7 +60,7 @@ export class UsersService {
     return user;
   }
 
-  async updateUser(input: UpdateUserRequest) {
+  async updateUser(input: UpdateUserInput) {
     return this.usersRepository.updateUser(input);
   }
 

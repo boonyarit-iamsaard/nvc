@@ -5,7 +5,7 @@ import { VerificationType } from '@prisma/client';
 import { VerificationsRepository } from '~/core/verifications/verifications.repository';
 import { VerificationsService } from '~/core/verifications/verifications.service';
 import { env } from '~/env';
-import { seedAdminRequestSchema } from '~/features/users/users.schema';
+import { seedAdminInputSchema } from '~/features/users/users.schema';
 
 import { parseData } from '../helper';
 
@@ -15,7 +15,7 @@ export async function adminSeeder(prisma: PrismaClient) {
   const verificationRepository = new VerificationsRepository(prisma);
   const verificationService = new VerificationsService(verificationRepository);
 
-  const adminData = parseData('admin.json', seedAdminRequestSchema);
+  const adminData = parseData('admin.json', seedAdminInputSchema);
   if (!adminData) {
     console.info('[SEEDER] ⏭️ skipping admin data seeding');
 
