@@ -1,9 +1,8 @@
 import { authRouter } from '~/core/auth/auth.router';
 import { bookingRouter } from '~/features/bookings/bookings.router';
+import { roomTypesRouter } from '~/features/room-types/room-types.router';
 import { usersRouter } from '~/features/users/users.router';
 import { createCallerFactory, createTRPCRouter } from '~/server/api/trpc';
-
-import { roomTypeRouter } from './room-type/room-type.router';
 
 /**
  * This is the primary router for your server.
@@ -12,8 +11,8 @@ import { roomTypeRouter } from './room-type/room-type.router';
  */
 export const appRouter = createTRPCRouter({
   auth: authRouter,
-  booking: bookingRouter,
-  roomType: roomTypeRouter,
+  bookings: bookingRouter,
+  roomTypes: roomTypesRouter,
   users: usersRouter,
 });
 

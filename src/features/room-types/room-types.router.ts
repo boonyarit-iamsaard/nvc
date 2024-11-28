@@ -1,10 +1,11 @@
+import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+
 import {
   getRoomTypeListRequestSchema,
   getRoomTypeRequestSchema,
-} from '~/features/room-types/room-types.schema';
-import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
+} from './room-types.schema';
 
-export const roomTypeRouter = createTRPCRouter({
+export const roomTypesRouter = createTRPCRouter({
   getRoomTypeList: publicProcedure
     .input(getRoomTypeListRequestSchema)
     .query(({ ctx, input }) => {

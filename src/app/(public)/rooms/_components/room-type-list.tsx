@@ -23,7 +23,7 @@ export function RoomTypeList() {
 
   // TODO: implement error states
   const { data: roomTypeList, isLoading } =
-    api.roomType.getRoomTypeList.useQuery({ filter });
+    api.roomTypes.getRoomTypeList.useQuery({ filter });
 
   function handleChooseRoom(id: string) {
     if (!filter?.checkIn || !filter?.checkOut) {

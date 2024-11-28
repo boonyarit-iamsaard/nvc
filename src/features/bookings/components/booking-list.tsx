@@ -36,7 +36,7 @@ export function BookingList() {
     data: bookingList,
     isLoading,
     error,
-  } = api.booking.getUserBookingList.useQuery(
+  } = api.bookings.getUserBookingList.useQuery(
     { userId: data?.user.id ?? '' },
     {
       enabled: !!data?.user.id,
