@@ -12,10 +12,10 @@ import { Button } from '~/components/ui/button';
 import type { RoomTypeFilter } from '~/features/room-types/room-types.schema';
 import { api } from '~/trpc/react';
 
-import { RoomTypeFilterForm } from './room-type-filter-form';
-import { RoomTypeItemPlaceholder } from './room-type-item-placeholder';
+import { RoomTypeBrowserFilter } from './room-type-browser-filter';
+import { RoomTypeBrowserPlaceholder } from './room-type-browser-placeholder';
 
-export function RoomTypeList() {
+export function RoomTypeBrowser() {
   const router = useRouter();
 
   const [filter, setFilter] = useState<RoomTypeFilter>();
@@ -57,7 +57,7 @@ export function RoomTypeList() {
 
   return (
     <div className="space-y-8">
-      <RoomTypeFilterForm onSubmit={setFilter} />
+      <RoomTypeBrowserFilter onSubmit={setFilter} />
 
       {overlappedBookings > 0 ? (
         <div className="flex items-center gap-2 rounded-lg border border-destructive/50 bg-destructive/10 px-6 py-4 text-destructive shadow-sm">
@@ -72,7 +72,7 @@ export function RoomTypeList() {
       <ul className="space-y-6">
         {isLoading
           ? Array.from({ length: 3 }).map(() => (
-              <RoomTypeItemPlaceholder key={crypto.randomUUID()} />
+              <RoomTypeBrowserPlaceholder key={crypto.randomUUID()} />
             ))
           : roomTypeList?.map((roomType) => (
               <li

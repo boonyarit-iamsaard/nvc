@@ -1,6 +1,5 @@
+import { RoomTypeBrowser } from '~/features/room-types/components/room-type-browser';
 import { api, HydrateClient } from '~/trpc/server';
-
-import { RoomTypeList } from './_components/room-type-list';
 
 export default async function Page() {
   void api.roomTypes.getRoomTypeList.prefetch({});
@@ -11,7 +10,7 @@ export default async function Page() {
         <h1 className="font-serif text-4xl font-bold">Our Rooms</h1>
       </div>
       <div className="container py-8">
-        <RoomTypeList />
+        <RoomTypeBrowser />
       </div>
     </HydrateClient>
   );

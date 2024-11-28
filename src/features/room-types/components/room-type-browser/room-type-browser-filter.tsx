@@ -3,15 +3,17 @@
 import { Button } from '~/components/ui/button';
 import { DateRangePicker } from '~/components/ui/date-range-picker';
 import { Form } from '~/components/ui/form';
-import type { RoomTypeFilter } from '~/features/room-types/room-types.schema';
 
-import { useRoomTypeFilterForm } from '../_hooks/use-room-type-filter-form';
+import { useRoomTypeFilterForm } from '../../hooks/use-room-type-filter-form';
+import type { RoomTypeFilter } from '../../room-types.schema';
 
-type RoomTypeFilterFormProps = Readonly<{
+type RoomTypeBrowserFilterProps = Readonly<{
   onSubmit?: (filter: RoomTypeFilter) => void;
 }>;
 
-export function RoomTypeFilterForm({ onSubmit }: RoomTypeFilterFormProps) {
+export function RoomTypeBrowserFilter({
+  onSubmit,
+}: RoomTypeBrowserFilterProps) {
   const {
     dateRange,
     disabled,
