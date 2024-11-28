@@ -4,7 +4,7 @@ import type { DefaultSession, DefaultUser, NextAuthOptions } from 'next-auth';
 import { getServerSession } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
-import { loginRequestSchema } from '~/server/api/auth/auth.schema';
+import { loginInputSchema } from '~/core/auth/auth.schema';
 import { db } from '~/server/db';
 
 export type SessionMembership = {
@@ -120,7 +120,7 @@ export const authOptions: NextAuthOptions = {
         },
       },
       async authorize(credentials) {
-        const { data, success } = loginRequestSchema.safeParse(credentials);
+        const { data, success } = loginInputSchema.safeParse(credentials);
         if (!success) {
           throw new Error('invalid credentials');
         }
