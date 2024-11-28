@@ -1,13 +1,12 @@
-import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Role } from '@prisma/client';
 import type { UseFormReturn } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 
 import { api } from '~/trpc/react';
 
+import { getUserFormDefaultValues } from '../helpers/get-user-form-default-values';
 import type { CreateUserRequest } from '../users.schema';
 import { createUserRequestSchema } from '../users.schema';
 
@@ -28,12 +27,6 @@ export function useUserForm({ id }: UseUserFormParams): UseUserFormReturn {
   const isEditMode = Boolean(id);
   const utils = api.useUtils();
 
-  const { data: user, isLoading } = api.users.getUser.useQuery(
-    {
-      id: id ?? '',
-    },
-    { enabled: !!id },
-  );
   const createUserMutation = api.users.createUser.useMutation({
     onError(error) {
       console.error(error);
@@ -58,13 +51,14 @@ export function useUserForm({ id }: UseUserFormParams): UseUserFormReturn {
 
   const form = useForm<CreateUserRequest>({
     resolver: zodResolver(createUserRequestSchema),
-    defaultValues: {
-      email: '',
-      name: '',
-      image: '',
-      role: Role.GUEST,
-    },
+    defaultValues: () =>
+      getUserFormDefaultValues({
+        id,
+        getUser: (params) => utils.users.getUser.fetch(params),
+      }),
   });
+
+  const { isLoading: isFormLoading } = form.formState;
 
   function handleSubmit(data: CreateUserRequest) {
     if (isEditMode && id) {
@@ -77,22 +71,10 @@ export function useUserForm({ id }: UseUserFormParams): UseUserFormReturn {
     }
   }
 
-  useEffect(() => {
-    if (user) {
-      form.reset({
-        email: user.email,
-        name: user.name,
-        image: user.image ?? '',
-        role: user.role,
-        gender: user.gender,
-      });
-    }
-  }, [form, user]);
-
   return {
     form,
     isEditMode,
-    isLoading,
+    isLoading: isFormLoading,
     isSubmitting,
     handleSubmit,
   };

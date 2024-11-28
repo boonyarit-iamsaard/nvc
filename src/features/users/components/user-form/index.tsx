@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from '~/components/ui/select';
 import { useUserForm } from '~/features/users/hooks/use-user-form';
+import { capitalize } from '~/libs/string';
 
 type UserFormProps = Readonly<{
   id?: string;
@@ -50,7 +51,7 @@ export function UserForm({ id }: UserFormProps) {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="Email" {...field} />
+                <Input placeholder="Email" {...field} disabled={isSubmitting} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -64,7 +65,7 @@ export function UserForm({ id }: UserFormProps) {
             <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="Name" {...field} />
+                <Input placeholder="Name" {...field} disabled={isSubmitting} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -78,7 +79,11 @@ export function UserForm({ id }: UserFormProps) {
             <FormItem>
               <FormLabel>Image URL</FormLabel>
               <FormControl>
-                <Input placeholder="Image URL" {...field} />
+                <Input
+                  placeholder="Image URL"
+                  {...field}
+                  disabled={isSubmitting}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -88,51 +93,63 @@ export function UserForm({ id }: UserFormProps) {
         <FormField
           control={form.control}
           name="role"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Role</FormLabel>
-              <Select {...field}>
+          render={({ field }) => {
+            return (
+              <FormItem>
+                <FormLabel>Role</FormLabel>
                 <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a role" />
-                  </SelectTrigger>
+                  <Select
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    disabled={isSubmitting}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.values(Role).map((role) => (
+                        <SelectItem key={role} value={role}>
+                          {capitalize(role)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </FormControl>
-                <SelectContent>
-                  {Object.values(Role).map((role) => (
-                    <SelectItem key={role} value={role}>
-                      {role}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
+                <FormMessage />
+              </FormItem>
+            );
+          }}
         />
 
         <FormField
           control={form.control}
           name="gender"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Gender</FormLabel>
-              <Select {...field}>
+          render={({ field }) => {
+            return (
+              <FormItem>
+                <FormLabel>Gender</FormLabel>
                 <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a gender" />
-                  </SelectTrigger>
+                  <Select
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    disabled={isSubmitting}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a gender" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.values(Gender).map((gender) => (
+                        <SelectItem key={gender} value={gender}>
+                          {capitalize(gender)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </FormControl>
-                <SelectContent>
-                  {Object.values(Gender).map((gender) => (
-                    <SelectItem key={gender} value={gender}>
-                      {gender}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
+                <FormMessage />
+              </FormItem>
+            );
+          }}
         />
 
         <div className="flex justify-end gap-4">
