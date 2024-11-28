@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-import type { SaveBookingRequest } from '~/features/bookings/bookings.schema';
+import type { SaveBookingInput } from '~/features/bookings/bookings.schema';
 import { bookingDateRangeSchema } from '~/features/bookings/bookings.schema';
 import type { RoomTypeFilter } from '~/features/room-types/room-types.schema';
 import { useUserSession } from '~/libs/auth/hooks/use-user-session';
@@ -10,7 +10,7 @@ import { api } from '~/trpc/react';
 import { getBookingDetails } from '../helpers/get-booking-details';
 
 type UseBookingFormResult = {
-  bookingDetails: SaveBookingRequest | null;
+  bookingDetails: SaveBookingInput | null;
   isLoading: boolean;
   isSubmitting: boolean;
   handleSubmit: () => void;
@@ -20,8 +20,9 @@ export function useBookingForm(): UseBookingFormResult {
   const router = useRouter();
   const params = useSearchParams();
   const [filter, setFilter] = useState<RoomTypeFilter | undefined>(undefined);
-  const [bookingDetails, setBookingDetails] =
-    useState<SaveBookingRequest | null>(null);
+  const [bookingDetails, setBookingDetails] = useState<SaveBookingInput | null>(
+    null,
+  );
 
   const { data: userSession } = useUserSession();
   const { data: roomType, isLoading: isLoadingRoomType } =

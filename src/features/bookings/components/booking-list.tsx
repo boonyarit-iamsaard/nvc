@@ -5,12 +5,12 @@ import { AlertCircle, Loader2 } from 'lucide-react';
 
 import { Badge } from '~/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
-import type { GetUserBookingListResponse } from '~/features/bookings/bookings.schema';
+import type { GetUserBookingListResult } from '~/features/bookings/bookings.schema';
 import { useUserSession } from '~/libs/auth/hooks/use-user-session';
 import { api } from '~/trpc/react';
 
 type BookingItemProps = Readonly<{
-  booking: Readonly<GetUserBookingListResponse[number]>;
+  booking: Readonly<GetUserBookingListResult[number]>;
 }>;
 
 function BookingItem({ booking }: BookingItemProps) {

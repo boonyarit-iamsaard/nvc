@@ -1,7 +1,7 @@
 import { addDays, eachDayOfInterval, getDay, startOfDay } from 'date-fns';
 import type { Session } from 'next-auth';
 
-import type { SaveBookingRequest } from '~/features/bookings/bookings.schema';
+import type { SaveBookingInput } from '~/features/bookings/bookings.schema';
 import type { GetRoomTypeResult } from '~/features/room-types/room-types.schema';
 
 type CalculateAmountsParams = {
@@ -78,7 +78,7 @@ export function getBookingDetails({
   roomType,
   checkIn,
   checkOut,
-}: CreateBookingDetailsParams): SaveBookingRequest {
+}: CreateBookingDetailsParams): SaveBookingInput {
   const guestDetails = getGuestDetails(user);
   const roomDetails = getRoomDetails(roomType, room);
   const priceAtBookingDetails = getPriceDetails(roomType, user.membership);

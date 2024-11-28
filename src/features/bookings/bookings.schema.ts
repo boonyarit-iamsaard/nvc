@@ -38,7 +38,7 @@ export const bookingDateRangeSchema = z
     },
   );
 
-export const saveBookingRequestSchema = z.object({
+export const saveBookingInputSchema = z.object({
   userId: z.string().uuid(),
   roomId: z.string().uuid(),
   checkIn: z.coerce.date(),
@@ -70,16 +70,16 @@ export const saveBookingRequestSchema = z.object({
     .default('PENDING'),
 });
 
-export const getUserBookingListRequestSchema = z.object({
+export const getUserBookingListInputSchema = z.object({
   userId: z.string().uuid(),
 });
 
 export type BookingDateRange = z.infer<typeof bookingDateRangeSchema>;
-export type SaveBookingRequest = z.infer<typeof saveBookingRequestSchema>;
-export type GetUserBookingListRequest = z.infer<
-  typeof getUserBookingListRequestSchema
+export type SaveBookingInput = z.infer<typeof saveBookingInputSchema>;
+export type GetUserBookingListInput = z.infer<
+  typeof getUserBookingListInputSchema
 >;
 
-export type GetUserBookingListResponse = Prisma.PromiseReturnType<
+export type GetUserBookingListResult = Prisma.PromiseReturnType<
   BookingsService['getUserBookingList']
 >;
