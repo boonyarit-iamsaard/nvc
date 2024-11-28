@@ -1,13 +1,13 @@
 import type { PrismaClient } from '@prisma/client';
 
-import { seedRoomTypeRequestSchema } from '~/features/room-types/room-types.schema';
+import { seedRoomTypeInputSchema } from '~/features/room-types/room-types.schema';
 
 import { parseData } from '../helper';
 
 export async function roomTypeSeeder(prisma: PrismaClient) {
   console.info('[SEEDER] 🌱 seeding room types data');
 
-  const roomTypesData = parseData('room-types.json', seedRoomTypeRequestSchema);
+  const roomTypesData = parseData('room-types.json', seedRoomTypeInputSchema);
   if (!roomTypesData) {
     console.info('[SEEDER] ⏭️ skipping room types data seeding');
 

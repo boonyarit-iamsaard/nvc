@@ -2,7 +2,7 @@ import { addDays, eachDayOfInterval, getDay, startOfDay } from 'date-fns';
 import type { Session } from 'next-auth';
 
 import type { SaveBookingRequest } from '~/features/bookings/bookings.schema';
-import type { GetRoomTypeResponse } from '~/features/room-types/room-types.schema';
+import type { GetRoomTypeResult } from '~/features/room-types/room-types.schema';
 
 type CalculateAmountsParams = {
   weekdayCount: number;
@@ -14,8 +14,8 @@ type CalculateAmountsParams = {
 
 type CreateBookingDetailsParams = {
   user: Session['user'];
-  room: NonNullable<GetRoomTypeResponse>['rooms'][number];
-  roomType: NonNullable<GetRoomTypeResponse>;
+  room: NonNullable<GetRoomTypeResult>['rooms'][number];
+  roomType: NonNullable<GetRoomTypeResult>;
   checkIn: Date;
   checkOut: Date;
 };
@@ -112,7 +112,7 @@ export function getGuestDetails(user: Session['user']) {
 }
 
 export function getPriceDetails(
-  roomType: NonNullable<GetRoomTypeResponse>,
+  roomType: NonNullable<GetRoomTypeResult>,
   userMembership: Session['user']['membership'],
 ) {
   return {
@@ -123,8 +123,8 @@ export function getPriceDetails(
 }
 
 export function getRoomDetails(
-  roomType: NonNullable<GetRoomTypeResponse>,
-  room: NonNullable<GetRoomTypeResponse>['rooms'][number],
+  roomType: NonNullable<GetRoomTypeResult>,
+  room: NonNullable<GetRoomTypeResult>['rooms'][number],
 ) {
   return {
     roomId: room.id,

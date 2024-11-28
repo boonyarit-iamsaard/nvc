@@ -4,7 +4,7 @@ import { z } from 'zod';
 
 import type { RoomTypesService } from './room-types.service';
 
-const baseCreateRoomTypeRequestSchema = z.object({
+const baseCreateRoomTypeInputSchema = z.object({
   name: z.string(),
   description: z.string().optional(),
   code: z.string(),
@@ -14,12 +14,10 @@ const baseCreateRoomTypeRequestSchema = z.object({
   }),
 });
 
-export const createRoomTypeRequestSchema = baseCreateRoomTypeRequestSchema;
-export const seedRoomTypeRequestSchema = baseCreateRoomTypeRequestSchema.extend(
-  {
-    quantity: z.number(),
-  },
-);
+export const createRoomTypeInputSchema = baseCreateRoomTypeInputSchema;
+export const seedRoomTypeInputSchema = baseCreateRoomTypeInputSchema.extend({
+  quantity: z.number(),
+});
 
 export const roomTypeFilterSchema = z
   .object({
@@ -35,25 +33,23 @@ export const roomTypeFilterSchema = z
     return isAfter(checkOut, checkIn);
   });
 
-export const getRoomTypeListRequestSchema = z.object({
+export const getRoomTypeListInputSchema = z.object({
   filter: roomTypeFilterSchema.optional(),
 });
 
-export const getRoomTypeRequestSchema = getRoomTypeListRequestSchema.extend({
+export const getRoomTypeInputSchema = getRoomTypeListInputSchema.extend({
   id: z.string().uuid(),
 });
 
-export type CreateRoomTypeRequest = z.infer<typeof createRoomTypeRequestSchema>;
-export type SeedRoomTypeRequest = z.infer<typeof seedRoomTypeRequestSchema>;
+export type CreateRoomTypeInput = z.infer<typeof createRoomTypeInputSchema>;
+export type SeedRoomTypeInput = z.infer<typeof seedRoomTypeInputSchema>;
 export type RoomTypeFilter = z.infer<typeof roomTypeFilterSchema>;
-export type GetRoomTypeListRequest = z.infer<
-  typeof getRoomTypeListRequestSchema
->;
-export type GetRoomTypeRequest = z.infer<typeof getRoomTypeRequestSchema>;
+export type GetRoomTypeListInput = z.infer<typeof getRoomTypeListInputSchema>;
+export type GetRoomTypeInput = z.infer<typeof getRoomTypeInputSchema>;
 
-export type GetRoomTypeListResponse = Awaited<
+export type GetRoomTypeListResult = Awaited<
   ReturnType<RoomTypesService['getRoomTypeList']>
 >;
-export type GetRoomTypeResponse = Prisma.PromiseReturnType<
+export type GetRoomTypeResult = Prisma.PromiseReturnType<
   RoomTypesService['getRoomType']
 >;
