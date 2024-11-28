@@ -28,3 +28,13 @@ export type CreateVerificationInput = z.infer<
 >;
 export type SaveVerificationInput = z.infer<typeof saveVerificationInputSchema>;
 export type VerifyTokenInput = z.infer<typeof verifyTokenInputSchema>;
+export type VerifyTokenResult = {
+  success: boolean;
+  message: string;
+  data?: {
+    userId: string;
+    type: string;
+    invalidAt: Date | null;
+    expiresAt: Date;
+  };
+};

@@ -1,62 +1,70 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import { VerificationType } from '@prisma/client';
 import { CheckCircle, Loader2 } from 'lucide-react';
 
+import { VerificationStateCard } from '~/core/auth/components/verify-email/verification-state-card';
 import { api } from '~/trpc/react';
 
-import { VerificationStateCard } from './verification-state-card';
-
-const REDIRECT_DELAY_SECONDS = 5;
+type VerificationState = {
+  success: boolean | null;
+  message: string | null;
+};
 
 export function VerifyEmail() {
   const router = useRouter();
-  const params = useSearchParams();
-  const token = params.get('token');
+  const hasVerified = useRef(false);
+  const searchParams = useSearchParams();
+  const token = searchParams.get('token');
 
-  const [countdown, setCountdown] = useState(REDIRECT_DELAY_SECONDS);
+  const [verificationState, setVerificationState] = useState<VerificationState>(
+    {
+      success: null,
+      message: null,
+    },
+  );
 
-  function startCountdown() {
-    const timer = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-
-          router.push('/login');
-
-          return 0;
-        }
-
-        return prev - 1;
+  const verifyEmailMutation = api.auth.verifyEmail.useMutation({
+    onSuccess(data) {
+      setVerificationState({
+        success: data.success,
+        message: data.message,
       });
-    }, 1000);
 
-    return () => clearInterval(timer);
-  }
-
-  const {
-    mutate: verifyTokenMutation,
-    isPending,
-    isSuccess,
-    isError,
-    error,
-  } = api.auth.verifyEmail.useMutation({
-    onSuccess() {
-      return startCountdown();
+      if (data.success) {
+        setTimeout(() => {
+          router.replace('/login');
+        }, 2000);
+      }
+    },
+    onError(error) {
+      setVerificationState({
+        success: false,
+        message: error.message,
+      });
     },
   });
 
+  const isEmailVerificationPending = verifyEmailMutation.isPending;
+  const isVerificationInProgress =
+    token && isEmailVerificationPending && !verificationState.success;
+  const isVerificationSuccessful = token && verificationState.success;
+  const isVerificationFailed = token && verificationState.success === false;
+
   useEffect(() => {
-    if (token) {
-      verifyTokenMutation({
+    if (token && !hasVerified.current) {
+      hasVerified.current = true;
+
+      verifyEmailMutation.mutate({
         token,
         type: VerificationType.EMAIL_VERIFICATION,
       });
     }
-  }, [token, verifyTokenMutation]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="container mx-auto flex w-full max-w-md flex-col gap-4">
@@ -70,7 +78,7 @@ export function VerifyEmail() {
         </VerificationStateCard>
       )}
 
-      {token && isPending && (
+      {isVerificationInProgress && (
         <VerificationStateCard title="Verifying Email">
           <div className="flex justify-center">
             <Loader2 className="h-6 w-6 animate-spin" />
@@ -78,18 +86,7 @@ export function VerifyEmail() {
         </VerificationStateCard>
       )}
 
-      {token && isError && (
-        <VerificationStateCard
-          title="Verification Failed"
-          titleClassName="text-destructive"
-        >
-          <p className="text-center text-muted-foreground">
-            {error?.message ?? 'Something went wrong. Please try again later.'}
-          </p>
-        </VerificationStateCard>
-      )}
-
-      {token && isSuccess && (
+      {isVerificationSuccessful && (
         <VerificationStateCard
           title="Email Verified"
           titleClassName="text-primary"
@@ -99,7 +96,7 @@ export function VerifyEmail() {
             <div className="flex flex-col gap-2 text-center text-muted-foreground">
               <p>
                 Your email has been successfully verified. You will be
-                redirected to login in {countdown} seconds.
+                redirected to login in 5 seconds.
               </p>
               <p className="text-sm">
                 You can log in using the initial password that was sent with
@@ -107,6 +104,18 @@ export function VerifyEmail() {
               </p>
             </div>
           </div>
+        </VerificationStateCard>
+      )}
+
+      {isVerificationFailed && (
+        <VerificationStateCard
+          title="Verification Failed"
+          titleClassName="text-destructive"
+        >
+          <p className="text-center text-muted-foreground">
+            {verificationState.message ??
+              'Something went wrong. Please try again later.'}
+          </p>
         </VerificationStateCard>
       )}
     </div>

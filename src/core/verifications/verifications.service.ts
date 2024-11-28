@@ -21,7 +21,7 @@ export class VerificationsService {
     const invalidAt = timestamp ? new Date(timestamp) : undefined;
     const expiresAt = this.parseExpiry(expiresIn);
     if (!expiresAt) {
-      throw new Error(`Invalid expiration duration: ${expiresIn}`);
+      throw new Error('Invalid expiry format');
     }
 
     await this.verificationsRepository.createVerification({
@@ -35,28 +35,31 @@ export class VerificationsService {
     return token;
   }
 
-  async verifyToken(input: VerifyTokenInput): Promise<boolean> {
+  async verifyToken(input: VerifyTokenInput) {
     const { token, type } = input;
 
-    try {
-      const verification = await this.verificationsRepository.findVerification({
-        token,
-        type,
-      });
-      if (!verification) {
-        throw new InvalidTokenError();
-      }
-
-      await this.verificationsRepository.invalidateVerification(token);
-
-      return true;
-    } catch (error) {
-      if (error instanceof InvalidTokenError) {
-        throw error;
-      }
-
-      throw new Error(error instanceof Error ? error.message : 'Unknown error');
+    const verification = await this.verificationsRepository.findVerification({
+      token,
+      type,
+    });
+    if (!verification) {
+      throw new InvalidTokenError('Invalid or expired verification token.');
     }
+
+    await this.verificationsRepository.invalidateVerification(token);
+
+    return verification;
+  }
+
+  private generateVerificationToken(length = 32): string {
+    const bytes = randomBytes(Math.ceil((length * 3) / 4));
+
+    return bytes
+      .toString('base64')
+      .slice(0, length)
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=/g, '');
   }
 
   parseExpiry(duration: string | undefined): Date | null {
@@ -74,15 +77,5 @@ export class VerificationsService {
     } catch {
       return null;
     }
-  }
-
-  private generateVerificationToken(length = 32): string {
-    const bytes = randomBytes(Math.ceil((length * 3) / 4));
-    return bytes
-      .toString('base64')
-      .slice(0, length)
-      .replace(/\+/g, '-')
-      .replace(/\//g, '_')
-      .replace(/=/g, '');
   }
 }
