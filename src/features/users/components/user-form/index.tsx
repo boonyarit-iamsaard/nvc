@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Gender, Role } from '@prisma/client';
 import { Loader2 } from 'lucide-react';
 
-import { Button } from '~/components/ui/button';
+import { Button } from '~/common/components/ui/button';
 import {
   Form,
   FormControl,
@@ -13,17 +13,17 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '~/components/ui/form';
-import { Input } from '~/components/ui/input';
+} from '~/common/components/ui/form';
+import { Input } from '~/common/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '~/components/ui/select';
+} from '~/common/components/ui/select';
+import { capitalize } from '~/common/helpers/string';
 import { useUserForm } from '~/features/users/hooks/use-user-form';
-import { capitalize } from '~/libs/string';
 
 type UserFormProps = Readonly<{
   id?: string;

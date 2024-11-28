@@ -1,7 +1,12 @@
 import type { ReactNode } from 'react';
 
-import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
-import { cn } from '~/libs/cn';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '~/common/components/ui/card';
+import { cn } from '~/common/helpers/cn';
 
 type VerificationStateCardProps = Readonly<{
   title: string;

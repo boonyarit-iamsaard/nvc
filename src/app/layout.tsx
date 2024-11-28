@@ -1,11 +1,11 @@
-import '~/styles/globals.css';
+import '~/core/styles/globals.css';
 
 import type { ReactNode } from 'react';
 import type { Metadata } from 'next';
 
-import { NextAuthProvider } from '~/libs/auth/next-auth-provider';
-import { cn } from '~/libs/cn';
-import { fontSans, fontSerif } from '~/libs/fonts';
+import { cn } from '~/common/helpers/cn';
+import { fontSans, fontSerif } from '~/common/helpers/fonts';
+import { NextAuthProvider } from '~/core/auth/providers/next-auth-provider';
 import { TRPCReactProvider } from '~/trpc/react';
 
 export const metadata: Metadata = {

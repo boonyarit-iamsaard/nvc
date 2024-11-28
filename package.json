@@ -25,7 +25,8 @@
     "typecheck:watch": "tsc --noEmit --watch"
   },
   "prisma": {
-    "seed": "dotenvx run -- tsx prisma/seed.ts"
+    "schema": "src/core/database/schema.prisma",
+    "seed": "dotenvx run -- tsx src/core/database/seed.ts"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^1.6.0",

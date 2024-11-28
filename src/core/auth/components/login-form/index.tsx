@@ -10,8 +10,8 @@ import { Loader2 } from 'lucide-react';
 import { signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 
-import { Icons } from '~/components/icons';
-import { Button } from '~/components/ui/button';
+import { Icons } from '~/common/components/icons';
+import { Button } from '~/common/components/ui/button';
 import {
   Card,
   CardContent,
@@ -19,7 +19,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '~/components/ui/card';
+} from '~/common/components/ui/card';
 import {
   Form,
   FormControl,
@@ -27,8 +27,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '~/components/ui/form';
-import { Input } from '~/components/ui/input';
+} from '~/common/components/ui/form';
+import { Input } from '~/common/components/ui/input';
 import { loginInputSchema } from '~/core/auth/auth.schema';
 import type { LoginInput } from '~/core/auth/auth.schema';
 import { env } from '~/env';

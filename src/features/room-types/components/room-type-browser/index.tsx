@@ -7,8 +7,8 @@ import { useRouter } from 'next/navigation';
 import { setHours, startOfHour } from 'date-fns';
 import { CircleAlert } from 'lucide-react';
 
-import { Badge } from '~/components/ui/badge';
-import { Button } from '~/components/ui/button';
+import { Badge } from '~/common/components/ui/badge';
+import { Button } from '~/common/components/ui/button';
 import type { RoomTypeFilter } from '~/features/room-types/room-types.schema';
 import { api } from '~/trpc/react';
 

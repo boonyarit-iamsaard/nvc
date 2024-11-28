@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '~/components/ui/button';
+import { Button } from '~/common/components/ui/button';
 import {
   Card,
   CardContent,
@@ -8,9 +8,9 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '~/components/ui/card';
-import { formatCurrency } from '~/libs/currency';
-import { formatDisplayDatetime } from '~/libs/date';
+} from '~/common/components/ui/card';
+import { formatCurrency } from '~/common/helpers/currency';
+import { formatDisplayDatetime } from '~/common/helpers/date';
 
 import { useBookingForm } from '../hooks/use-booking-form';
 import { BookingFormPlaceholder } from './booking-form-placeholder';

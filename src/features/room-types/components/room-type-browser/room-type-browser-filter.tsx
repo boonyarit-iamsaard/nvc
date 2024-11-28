@@ -1,10 +1,10 @@
 'use client';
 
-import { Button } from '~/components/ui/button';
-import { DateRangePicker } from '~/components/ui/date-range-picker';
-import { Form } from '~/components/ui/form';
+import { Button } from '~/common/components/ui/button';
+import { DateRangePicker } from '~/common/components/ui/date-range-picker';
+import { Form } from '~/common/components/ui/form';
 
-import { useRoomTypeFilterForm } from '../../hooks/use-room-type-filter-form';
+import { useRoomTypeBrowserFilter } from '../../hooks/use-room-type-browser-filter';
 import type { RoomTypeFilter } from '../../room-types.schema';
 
 type RoomTypeBrowserFilterProps = Readonly<{
@@ -22,7 +22,7 @@ export function RoomTypeBrowserFilter({
     handleClear,
     handleDateRangeChange,
     handleSubmit,
-  } = useRoomTypeFilterForm(onSubmit);
+  } = useRoomTypeBrowserFilter(onSubmit);
 
   return (
     <Form {...form}>

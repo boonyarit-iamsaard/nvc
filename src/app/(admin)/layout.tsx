@@ -1,7 +1,10 @@
 import type { ReactNode } from 'react';
 
-import { AppSidebar } from '~/components/app-sidebar';
-import { SidebarProvider, SidebarTrigger } from '~/components/ui/sidebar';
+import { AppSidebar } from '~/common/components/app-sidebar';
+import {
+  SidebarProvider,
+  SidebarTrigger,
+} from '~/common/components/ui/sidebar';
 
 type AdminLayoutProps = {
   children: ReactNode;

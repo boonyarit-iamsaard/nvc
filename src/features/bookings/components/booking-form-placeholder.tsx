@@ -5,8 +5,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '~/components/ui/card';
-import { Skeleton } from '~/components/ui/skeleton';
+} from '~/common/components/ui/card';
+import { Skeleton } from '~/common/components/ui/skeleton';
 
 export function BookingFormPlaceholder() {
   return (

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import { SiteHeader } from '~/components/site-header';
+import { SiteHeader } from '~/common/components/site-header';
 
 type ProtectedLayoutProps = {
   children: ReactNode;

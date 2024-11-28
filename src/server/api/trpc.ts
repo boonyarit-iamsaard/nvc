@@ -13,6 +13,7 @@ import superjson from 'superjson';
 import { ZodError } from 'zod';
 
 import { AuthService } from '~/core/auth/auth.service';
+import { db } from '~/core/database/client';
 import { VerificationsRepository } from '~/core/verifications/verifications.repository';
 import { VerificationsService } from '~/core/verifications/verifications.service';
 import { BookingsRepository } from '~/features/bookings/bookings.repository';
@@ -25,7 +26,6 @@ import { RoomTypesService } from '~/features/room-types/room-types.service';
 import { UsersRepository } from '~/features/users/users.repository';
 import { UsersService } from '~/features/users/users.service';
 import { getServerAuthSession } from '~/server/auth';
-import { db } from '~/server/db';
 
 /**
  * 0. SERVICES CONTEXT

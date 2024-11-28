@@ -5,7 +5,7 @@ import { getServerSession } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
 import { loginInputSchema } from '~/core/auth/auth.schema';
-import { db } from '~/server/db';
+import { db } from '~/core/database/client';
 
 export type SessionMembership = {
   membershipName: string;

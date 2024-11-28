@@ -3,10 +3,15 @@
 import { format } from 'date-fns';
 import { AlertCircle, Loader2 } from 'lucide-react';
 
-import { Badge } from '~/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
+import { Badge } from '~/common/components/ui/badge';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '~/common/components/ui/card';
+import { useUserSession } from '~/core/auth/hooks/use-user-session';
 import type { GetUserBookingListResult } from '~/features/bookings/bookings.schema';
-import { useUserSession } from '~/libs/auth/hooks/use-user-session';
 import { api } from '~/trpc/react';
 
 type BookingItemProps = Readonly<{

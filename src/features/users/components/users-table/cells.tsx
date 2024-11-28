@@ -6,18 +6,19 @@ import type { Gender } from '@prisma/client';
 import type { VariantProps } from 'class-variance-authority';
 import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 
-import type { badgeVariants } from '~/components/ui/badge';
-import { Badge } from '~/components/ui/badge';
-import { Button } from '~/components/ui/button';
+import type { badgeVariants } from '~/common/components/ui/badge';
+import { Badge } from '~/common/components/ui/badge';
+import { Button } from '~/common/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
-} from '~/components/ui/dropdown-menu';
-import type { GetUserListResult } from '~/features/users/users.schema';
-import { capitalize } from '~/libs/string';
+} from '~/common/components/ui/dropdown-menu';
+import { capitalize } from '~/common/helpers/string';
+
+import type { GetUserListResult } from '../../users.schema';
 
 type CellProps = Readonly<{
   row: {
