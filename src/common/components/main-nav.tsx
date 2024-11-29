@@ -8,7 +8,7 @@ import { useSession } from 'next-auth/react';
 import { Icons } from '~/common/components/icons';
 import { ProfileButton } from '~/common/components/profile-button';
 import { cn } from '~/common/helpers/cn';
-import { mainNav } from '~/core/configs/links';
+import { navConfig } from '~/core/configs/app.config';
 
 export function MainNav() {
   const pathname = usePathname();
@@ -23,7 +23,7 @@ export function MainNav() {
         <Icons.Logo className="h-8 w-auto hover:fill-muted-foreground" />
       </Link>
       <nav className="flex items-center gap-4 text-sm font-medium">
-        {mainNav.map(({ href, title }) => {
+        {navConfig.main.map(({ href, title }) => {
           return href ? (
             <Link
               key={href}
