@@ -11,6 +11,11 @@ services:
       - pgdata:/var/lib/postgresql/data
     networks:
       - nvc-network
+    healthcheck:
+      test: pg_isready -U postgres -h localhost
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   mailpit:
     container_name: nvc-mailpit
@@ -34,6 +39,9 @@ services:
       - '8080:8080'
     networks:
       - nvc-network
+    depends_on:
+      postgres:
+        condition: service_healthy
 
 volumes:
   mailpitdata:
