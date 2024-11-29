@@ -12,6 +12,11 @@ export const authRouter = createTRPCRouter({
         const verification =
           await ctx.services.verificationsService.verifyToken(input);
 
+        await ctx.services.usersService.updateUser({
+          id: verification.userId,
+          user: { emailVerifiedAt: new Date() },
+        });
+
         return {
           success: true,
           message: 'Email verified successfully.',

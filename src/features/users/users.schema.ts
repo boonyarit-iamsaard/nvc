@@ -12,28 +12,32 @@ export const createUserInputSchema = z.object({
   gender: z.nativeEnum(Gender),
 });
 
-export const seedAdminInputSchema = createUserInputSchema.extend({
-  password: z.string(),
+const createUserPartialInputSchema = createUserInputSchema.partial();
+
+export const getUserInputSchema = z.object({
+  id: z.string().uuid(),
 });
 
 export const saveUserInputSchema = createUserInputSchema.extend({
   hashedPassword: z.string(),
 });
 
+export const seedAdminInputSchema = createUserInputSchema.extend({
+  password: z.string(),
+});
+
 export const updateUserInputSchema = z.object({
   id: z.string().uuid(),
-  user: createUserInputSchema,
+  user: createUserPartialInputSchema.extend({
+    emailVerifiedAt: z.date().optional(),
+  }),
 });
 
-export const getUserRequestSchema = z.object({
-  id: z.string().uuid(),
-});
-
+export type GetUserInput = z.infer<typeof getUserInputSchema>;
 export type CreateUserInput = z.infer<typeof createUserInputSchema>;
-export type SeedAdminInput = z.infer<typeof seedAdminInputSchema>;
 export type SaveUserInput = z.infer<typeof saveUserInputSchema>;
+export type SeedAdminInput = z.infer<typeof seedAdminInputSchema>;
 export type UpdateUserInput = z.infer<typeof updateUserInputSchema>;
-export type GetUserInput = z.infer<typeof getUserRequestSchema>;
 
 export type GetUserListResult = Prisma.PromiseReturnType<
   UsersService['getUserList']

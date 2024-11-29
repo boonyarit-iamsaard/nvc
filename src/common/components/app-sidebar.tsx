@@ -38,7 +38,7 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarHeader>
         <div className="flex h-10 items-center">
-          <Link href="/public">
+          <Link href="/">
             <Icons.Logo className="h-8 w-auto hover:fill-muted-foreground" />
           </Link>
         </div>
