@@ -33,6 +33,8 @@ declare module 'next-auth' {
       name: string;
       role: Role;
       gender: Gender;
+      emailVerifiedAt: Date | null;
+      firstLoginAt: Date | null;
       membership?: SessionMembership;
       // ...other properties
     };
@@ -49,6 +51,8 @@ declare module 'next-auth' {
     name: string;
     role: Role;
     gender: Gender;
+    emailVerifiedAt: Date | null;
+    firstLoginAt: Date | null;
     membership?: SessionMembership;
     // ...other properties
   }
@@ -62,6 +66,8 @@ declare module 'next-auth/jwt' {
     id: string;
     gender: Gender;
     role: Role;
+    emailVerifiedAt: Date | null;
+    firstLoginAt: Date | null;
     membership?: SessionMembership;
     // ...other properties
   }
@@ -87,15 +93,19 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.role = user.role;
         token.gender = user.gender;
+        token.emailVerifiedAt = user.emailVerifiedAt;
+        token.firstLoginAt = user.firstLoginAt;
         token.membership = user.membership;
       }
 
       return token;
     },
     async session({ session, token }) {
+      session.user.id = token.id;
       session.user.role = token.role;
       session.user.gender = token.gender;
-      session.user.id = token.id;
+      session.user.emailVerifiedAt = token.emailVerifiedAt;
+      session.user.firstLoginAt = token.firstLoginAt;
       session.user.membership = token.membership;
 
       return session;
@@ -175,7 +185,17 @@ export const authOptions: NextAuthOptions = {
           throw new Error('invalid credentials');
         }
 
-        const { id, email, name, role, gender, image, memberships } = user;
+        const {
+          id,
+          email,
+          name,
+          role,
+          gender,
+          image,
+          emailVerifiedAt,
+          firstLoginAt,
+          memberships,
+        } = user;
 
         const result = {
           id,
@@ -184,6 +204,8 @@ export const authOptions: NextAuthOptions = {
           role,
           gender,
           image,
+          emailVerifiedAt,
+          firstLoginAt,
         };
 
         if (!memberships.length) {

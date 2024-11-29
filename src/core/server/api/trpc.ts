@@ -12,7 +12,7 @@ import { initTRPC, TRPCError } from '@trpc/server';
 import superjson from 'superjson';
 import { ZodError } from 'zod';
 
-import { getServerAuthSession } from '~/core/auth/auth.option';
+import { getServerAuthSession } from '~/core/auth/auth.config';
 import { AuthService } from '~/core/auth/auth.service';
 import { db } from '~/core/database/client';
 import { VerificationsRepository } from '~/core/verifications/verifications.repository';
