@@ -1,8 +1,8 @@
 import { hash } from '@node-rs/argon2';
 import { VerificationType } from '@prisma/client';
 
+import { env } from '~/core/configs/app.env';
 import type { VerificationsService } from '~/core/verifications/verifications.service';
-import { env } from '~/env';
 import type { EmailsService } from '~/features/emails/emails.service';
 import { renderEmailVerificationTemplate } from '~/features/emails/templates/email-verification.template';
 import type {

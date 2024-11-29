@@ -1,5 +1,5 @@
 import type { Icons } from '~/common/components/icons';
-import { env } from '~/env';
+import { env } from '~/core/configs/app.env';
 
 export type NavLink = {
   title: string;

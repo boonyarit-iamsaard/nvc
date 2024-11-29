@@ -1,8 +1,8 @@
 import { TRPCError } from '@trpc/server';
 
 import { verifyTokenInputSchema } from '~/core/auth/auth.schema';
+import { createTRPCRouter, publicProcedure } from '~/core/server/api/trpc';
 import { InvalidTokenError } from '~/core/verifications/exceptions/invalid-token.exception';
-import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 
 export const authRouter = createTRPCRouter({
   verifyEmail: publicProcedure

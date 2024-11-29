@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { Plus } from 'lucide-react';
 
 import { Button } from '~/common/components/ui/button';
+import { api } from '~/core/trpc/server';
 import { UsersTable } from '~/features/users/components/users-table';
-import { api } from '~/trpc/server';
 
 export default async function Page() {
   void api.users.getUserList.prefetch();

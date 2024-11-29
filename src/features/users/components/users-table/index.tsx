@@ -1,7 +1,7 @@
 'use client';
 
 import { DataTable } from '~/common/components/data-table';
-import { api } from '~/trpc/react';
+import { api } from '~/core/trpc/react';
 
 import { columns } from './columns';
 

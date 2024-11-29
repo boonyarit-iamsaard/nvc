@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import { useUserSession } from '~/core/auth/hooks/use-user-session';
+import { api } from '~/core/trpc/react';
 import type { SaveBookingInput } from '~/features/bookings/bookings.schema';
 import { bookingDateRangeSchema } from '~/features/bookings/bookings.schema';
 import type { RoomTypeFilter } from '~/features/room-types/room-types.schema';
-import { api } from '~/trpc/react';
 
 import { getBookingDetails } from '../helpers/get-booking-details';
 

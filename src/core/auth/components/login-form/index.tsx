@@ -31,7 +31,7 @@ import {
 import { Input } from '~/common/components/ui/input';
 import { loginInputSchema } from '~/core/auth/auth.schema';
 import type { LoginInput } from '~/core/auth/auth.schema';
-import { env } from '~/env';
+import { env } from '~/core/configs/app.env';
 
 export function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);

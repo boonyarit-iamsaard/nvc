@@ -1,8 +1,8 @@
 import { authRouter } from '~/core/auth/auth.router';
+import { createCallerFactory, createTRPCRouter } from '~/core/server/api/trpc';
 import { bookingRouter } from '~/features/bookings/bookings.router';
 import { roomTypesRouter } from '~/features/room-types/room-types.router';
 import { usersRouter } from '~/features/users/users.router';
-import { createCallerFactory, createTRPCRouter } from '~/server/api/trpc';
 
 /**
  * This is the primary router for your server.

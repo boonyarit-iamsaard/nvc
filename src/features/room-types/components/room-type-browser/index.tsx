@@ -9,8 +9,8 @@ import { CircleAlert } from 'lucide-react';
 
 import { Badge } from '~/common/components/ui/badge';
 import { Button } from '~/common/components/ui/button';
+import { api } from '~/core/trpc/react';
 import type { RoomTypeFilter } from '~/features/room-types/room-types.schema';
-import { api } from '~/trpc/react';
 
 import { RoomTypeBrowserFilter } from './room-type-browser-filter';
 import { RoomTypeBrowserPlaceholder } from './room-type-browser-placeholder';

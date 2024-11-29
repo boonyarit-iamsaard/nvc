@@ -1,9 +1,9 @@
+import { createTRPCRouter, protectedProcedure } from '~/core/server/api/trpc';
 import {
   createUserInputSchema,
   getUserRequestSchema,
   updateUserInputSchema,
 } from '~/features/users/users.schema';
-import { createTRPCRouter, protectedProcedure } from '~/server/api/trpc';
 
 export const usersRouter = createTRPCRouter({
   getUserList: protectedProcedure.query(({ ctx }) => {

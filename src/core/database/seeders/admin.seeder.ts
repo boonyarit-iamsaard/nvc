@@ -2,9 +2,9 @@ import { hash } from '@node-rs/argon2';
 import type { PrismaClient } from '@prisma/client';
 import { VerificationType } from '@prisma/client';
 
+import { env } from '~/core/configs/app.env';
 import { VerificationsRepository } from '~/core/verifications/verifications.repository';
 import { VerificationsService } from '~/core/verifications/verifications.service';
-import { env } from '~/env';
 import { seedAdminInputSchema } from '~/features/users/users.schema';
 
 import { parseData } from '../helper';

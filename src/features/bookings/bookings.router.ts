@@ -1,12 +1,12 @@
 import {
-  getUserBookingListInputSchema,
-  saveBookingInputSchema,
-} from '~/features/bookings/bookings.schema';
-import {
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
-} from '~/server/api/trpc';
+} from '~/core/server/api/trpc';
+import {
+  getUserBookingListInputSchema,
+  saveBookingInputSchema,
+} from '~/features/bookings/bookings.schema';
 
 export const bookingRouter = createTRPCRouter({
   getUserBookingList: publicProcedure

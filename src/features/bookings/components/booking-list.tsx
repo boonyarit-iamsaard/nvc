@@ -11,8 +11,8 @@ import {
   CardTitle,
 } from '~/common/components/ui/card';
 import { useUserSession } from '~/core/auth/hooks/use-user-session';
+import { api } from '~/core/trpc/react';
 import type { GetUserBookingListResult } from '~/features/bookings/bookings.schema';
-import { api } from '~/trpc/react';
 
 type BookingItemProps = Readonly<{
   booking: Readonly<GetUserBookingListResult[number]>;

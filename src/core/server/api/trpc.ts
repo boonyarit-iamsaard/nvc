@@ -12,6 +12,7 @@ import { initTRPC, TRPCError } from '@trpc/server';
 import superjson from 'superjson';
 import { ZodError } from 'zod';
 
+import { getServerAuthSession } from '~/core/auth/auth.option';
 import { AuthService } from '~/core/auth/auth.service';
 import { db } from '~/core/database/client';
 import { VerificationsRepository } from '~/core/verifications/verifications.repository';
@@ -25,7 +26,6 @@ import { RoomTypesRepository } from '~/features/room-types/room-types.repository
 import { RoomTypesService } from '~/features/room-types/room-types.service';
 import { UsersRepository } from '~/features/users/users.repository';
 import { UsersService } from '~/features/users/users.service';
-import { getServerAuthSession } from '~/server/auth';
 
 /**
  * 0. SERVICES CONTEXT

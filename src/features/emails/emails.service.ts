@@ -2,7 +2,7 @@ import type { Transporter } from 'nodemailer';
 import { createTransport } from 'nodemailer';
 import type SMTPTransport from 'nodemailer/lib/smtp-transport';
 
-import { env } from '~/env';
+import { env } from '~/core/configs/app.env';
 
 export type SendMailParams = {
   subject: string;

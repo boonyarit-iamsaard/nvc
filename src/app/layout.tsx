@@ -6,7 +6,7 @@ import type { Metadata } from 'next';
 import { cn } from '~/common/helpers/cn';
 import { fontSans, fontSerif } from '~/common/helpers/fonts';
 import { NextAuthProvider } from '~/core/auth/providers/next-auth-provider';
-import { TRPCReactProvider } from '~/trpc/react';
+import { TRPCReactProvider } from '~/core/trpc/react';
 
 export const metadata: Metadata = {
   title: 'Naturist Vacation Club',

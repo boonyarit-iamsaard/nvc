@@ -8,9 +8,9 @@ import type {
 import { Gender, Role, VerificationType } from '@prisma/client';
 import { addYears, endOfDay, startOfDay, subDays } from 'date-fns';
 
+import { env } from '~/core/configs/app.env';
 import { VerificationsRepository } from '~/core/verifications/verifications.repository';
 import { VerificationsService } from '~/core/verifications/verifications.service';
-import { env } from '~/env';
 
 async function findAllMemberships(prisma: PrismaClient) {
   return prisma.membership.findMany({

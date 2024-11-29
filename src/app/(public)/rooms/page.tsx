@@ -1,5 +1,5 @@
+import { api, HydrateClient } from '~/core/trpc/server';
 import { RoomTypeBrowser } from '~/features/room-types/components/room-type-browser';
-import { api, HydrateClient } from '~/trpc/server';
 
 export default async function Page() {
   void api.roomTypes.getRoomTypeList.prefetch({});

@@ -7,7 +7,7 @@ import { VerificationType } from '@prisma/client';
 import { CheckCircle, Loader2 } from 'lucide-react';
 
 import { VerificationStateCard } from '~/core/auth/components/verify-email/verification-state-card';
-import { api } from '~/trpc/react';
+import { api } from '~/core/trpc/react';
 
 type VerificationState = {
   success: boolean | null;

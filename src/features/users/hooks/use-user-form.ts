@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import type { UseFormReturn } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 
-import { api } from '~/trpc/react';
+import { api } from '~/core/trpc/react';
 
 import { getUserFormDefaultValues } from '../helpers/get-user-form-default-values';
 import type { CreateUserInput } from '../users.schema';

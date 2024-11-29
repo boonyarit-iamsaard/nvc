@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 
+import { HydrateClient } from '~/core/trpc/server';
 import { BookingForm } from '~/features/bookings/components/booking-form';
-import { HydrateClient } from '~/trpc/server';
 
 export default async function Page() {
   return (
