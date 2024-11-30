@@ -8,17 +8,17 @@ import {
 } from '~/common/components/ui/card';
 import { cn } from '~/common/helpers/cn';
 
-type VerificationStateCardProps = Readonly<{
+export type VerifyEmailStateCardProps = Readonly<{
   title: string;
   titleClassName?: string;
   children: ReactNode;
 }>;
 
-export function VerificationStateCard({
+export function VerifyEmailStateCard({
   title,
   titleClassName,
   children,
-}: VerificationStateCardProps) {
+}: VerifyEmailStateCardProps) {
   return (
     <Card>
       <CardHeader className="pb-4">

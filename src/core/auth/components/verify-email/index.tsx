@@ -6,13 +6,10 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { VerificationType } from '@prisma/client';
 import { CheckCircle, Loader2 } from 'lucide-react';
 
-import { VerificationStateCard } from '~/core/auth/components/verify-email/verification-state-card';
+import type { AsyncState } from '~/common/types/state';
+import { createInitialAsyncState } from '~/common/types/state';
+import { VerifyEmailStateCard } from '~/core/auth/components/verify-email/verify-email-state-card';
 import { api } from '~/core/trpc/react';
-
-type VerificationState = {
-  success: boolean | null;
-  message: string | null;
-};
 
 export function VerifyEmail() {
   const router = useRouter();
@@ -20,18 +17,16 @@ export function VerifyEmail() {
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
 
-  const [verificationState, setVerificationState] = useState<VerificationState>(
-    {
-      success: null,
-      message: null,
-    },
+  const [verifyEmailState, setVerifyEmailState] = useState<AsyncState<boolean>>(
+    createInitialAsyncState(),
   );
 
   const verifyEmailMutation = api.auth.verifyEmail.useMutation({
     onSuccess(data) {
-      setVerificationState({
-        success: data.success,
+      setVerifyEmailState({
+        status: 'success',
         message: data.message,
+        data: data.success,
       });
 
       if (data.success) {
@@ -41,18 +36,19 @@ export function VerifyEmail() {
       }
     },
     onError(error) {
-      setVerificationState({
-        success: false,
+      setVerifyEmailState({
+        status: 'error',
         message: error.message,
+        data: false,
       });
     },
   });
 
-  const isEmailVerificationPending = verifyEmailMutation.isPending;
-  const isVerificationInProgress =
-    token && isEmailVerificationPending && verificationState.success === null;
-  const isVerificationSuccessful = token && verificationState.success === true;
-  const isVerificationFailed = token && verificationState.success === false;
+  const isPending = verifyEmailMutation.isPending;
+  const isLoading = token && isPending && verifyEmailState.status === 'idle';
+  const isSuccess =
+    token && verifyEmailState.status === 'success' && verifyEmailState.data;
+  const isError = token && verifyEmailState.status === 'error';
 
   useEffect(() => {
     if (token && !hasVerified.current) {
@@ -69,25 +65,25 @@ export function VerifyEmail() {
   return (
     <div className="container mx-auto flex w-full max-w-md flex-col gap-4">
       {!token && (
-        <VerificationStateCard title="Invalid Verification Link">
+        <VerifyEmailStateCard title="Invalid Verification Link">
           <p className="text-center text-muted-foreground">
             The verification link is missing or invalid. Please use the link
             from your verification email. The ability to request a new
             verification link will be available soon.
           </p>
-        </VerificationStateCard>
+        </VerifyEmailStateCard>
       )}
 
-      {isVerificationInProgress && (
-        <VerificationStateCard title="Verifying Email">
+      {isLoading && (
+        <VerifyEmailStateCard title="Verifying Email">
           <div className="flex justify-center">
             <Loader2 className="h-6 w-6 animate-spin" />
           </div>
-        </VerificationStateCard>
+        </VerifyEmailStateCard>
       )}
 
-      {isVerificationSuccessful && (
-        <VerificationStateCard
+      {isSuccess && (
+        <VerifyEmailStateCard
           title="Email Verified"
           titleClassName="text-primary"
         >
@@ -95,8 +91,8 @@ export function VerifyEmail() {
             <CheckCircle className="h-6 w-6 text-primary" />
             <div className="flex flex-col gap-2 text-center text-muted-foreground">
               <p>
-                Your email has been successfully verified. You will be
-                redirected to login in 5 seconds.
+                Your email has been verified successfully. You will be
+                redirected to the login page shortly.
               </p>
               <p className="text-sm">
                 You can log in using the initial password that was sent with
@@ -104,19 +100,19 @@ export function VerifyEmail() {
               </p>
             </div>
           </div>
-        </VerificationStateCard>
+        </VerifyEmailStateCard>
       )}
 
-      {isVerificationFailed && (
-        <VerificationStateCard
+      {isError && (
+        <VerifyEmailStateCard
           title="Verification Failed"
           titleClassName="text-destructive"
         >
           <p className="text-center text-muted-foreground">
-            {verificationState.message ??
+            {verifyEmailState.message ??
               'Something went wrong. Please try again later.'}
           </p>
-        </VerificationStateCard>
+        </VerifyEmailStateCard>
       )}
     </div>
   );
