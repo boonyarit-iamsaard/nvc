@@ -50,8 +50,8 @@ export function VerifyEmail() {
 
   const isEmailVerificationPending = verifyEmailMutation.isPending;
   const isVerificationInProgress =
-    token && isEmailVerificationPending && !verificationState.success;
-  const isVerificationSuccessful = token && verificationState.success;
+    token && isEmailVerificationPending && verificationState.success === null;
+  const isVerificationSuccessful = token && verificationState.success === true;
   const isVerificationFailed = token && verificationState.success === false;
 
   useEffect(() => {
