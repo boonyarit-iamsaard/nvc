@@ -43,22 +43,37 @@ export function createServiceContext(db: PrismaClient) {
   const verificationsRepository = new VerificationsRepository(db);
 
   /**
-   * Services
+   * Standalone services
+   * These services don't depend on repositories or other services
    */
   const emailsService = new EmailsService();
+
+  /**
+   * Repository-dependent services
+   * These services only depend on their respective repositories
+   */
   const verificationsService = new VerificationsService(
     verificationsRepository,
   );
-
-  const authService = new AuthService(verificationsService);
   const bookingsService = new BookingsService(bookingsRepository);
   const membershipsService = new MembershipsService(membershipsRepository);
   const roomTypesService = new RoomTypesService(roomTypesRepository);
+
+  /**
+   * Composite services with repository
+   * These services depend on both repositories and other services
+   */
   const usersService = new UsersService(
     emailsService,
     usersRepository,
     verificationsService,
   );
+
+  /**
+   * Composite services
+   * These services only depend on other services
+   */
+  const authService = new AuthService(verificationsService, usersService);
 
   return {
     authService,

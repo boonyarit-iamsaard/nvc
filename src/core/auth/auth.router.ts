@@ -1,8 +1,17 @@
 import { TRPCError } from '@trpc/server';
 
-import { verifyTokenInputSchema } from '~/core/auth/auth.schema';
-import { createTRPCRouter, publicProcedure } from '~/core/server/api/trpc';
-import { InvalidTokenError } from '~/core/verifications/exceptions/invalid-token.exception';
+import {
+  changePasswordInputSchema,
+  verifyTokenInputSchema,
+} from '~/core/auth/auth.schema';
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from '~/core/server/api/trpc';
+import { InvalidTokenError } from '~/core/verifications/errors/invalid-token.error';
+
+import { InvalidCredentialsError } from './errors/invalid-credentials.error';
 
 export const authRouter = createTRPCRouter({
   verifyEmail: publicProcedure
@@ -29,7 +38,7 @@ export const authRouter = createTRPCRouter({
         };
       } catch (error) {
         // TODO: implement logger and standardize logging messages
-        console.error('Email verification error: ', JSON.stringify(error));
+        console.error('Verify email error: ', JSON.stringify(error));
 
         if (error instanceof InvalidTokenError) {
           throw new TRPCError({
@@ -40,7 +49,35 @@ export const authRouter = createTRPCRouter({
 
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
-          message: 'Unable to process verification. Please try again later.',
+          message: 'Failed to verify email. Please try again.',
+        });
+      }
+    }),
+
+  changePassword: protectedProcedure
+    .input(changePasswordInputSchema)
+    .mutation(async ({ ctx, input }) => {
+      try {
+        await ctx.services.authService.changePassword(input);
+
+        return {
+          success: true,
+          message: 'Password updated successfully.',
+        };
+      } catch (error) {
+        // TODO: implement logger and standardize logging messages
+        console.error('Change password error: ', JSON.stringify(error));
+
+        if (error instanceof InvalidCredentialsError) {
+          throw new TRPCError({
+            code: 'BAD_REQUEST',
+            message: error.message,
+          });
+        }
+
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to update password. Please try again.',
         });
       }
     }),
