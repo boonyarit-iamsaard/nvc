@@ -14,7 +14,7 @@ export function useUserSession() {
       redirect: false,
       callbackUrl: '/login',
     });
-    router.push(response.url);
+    router.replace(response.url);
   }
 
   useEffect(() => {
