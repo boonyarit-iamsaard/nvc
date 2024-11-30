@@ -1,7 +1,7 @@
 'use client';
 
 import type { ChangeEvent } from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
@@ -31,6 +31,7 @@ import {
 import { Input } from '~/common/components/ui/input';
 import { loginInputSchema } from '~/core/auth/auth.schema';
 import type { LoginInput } from '~/core/auth/auth.schema';
+import { useUserSession } from '~/core/auth/hooks/use-user-session';
 import { env } from '~/core/configs/app.env';
 
 export function LoginForm() {
@@ -39,6 +40,7 @@ export function LoginForm() {
     null,
   );
   const router = useRouter();
+  const { data: session, status } = useUserSession();
 
   const form = useForm<LoginInput>({
     defaultValues: {
@@ -83,12 +85,12 @@ export function LoginForm() {
 
         console.error(response?.error);
         setLoginErrorMessage(errorMessage);
+        setIsLoading(false);
 
         return;
       }
 
       setIsLoading(false);
-      router.replace('/');
     } catch (error) {
       console.error(error);
       setLoginErrorMessage('An unexpected error occurred. Please try again.');
@@ -97,11 +99,23 @@ export function LoginForm() {
     }
   };
 
+  useEffect(() => {
+    if (status === 'authenticated' && session) {
+      if (!session.user.firstLoginAt) {
+        router.replace('/change-password');
+      } else {
+        router.replace('/');
+      }
+    }
+  }, [status, session, router]);
+
   return (
     <Card className="mx-auto max-w-sm">
       <CardHeader className="space-y-6">
         <div className="flex justify-center">
-          <Icons.Logo className="h-12 w-12" />
+          <Link href="/">
+            <Icons.Logo className="h-12 w-auto hover:fill-muted-foreground" />
+          </Link>
         </div>
         <div className="space-y-2">
           <CardTitle className="text-center text-2xl">Welcome back</CardTitle>
@@ -145,6 +159,7 @@ export function LoginForm() {
                       autoComplete="current-password"
                       disabled={isLoading}
                       onChange={handlePasswordChange}
+                      placeholder="password"
                       type="password"
                     />
                   </FormControl>
