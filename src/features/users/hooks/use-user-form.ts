@@ -32,7 +32,7 @@ export function useUserForm({ id }: UseUserFormParams): UseUserFormReturn {
       console.error(error);
     },
     onSuccess() {
-      void utils.users.getUserList.invalidate();
+      void utils.users.getUsers.invalidate();
       router.replace('/admin/users');
     },
   });
@@ -41,7 +41,7 @@ export function useUserForm({ id }: UseUserFormParams): UseUserFormReturn {
       console.error(error);
     },
     onSuccess() {
-      void utils.users.getUserList.invalidate();
+      void utils.users.getUsers.invalidate();
       router.replace('/admin/users');
     },
   });

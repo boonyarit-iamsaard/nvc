@@ -1,4 +1,4 @@
-import type { PrismaClient } from '@prisma/client';
+import type { Prisma, PrismaClient } from '@prisma/client';
 
 import type {
   GetUserInput,
@@ -9,81 +9,44 @@ import type {
 export class UsersRepository {
   constructor(private readonly db: PrismaClient) {}
 
-  getUserList() {
+  private readonly defaultFields: Prisma.UserSelect = {
+    id: true,
+    email: true,
+    name: true,
+    image: true,
+    role: true,
+    gender: true,
+  } as const;
+
+  async getUsers() {
     return this.db.user.findMany({
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        role: true,
-        gender: true,
-        memberships: {
-          where: {
-            startDate: {
-              lte: new Date(),
-            },
-            endDate: {
-              gte: new Date(),
-            },
-            deletedAt: {
-              equals: null,
-            },
-          },
-          take: 1,
-          orderBy: {
-            endDate: 'desc',
-          },
-          select: {
-            membershipName: true,
-            membershipNumber: true,
-            startDate: true,
-            endDate: true,
-          },
-        },
-      },
+      select: this.defaultFields,
     });
   }
 
-  getUser({ id }: GetUserInput) {
+  async getUser(input: GetUserInput) {
+    const { id } = input;
+
     return this.db.user.findUnique({
       where: { id },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        image: true,
-        role: true,
-        gender: true,
-      },
+      select: this.defaultFields,
     });
   }
 
-  createUser(user: SaveUserInput) {
+  async createUser(input: SaveUserInput) {
     return this.db.user.create({
-      data: user,
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        image: true,
-        role: true,
-        gender: true,
-      },
+      data: input,
+      select: this.defaultFields,
     });
   }
 
-  updateUser({ id, user }: UpdateUserInput) {
+  async updateUser(input: UpdateUserInput) {
+    const { id, user } = input;
+
     return this.db.user.update({
       where: { id },
       data: user,
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        image: true,
-        role: true,
-        gender: true,
-      },
+      select: this.defaultFields,
     });
   }
 }

@@ -6,8 +6,8 @@ import {
 } from '~/features/users/users.schema';
 
 export const usersRouter = createTRPCRouter({
-  getUserList: protectedProcedure.query(({ ctx }) => {
-    return ctx.services.usersService.getUserList();
+  getUsers: protectedProcedure.query(({ ctx }) => {
+    return ctx.services.usersService.getUsers();
   }),
 
   getUser: protectedProcedure

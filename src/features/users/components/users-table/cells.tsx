@@ -18,11 +18,11 @@ import {
 } from '~/common/components/ui/dropdown-menu';
 import { capitalize } from '~/common/helpers/string';
 
-import type { GetUserListResult } from '../../users.schema';
+import type { GetUsersResult } from '../../users.schema';
 
 type CellProps = Readonly<{
   row: {
-    original: GetUserListResult[number];
+    original: GetUsersResult[number];
   };
 }>;
 

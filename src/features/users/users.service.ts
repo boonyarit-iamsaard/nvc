@@ -20,11 +20,11 @@ export class UsersService {
     private readonly verificationsService: VerificationsService,
   ) {}
 
-  getUserList() {
-    return this.usersRepository.getUserList();
+  async getUsers() {
+    return this.usersRepository.getUsers();
   }
 
-  getUser(input: GetUserInput) {
+  async getUser(input: GetUserInput) {
     return this.usersRepository.getUser(input);
   }
 

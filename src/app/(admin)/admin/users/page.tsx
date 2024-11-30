@@ -7,7 +7,7 @@ import { api } from '~/core/trpc/server';
 import { UsersTable } from '~/features/users/components/users-table';
 
 export default async function Page() {
-  void api.users.getUserList.prefetch();
+  void api.users.getUsers.prefetch();
 
   return (
     <div className="container space-y-6 py-12">
