@@ -16,6 +16,10 @@ export const getUserInputSchema = z.object({
   id: z.string().uuid(),
 });
 
+export const getUserCredentialsInputSchema = z.object({
+  id: z.string().uuid(),
+});
+
 export const createUserInputSchema = baseUserInputSchema;
 
 export const saveUserInputSchema = baseUserInputSchema.extend({
@@ -26,6 +30,22 @@ export const seedAdminInputSchema = baseUserInputSchema.extend({
   password: z.string(),
 });
 
+export const changePasswordInputSchema = z.object({
+  id: z.string().uuid(),
+  user: z.object({
+    password: z.string(),
+    firstLoginAt: z.date().optional(),
+  }),
+});
+
+export const updatePasswordInputSchema = z.object({
+  id: z.string().uuid(),
+  user: z.object({
+    hashedPassword: z.string(),
+    firstLoginAt: z.date().optional(),
+  }),
+});
+
 export const updateUserInputSchema = z.object({
   id: z.string().uuid(),
   user: baseUserInputSchema.partial().extend({
@@ -34,10 +54,15 @@ export const updateUserInputSchema = z.object({
 });
 
 export type GetUserInput = z.infer<typeof getUserInputSchema>;
+export type GetUserCredentialsInput = z.infer<
+  typeof getUserCredentialsInputSchema
+>;
 
 export type CreateUserInput = z.infer<typeof createUserInputSchema>;
 export type SaveUserInput = z.infer<typeof saveUserInputSchema>;
 export type SeedAdminInput = z.infer<typeof seedAdminInputSchema>;
+export type ChangePasswordInput = z.infer<typeof changePasswordInputSchema>;
+export type UpdatePasswordInput = z.infer<typeof updatePasswordInputSchema>;
 
 export type UpdateUserInput = z.infer<typeof updateUserInputSchema>;
 

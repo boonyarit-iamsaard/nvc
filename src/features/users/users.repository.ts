@@ -1,8 +1,10 @@
 import type { Prisma, PrismaClient } from '@prisma/client';
 
 import type {
+  GetUserCredentialsInput,
   GetUserInput,
   SaveUserInput,
+  UpdatePasswordInput,
   UpdateUserInput,
 } from '~/features/users/users.schema';
 
@@ -33,9 +35,32 @@ export class UsersRepository {
     });
   }
 
+  async getUserCredentials(input: GetUserCredentialsInput) {
+    const { id } = input;
+
+    return this.db.user.findUnique({
+      where: { id },
+      select: { hashedPassword: true },
+    });
+  }
+
   async createUser(input: SaveUserInput) {
     return this.db.user.create({
       data: input,
+      select: this.defaultFields,
+    });
+  }
+
+  async updatePassword(input: UpdatePasswordInput) {
+    const { id, user } = input;
+    const { hashedPassword, firstLoginAt } = user;
+
+    return this.db.user.update({
+      where: { id },
+      data: {
+        hashedPassword,
+        ...(firstLoginAt && { firstLoginAt }),
+      },
       select: this.defaultFields,
     });
   }

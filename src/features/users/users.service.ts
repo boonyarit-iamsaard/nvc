@@ -6,7 +6,9 @@ import type { VerificationsService } from '~/core/verifications/verifications.se
 import type { EmailsService } from '~/features/emails/emails.service';
 import { renderEmailVerificationTemplate } from '~/features/emails/templates/email-verification.template';
 import type {
+  ChangePasswordInput,
   CreateUserInput,
+  GetUserCredentialsInput,
   GetUserInput,
   UpdateUserInput,
 } from '~/features/users/users.schema';
@@ -26,6 +28,10 @@ export class UsersService {
 
   async getUser(input: GetUserInput) {
     return this.usersRepository.getUser(input);
+  }
+
+  async getUserCredentials(input: GetUserCredentialsInput) {
+    return this.usersRepository.getUserCredentials(input);
   }
 
   async createUser(input: CreateUserInput) {
@@ -58,6 +64,21 @@ export class UsersService {
     });
 
     return user;
+  }
+
+  async changePassword(input: ChangePasswordInput) {
+    const { id, user } = input;
+    const { password, firstLoginAt } = user;
+
+    const hashedPassword = await this.hashPassword(password);
+
+    return this.usersRepository.updatePassword({
+      id,
+      user: {
+        hashedPassword,
+        firstLoginAt,
+      },
+    });
   }
 
   async updateUser(input: UpdateUserInput) {
