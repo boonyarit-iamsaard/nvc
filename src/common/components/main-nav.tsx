@@ -19,7 +19,7 @@ export function MainNav() {
 
   return (
     <div className="hidden md:flex md:flex-1 md:gap-4">
-      <Link href="/public">
+      <Link href="/">
         <Icons.Logo className="h-8 w-auto hover:fill-muted-foreground" />
       </Link>
       <nav className="flex items-center gap-4 text-sm font-medium">

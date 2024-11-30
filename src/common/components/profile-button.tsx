@@ -47,20 +47,26 @@ export function ProfileButton() {
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
             <Link href="/profile">
-              <User className="mr-2 h-4 w-4" />
+              <User className="mr-2 size-4" />
               <span>Profile</span>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
+            <Link href="/change-password">
+              <User className="mr-2 size-4" />
+              <span>Change Password</span>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
             <Link href="/bookings">
-              <Calendar className="mr-2 h-4 w-4" />
+              <Calendar className="mr-2 size-4" />
               <span>Bookings</span>
             </Link>
           </DropdownMenuItem>
           {hasAdministrativeRights ? (
             <DropdownMenuItem asChild>
               <Link href="/admin">
-                <ShieldCheckIcon className="mr-2 h-4 w-4" />
+                <ShieldCheckIcon className="mr-2 size-4" />
                 <span>Admin</span>
               </Link>
             </DropdownMenuItem>
@@ -68,7 +74,7 @@ export function ProfileButton() {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleSignOut}>
-          <LogOut className="mr-2 h-4 w-4" />
+          <LogOut className="mr-2 size-4" />
           <span>Sign out</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
