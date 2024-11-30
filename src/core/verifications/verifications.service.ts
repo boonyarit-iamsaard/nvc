@@ -2,7 +2,7 @@ import { randomBytes } from 'crypto';
 
 import ms from 'ms';
 
-import { InvalidTokenError } from './exceptions/invalid-token.exception';
+import { InvalidTokenError } from './errors/invalid-token.error';
 import type { VerificationsRepository } from './verifications.repository';
 import type {
   CreateVerificationInput,
