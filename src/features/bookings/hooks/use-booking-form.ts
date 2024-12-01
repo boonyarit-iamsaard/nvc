@@ -19,6 +19,8 @@ type UseBookingFormResult = {
 export function useBookingForm(): UseBookingFormResult {
   const router = useRouter();
   const params = useSearchParams();
+  const utils = api.useUtils();
+
   const [filter, setFilter] = useState<RoomTypeFilter | undefined>(undefined);
   const [bookingDetails, setBookingDetails] =
     useState<CreateBookingInput | null>(null);
@@ -34,8 +36,8 @@ export function useBookingForm(): UseBookingFormResult {
     onError(error) {
       console.error(error);
     },
-    onSuccess(data) {
-      console.log(data);
+    onSuccess() {
+      void utils.bookings.getUserBookingList.invalidate();
       router.replace('/bookings');
     },
   });
