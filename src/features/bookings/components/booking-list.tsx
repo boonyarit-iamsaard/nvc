@@ -1,39 +1,16 @@
 'use client';
 
-import { format } from 'date-fns';
 import { AlertCircle, Loader2 } from 'lucide-react';
 
-import { Badge } from '~/common/components/ui/badge';
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '~/common/components/ui/card';
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from '~/common/components/ui/alert';
 import { useUserSession } from '~/core/auth/hooks/use-user-session';
 import { api } from '~/core/trpc/react';
-import type { GetUserBookingListResult } from '~/features/bookings/bookings.schema';
 
-type BookingItemProps = Readonly<{
-  booking: Readonly<GetUserBookingListResult[number]>;
-}>;
-
-function BookingItem({ booking }: BookingItemProps) {
-  return (
-    <Card key={booking.id}>
-      <CardHeader>
-        <CardTitle className="flex items-center text-lg">
-          {booking.room?.type?.name}
-          <Badge className="ml-4">{booking.room?.name}</Badge>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <p>Check-in: {format(new Date(booking.checkIn), 'PPpp')}</p>
-        <p>Check-out: {format(new Date(booking.checkOut), 'PPpp')}</p>
-      </CardContent>
-    </Card>
-  );
-}
+import { BookingItem } from './booking-item';
 
 export function BookingList() {
   const { data } = useUserSession();
@@ -45,39 +22,38 @@ export function BookingList() {
     { userId: data?.user.id ?? '' },
     {
       enabled: !!data?.user.id,
-      retry: 1,
-      refetchOnWindowFocus: false,
     },
   );
 
   if (error) {
     return (
       <div className="container py-8">
-        <div className="flex items-center justify-center space-x-2 text-destructive">
-          <AlertCircle className="h-4 w-4" />
-          <span>Failed to load bookings</span>
-        </div>
+        <Alert variant="destructive">
+          <AlertCircle className="size-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>Failed to load your bookings.</AlertDescription>
+        </Alert>
       </div>
     );
   }
 
-  if (isLoading) {
+  if (isLoading || !bookingList) {
     return (
       <div className="container py-8">
-        <div className="flex items-center justify-center space-x-2">
-          <Loader2 className="h-4 w-4 animate-spin" />
-          <span>Loading your bookings...</span>
-        </div>
+        <Alert>
+          <Loader2 className="size-4 animate-spin" />
+          <AlertDescription>Loading your bookings...</AlertDescription>
+        </Alert>
       </div>
     );
   }
 
-  if (!bookingList?.length) {
+  if (bookingList.length === 0) {
     return (
       <div className="container py-8">
-        <p className="text-center text-muted-foreground">
-          You do not have any bookings.
-        </p>
+        <Alert>
+          <AlertDescription>You do not have any bookings.</AlertDescription>
+        </Alert>
       </div>
     );
   }
