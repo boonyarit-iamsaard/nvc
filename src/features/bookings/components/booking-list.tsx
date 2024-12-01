@@ -39,32 +39,26 @@ export function BookingList() {
 
   if (isLoading || !bookingList) {
     return (
-      <div className="container py-8">
-        <Alert>
-          <Loader2 className="size-4 animate-spin" />
-          <AlertDescription>Loading your bookings...</AlertDescription>
-        </Alert>
-      </div>
+      <Alert>
+        <Loader2 className="size-4 animate-spin" />
+        <AlertDescription>Loading your bookings...</AlertDescription>
+      </Alert>
     );
   }
 
   if (bookingList.length === 0) {
     return (
-      <div className="container py-8">
-        <Alert>
-          <AlertDescription>You do not have any bookings.</AlertDescription>
-        </Alert>
-      </div>
+      <Alert>
+        <AlertDescription>You do not have any bookings.</AlertDescription>
+      </Alert>
     );
   }
 
   return (
-    <div className="container py-8">
-      <div className="space-y-4">
-        {bookingList.map((booking) => (
-          <BookingItem key={booking.id} booking={booking} />
-        ))}
-      </div>
+    <div className="space-y-4">
+      {bookingList.map((booking) => (
+        <BookingItem key={booking.id} booking={booking} />
+      ))}
     </div>
   );
 }

@@ -108,7 +108,7 @@ export function CheckoutForm({ amount }: CheckoutFormProps) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <Card className="mx-auto max-w-screen-sm">
+      <Card className="mx-auto max-w-screen-sm bg-background">
         <CardHeader className="flex flex-row items-start justify-between space-y-0 border-b px-8 py-6">
           <div className="space-y-1.5">
             <CardTitle className="text-2xl font-semibold tracking-tight">

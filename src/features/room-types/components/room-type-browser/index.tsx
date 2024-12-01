@@ -56,7 +56,7 @@ export function RoomTypeBrowser() {
   }, [roomTypeList]);
 
   return (
-    <div className="space-y-8">
+    <div className="container space-y-8 py-8">
       <RoomTypeBrowserFilter onSubmit={setFilter} />
 
       {overlappedBookings > 0 ? (

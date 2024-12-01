@@ -1,11 +1,12 @@
 'use client';
 
+import { Calendar, Clock, CreditCard, Home, Tag, User } from 'lucide-react';
+
 import { Button } from '~/common/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '~/common/components/ui/card';
@@ -25,116 +26,146 @@ export function BookingForm() {
 
   if (!bookingDetails) {
     return (
-      <div className="container py-12">
-        <Card className="flex items-center justify-center border-border p-8">
-          <div className="text-lg">No booking details available</div>
-        </Card>
-      </div>
+      <Card className="flex items-center justify-center border-border p-8">
+        <div className="text-lg">No booking details available</div>
+      </Card>
     );
   }
 
   return (
-    <div className="container py-12">
-      <Card className="overflow-hidden border-border">
-        <CardHeader className="border-b border-border bg-muted">
-          <CardTitle>Booking Details</CardTitle>
-          <CardDescription>
-            Please review your booking details before proceeding
-          </CardDescription>
-        </CardHeader>
+    <Card className="overflow-hidden">
+      <CardHeader className="bg-gradient-to-b from-muted/30 to-background">
+        <CardTitle>Booking Details</CardTitle>
+        <CardDescription>
+          Please review your booking details before proceeding
+        </CardDescription>
+      </CardHeader>
 
-        <CardContent className="space-y-6 p-6">
-          <div className="space-y-3">
-            <h4 className="font-medium">Room Information</h4>
-            <div className="space-y-2">
-              <div className="flex justify-between">
+      <CardContent className="space-y-6">
+        <div className="space-y-3">
+          <h4 className="font-medium">Room Information</h4>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Home className="size-4 text-muted-foreground" />
                 <span className="text-muted-foreground">Room Type</span>
-                <span className="font-medium">
-                  {bookingDetails.roomTypeName}
-                </span>
               </div>
-              <div className="flex justify-between">
+              <span className="font-medium">{bookingDetails.roomTypeName}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Tag className="size-4 text-muted-foreground" />
                 <span className="text-muted-foreground">Room Number</span>
-                <span className="font-medium">{bookingDetails.roomName}</span>
               </div>
+              <span className="font-medium">{bookingDetails.roomName}</span>
             </div>
           </div>
+        </div>
 
-          <div className="h-px bg-border" />
+        <div className="h-px bg-border" />
 
-          <div className="space-y-3">
-            <h4 className="font-medium">Stay Duration</h4>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
+        <div className="space-y-3">
+          <h4 className="font-medium">Stay Duration</h4>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Clock className="size-4 text-muted-foreground" />
                 <span className="text-muted-foreground">Duration</span>
-                <div className="text-lg font-medium">
-                  {bookingDetails.weekdayCount + bookingDetails.weekendCount}{' '}
-                  nights
-                </div>
               </div>
-              <div className="flex items-center justify-between">
+              <div className="text-lg font-medium">
+                {bookingDetails.weekdayCount + bookingDetails.weekendCount}{' '}
+                nights
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Calendar className="size-4 text-muted-foreground" />
                 <span className="text-muted-foreground">Check-in</span>
-                <div className="text-right">
-                  <div className="text-lg font-medium">
-                    {formatDisplayDatetime(bookingDetails.checkIn).date}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    {formatDisplayDatetime(bookingDetails.checkIn).time}
-                  </div>
+              </div>
+              <div className="text-right">
+                <div className="text-lg font-medium">
+                  {formatDisplayDatetime(bookingDetails.checkIn).date}
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  {formatDisplayDatetime(bookingDetails.checkIn).time}
                 </div>
               </div>
-              <div className="flex items-center justify-between">
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Calendar className="size-4 text-muted-foreground" />
                 <span className="text-muted-foreground">Check-out</span>
-                <div className="text-right">
-                  <div className="text-lg font-medium">
-                    {formatDisplayDatetime(bookingDetails.checkOut).date}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    {formatDisplayDatetime(bookingDetails.checkOut).time}
-                  </div>
+              </div>
+              <div className="text-right">
+                <div className="text-lg font-medium">
+                  {formatDisplayDatetime(bookingDetails.checkOut).date}
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  {formatDisplayDatetime(bookingDetails.checkOut).time}
                 </div>
               </div>
             </div>
           </div>
+        </div>
 
-          <div className="h-px bg-border" />
+        <div className="h-px bg-border" />
 
-          <div className="space-y-3">
-            <h4 className="font-medium text-muted-foreground">Summary</h4>
-            <div className="space-y-2.5">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Room Rate</span>
-                <span>{formatCurrency(bookingDetails.baseAmount)} THB</span>
+        <div className="space-y-3">
+          <h4 className="font-medium">Summary</h4>
+          <div className="space-y-2.5">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <CreditCard className="size-4 text-muted-foreground" />
+                <span className="text-muted-foreground">Base Amount</span>
               </div>
-              {bookingDetails.discountAmount > 0 && (
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Member Benefit</span>
-                  <span className="text-emerald-600">
-                    -{formatCurrency(bookingDetails.discountAmount)} THB
+              <span>฿{formatCurrency(bookingDetails.baseAmount)}</span>
+            </div>
+            {bookingDetails.discountAmount > 0 && (
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <User className="size-4 text-muted-foreground" />
+                  <span className="text-muted-foreground">
+                    Discount (
+                    {(
+                      (bookingDetails.discountAmount /
+                        bookingDetails.baseAmount) *
+                      100
+                    ).toFixed(0)}
+                    %)
                   </span>
                 </div>
-              )}
-            </div>
+                <span className="text-destructive">
+                  -฿{formatCurrency(bookingDetails.discountAmount)}
+                </span>
+              </div>
+            )}
           </div>
+        </div>
 
-          <div className="h-px bg-border" />
+        <div className="h-px bg-border" />
 
-          <div>
-            <div className="flex justify-between">
-              <span className="font-medium">Total</span>
-              <span className="text-lg font-medium">
-                {formatCurrency(bookingDetails.totalAmount)} THB
-              </span>
+        <div>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <CreditCard className="size-4" />
+              <span className="font-medium">Total Amount</span>
             </div>
+            <span className="text-lg font-medium">
+              ฿{formatCurrency(bookingDetails.totalAmount)}
+            </span>
           </div>
-        </CardContent>
+        </div>
+      </CardContent>
 
-        <CardFooter className="flex justify-end border-t border-border pt-6">
+      <div className="h-px bg-border" />
+
+      <div className="p-6">
+        <div className="flex justify-end">
           <Button onClick={handleSubmit} disabled={isSubmitting}>
             {isSubmitting ? 'Booking...' : 'Book Now'}
           </Button>
-        </CardFooter>
-      </Card>
-    </div>
+        </div>
+      </div>
+    </Card>
   );
 }

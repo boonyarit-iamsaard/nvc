@@ -1,8 +1,9 @@
+'use client';
+
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '~/common/components/ui/card';
@@ -10,90 +11,116 @@ import { Skeleton } from '~/common/components/ui/skeleton';
 
 export function BookingFormPlaceholder() {
   return (
-    <div className="container py-12">
-      <Card>
-        <CardHeader className="border-b border-border bg-muted">
-          <CardTitle>Your booking details</CardTitle>
-          <CardDescription>
-            Please review your booking information before confirming.
-          </CardDescription>
-        </CardHeader>
+    <Card className="overflow-hidden">
+      <CardHeader className="bg-gradient-to-b from-muted/30 to-background">
+        <CardTitle>Booking Details</CardTitle>
+        <CardDescription>
+          Please review your booking details before proceeding
+        </CardDescription>
+      </CardHeader>
 
-        <CardContent className="space-y-6 p-6">
-          {/* Room Information */}
-          <div className="space-y-3">
-            <h4 className="font-medium">Room Information</h4>
-            <div className="space-y-2">
-              <div className="flex justify-between">
+      <CardContent className="space-y-6">
+        {/* Room Information */}
+        <div className="space-y-3">
+          <h4 className="font-medium">Room Information</h4>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Skeleton className="size-4" />
                 <span className="text-muted-foreground">Room Type</span>
-                <Skeleton className="h-5 w-32" />
               </div>
-              <div className="flex justify-between">
+              <Skeleton className="h-5 w-32" />
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Skeleton className="size-4" />
                 <span className="text-muted-foreground">Room Number</span>
-                <Skeleton className="h-5 w-24" />
               </div>
+              <Skeleton className="h-5 w-24" />
             </div>
           </div>
+        </div>
 
-          <div className="h-px bg-border" />
+        <div className="h-px bg-border" />
 
-          {/* Stay Duration */}
-          <div className="space-y-3">
-            <h4 className="font-medium">Stay Duration</h4>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
+        {/* Stay Duration */}
+        <div className="space-y-3">
+          <h4 className="font-medium">Stay Duration</h4>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Skeleton className="size-4" />
                 <span className="text-muted-foreground">Duration</span>
-                <Skeleton className="h-7 w-28" />
               </div>
-              <div className="flex items-center justify-between">
+              <Skeleton className="h-7 w-28" />
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Skeleton className="size-4" />
                 <span className="text-muted-foreground">Check-in</span>
-                <div className="space-y-1 text-right">
-                  <Skeleton className="h-7 w-32" />
-                  <Skeleton className="h-4 w-24" />
-                </div>
               </div>
-              <div className="flex items-center justify-between">
+              <div className="space-y-1 text-right">
+                <Skeleton className="h-7 w-32" />
+                <Skeleton className="h-4 w-24" />
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Skeleton className="size-4" />
                 <span className="text-muted-foreground">Check-out</span>
-                <div className="space-y-1 text-right">
-                  <Skeleton className="h-7 w-32" />
-                  <Skeleton className="h-4 w-24" />
-                </div>
+              </div>
+              <div className="space-y-1 text-right">
+                <Skeleton className="h-7 w-32" />
+                <Skeleton className="h-4 w-24" />
               </div>
             </div>
           </div>
+        </div>
 
-          <div className="h-px bg-border" />
+        <div className="h-px bg-border" />
 
-          {/* Summary */}
-          <div className="space-y-3">
-            <h4 className="font-medium text-muted-foreground">Summary</h4>
-            <div className="space-y-2.5">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Room Rate</span>
-                <Skeleton className="h-5 w-24" />
+        {/* Summary */}
+        <div className="space-y-3">
+          <h4 className="font-medium">Summary</h4>
+          <div className="space-y-2.5">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Skeleton className="size-4" />
+                <span className="text-muted-foreground">Base Amount</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Member Benefit</span>
-                <Skeleton className="h-5 w-24" />
+              <Skeleton className="h-5 w-24" />
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Skeleton className="size-4" />
+                <span className="text-muted-foreground">Discount</span>
               </div>
+              <Skeleton className="h-5 w-24" />
             </div>
           </div>
+        </div>
 
-          <div className="h-px bg-border" />
+        <div className="h-px bg-border" />
 
-          {/* Total */}
-          <div>
-            <div className="flex justify-between">
-              <span className="font-medium">Total</span>
-              <Skeleton className="h-7 w-32" />
+        {/* Total */}
+        <div>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <Skeleton className="size-4" />
+              <span className="font-medium">Total Amount</span>
             </div>
+            <Skeleton className="h-7 w-32" />
           </div>
-        </CardContent>
+        </div>
+      </CardContent>
 
-        <CardFooter className="flex justify-end border-t border-border pt-6">
-          <Skeleton className="h-12 w-40" />
-        </CardFooter>
-      </Card>
-    </div>
+      <div className="h-px bg-border" />
+
+      <div className="p-6">
+        <div className="flex justify-end">
+          <Skeleton className="h-10 w-24" />
+        </div>
+      </div>
+    </Card>
   );
 }
