@@ -22,6 +22,7 @@ import { BookingsService } from '~/features/bookings/bookings.service';
 import { EmailsService } from '~/features/emails/emails.service';
 import { MembershipsRepository } from '~/features/memberships/memberships.repository';
 import { MembershipsService } from '~/features/memberships/memberships.service';
+import { PaymentsService } from '~/features/payments/payments.service';
 import { RoomTypesRepository } from '~/features/room-types/room-types.repository';
 import { RoomTypesService } from '~/features/room-types/room-types.service';
 import { UsersRepository } from '~/features/users/users.repository';
@@ -47,6 +48,7 @@ export function createServiceContext(db: PrismaClient) {
    * These services don't depend on repositories or other services
    */
   const emailsService = new EmailsService();
+  const paymentsService = new PaymentsService();
 
   /**
    * Repository-dependent services
@@ -80,6 +82,7 @@ export function createServiceContext(db: PrismaClient) {
     bookingsService,
     emailsService,
     membershipsService,
+    paymentsService,
     roomTypesService,
     usersService,
     verificationsService,
