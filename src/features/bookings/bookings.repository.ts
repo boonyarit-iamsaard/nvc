@@ -1,6 +1,7 @@
-import type { PrismaClient } from '@prisma/client';
+import type { Prisma, PrismaClient } from '@prisma/client';
 
 import type {
+  GetBookingInput,
   GetUserBookingListInput,
   SaveBookingInput,
 } from './bookings.schema';
@@ -22,6 +23,15 @@ export class BookingsRepository {
         user: true,
       },
     });
+  }
+
+  async getBooking(input: GetBookingInput) {
+    const where: Prisma.BookingWhereUniqueInput =
+      'bookingNumber' in input
+        ? { bookingNumber: input.bookingNumber }
+        : { id: input.id };
+
+    return this.db.booking.findUnique({ where });
   }
 
   async createBooking(input: SaveBookingInput) {

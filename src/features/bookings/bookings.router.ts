@@ -3,16 +3,24 @@ import {
   protectedProcedure,
   publicProcedure,
 } from '~/core/server/api/trpc';
+
 import {
   createBookingInputSchema,
+  getBookingInputSchema,
   getUserBookingListInputSchema,
-} from '~/features/bookings/bookings.schema';
+} from './bookings.schema';
 
 export const bookingRouter = createTRPCRouter({
   getUserBookingList: publicProcedure
     .input(getUserBookingListInputSchema)
     .query(({ ctx, input }) => {
       return ctx.services.bookingsService.getUserBookingList(input);
+    }),
+
+  getBooking: publicProcedure
+    .input(getBookingInputSchema)
+    .query(({ ctx, input }) => {
+      return ctx.services.bookingsService.getBooking(input);
     }),
 
   createBooking: protectedProcedure

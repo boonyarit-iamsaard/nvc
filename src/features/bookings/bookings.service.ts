@@ -5,6 +5,7 @@ import { format } from 'date-fns';
 import type { BookingsRepository } from './bookings.repository';
 import type {
   CreateBookingInput,
+  GetBookingInput,
   GetUserBookingListInput,
 } from './bookings.schema';
 
@@ -13,6 +14,10 @@ export class BookingsService {
 
   async getUserBookingList(input: GetUserBookingListInput) {
     return this.bookingsRepository.getUserBookingList(input);
+  }
+
+  async getBooking(input: GetBookingInput) {
+    return this.bookingsRepository.getBooking(input);
   }
 
   async createBooking(input: CreateBookingInput) {

@@ -81,12 +81,22 @@ export const getUserBookingListInputSchema = z.object({
   userId: z.string().uuid(),
 });
 
+export const getBookingInputSchema = z.union([
+  z.object({
+    bookingNumber: z.string().min(1),
+  }),
+  z.object({
+    id: z.string().uuid(),
+  }),
+]);
+
 export type BookingDateRange = z.infer<typeof bookingDateRangeSchema>;
 export type CreateBookingInput = z.infer<typeof createBookingInputSchema>;
 export type SaveBookingInput = z.infer<typeof saveBookingSchema>;
 export type GetUserBookingListInput = z.infer<
   typeof getUserBookingListInputSchema
 >;
+export type GetBookingInput = z.infer<typeof getBookingInputSchema>;
 
 export type GetUserBookingListResult = Prisma.PromiseReturnType<
   BookingsService['getUserBookingList']
