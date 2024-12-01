@@ -1,6 +1,14 @@
 'use client';
 
-import { Calendar, Clock, CreditCard, Home, Tag, User } from 'lucide-react';
+import {
+  Calendar,
+  Clock,
+  CreditCard,
+  Home,
+  Loader2,
+  Tag,
+  User,
+} from 'lucide-react';
 
 import { Button } from '~/common/components/ui/button';
 import {
@@ -162,7 +170,14 @@ export function BookingForm() {
       <div className="p-6">
         <div className="flex justify-end">
           <Button onClick={handleSubmit} disabled={isSubmitting}>
-            {isSubmitting ? 'Booking...' : 'Book Now'}
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Booking...
+              </>
+            ) : (
+              'Book Now'
+            )}
           </Button>
         </div>
       </div>

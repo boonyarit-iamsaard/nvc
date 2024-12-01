@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 
 import { useUserSession } from '~/core/auth/hooks/use-user-session';
 import { api } from '~/core/trpc/react';
@@ -11,46 +11,59 @@ import { getBookingDetails } from '../helpers/get-booking-details';
 
 type UseBookingFormResult = {
   bookingDetails: CreateBookingInput | null;
+  error: Error | null;
   isLoading: boolean;
   isSubmitting: boolean;
-  handleSubmit: () => void;
+  handleSubmit: () => Promise<void>;
 };
 
 export function useBookingForm(): UseBookingFormResult {
-  const router = useRouter();
   const params = useSearchParams();
-  const utils = api.useUtils();
 
-  const [filter, setFilter] = useState<RoomTypeFilter | undefined>(undefined);
   const [bookingDetails, setBookingDetails] =
     useState<CreateBookingInput | null>(null);
+  const [error, setError] = useState<Error | null>(null);
+  const [filter, setFilter] = useState<RoomTypeFilter | undefined>(undefined);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { data: userSession } = useUserSession();
-  const { data: roomType, isLoading: isLoadingRoomType } =
-    api.roomTypes.getRoomType.useQuery({
-      id: params.get('id') ?? '',
-      filter,
-    });
-
-  const createBookingMutation = api.bookings.createBooking.useMutation({
-    onError(error) {
-      console.error(error);
-    },
-    onSuccess() {
-      void utils.bookings.getUserBookingList.invalidate();
-      router.replace('/bookings');
-    },
+  const { data: roomType, isLoading } = api.roomTypes.getRoomType.useQuery({
+    id: params.get('id') ?? '',
+    filter,
   });
 
-  const isLoading = isLoadingRoomType;
-  const isSubmitting = createBookingMutation.isPending;
+  const createCheckoutSessionMutation =
+    api.payments.createCheckoutSession.useMutation();
+  const createBookingMutation = api.bookings.createBooking.useMutation();
 
-  function handleSubmit() {
+  async function handleSubmit() {
     if (!bookingDetails) {
       return;
     }
 
-    createBookingMutation.mutate(bookingDetails);
+    try {
+      setIsSubmitting(true);
+
+      const bookingResponse =
+        await createBookingMutation.mutateAsync(bookingDetails);
+
+      const checkoutResponse =
+        await createCheckoutSessionMutation.mutateAsync(bookingResponse);
+
+      // TODO: sinc url is type string | null, ensure whether null handling is required
+      if (checkoutResponse.data.checkoutSession.url) {
+        window.location.href = checkoutResponse.data.checkoutSession.url;
+      }
+    } catch (error) {
+      console.error(error);
+      if (error instanceof Error) {
+        setError(error);
+      }
+
+      setError(new Error('Failed to create booking. Please try again.'));
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   useEffect(() => {
@@ -108,6 +121,7 @@ export function useBookingForm(): UseBookingFormResult {
 
   return {
     bookingDetails,
+    error,
     isLoading,
     isSubmitting,
     handleSubmit,

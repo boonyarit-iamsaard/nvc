@@ -1,29 +1,31 @@
 import { TRPCError } from '@trpc/server';
 
 import { createTRPCRouter, protectedProcedure } from '~/core/server/api/trpc';
-import { createPaymentIntentInputSchema } from '~/features/payments/payments.schema';
+
+import { createCheckoutSessionInputSchema } from './payments.schema';
 
 export const paymentsRouter = createTRPCRouter({
-  createPaymentIntent: protectedProcedure
-    .input(createPaymentIntentInputSchema)
-    .query(async ({ ctx, input }) => {
+  createCheckoutSession: protectedProcedure
+    .input(createCheckoutSessionInputSchema)
+    .mutation(async ({ ctx, input }) => {
       try {
-        const paymentIntent =
-          await ctx.services.paymentsService.createPaymentIntent(input);
+        const checkoutSession =
+          await ctx.services.paymentsService.createCheckoutSession(input);
 
         return {
           success: true,
           data: {
-            clientSecret: paymentIntent.client_secret,
+            // TODO: consider returning checkout session url instead of session object
+            checkoutSession,
           },
         };
       } catch (error) {
         // TODO: implement logger and standardize logging messages
-        console.error('Verify email error: ', JSON.stringify(error));
+        console.error('Create checkout session error: ', JSON.stringify(error));
 
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to create payment intent. Please try again.',
+          message: 'Failed to create checkout session. Please try again.',
         });
       }
     }),

@@ -37,6 +37,17 @@ export class BookingsRepository {
   async createBooking(input: SaveBookingInput) {
     return this.db.booking.create({
       data: input,
+      select: {
+        bookingNumber: true,
+        checkIn: true,
+        checkOut: true,
+        guestName: true,
+        guestEmail: true,
+        // guestCustomerId: true,
+        roomName: true,
+        roomTypeName: true,
+        totalAmount: true,
+      },
     });
   }
 }
