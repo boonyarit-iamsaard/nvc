@@ -1,7 +1,11 @@
+import { randomBytes } from 'crypto';
+
+import { format } from 'date-fns';
+
 import type { BookingsRepository } from './bookings.repository';
 import type {
+  CreateBookingInput,
   GetUserBookingListInput,
-  SaveBookingInput,
 } from './bookings.schema';
 
 export class BookingsService {
@@ -11,7 +15,21 @@ export class BookingsService {
     return this.bookingsRepository.getUserBookingList(input);
   }
 
-  async createBooking(input: SaveBookingInput) {
-    return this.bookingsRepository.createBooking(input);
+  async createBooking(input: CreateBookingInput) {
+    const { roomName } = input;
+    const bookingNumber = this.generateBookingNumber(roomName);
+
+    return this.bookingsRepository.createBooking({
+      ...input,
+      bookingNumber,
+    });
+  }
+
+  private generateBookingNumber(roomName: string) {
+    const dateIdentifier = format(new Date(), 'yyyyMMdd');
+    const roomIdentifier = roomName.replace('-', '').toUpperCase();
+    const identifier = randomBytes(3).toString('hex').toUpperCase();
+
+    return `${dateIdentifier}${roomIdentifier}${identifier}`;
   }
 }

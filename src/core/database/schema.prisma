@@ -111,6 +111,7 @@ model Booking {
   userId                String?              @map("user_id")
   room                  Room?                @relation(fields: [roomId], references: [id], onDelete: SetNull)
   roomId                String?              @map("room_id")
+  bookingNumber         String               @unique
   checkIn               DateTime             @map("check_in")
   checkOut              DateTime             @map("check_out")
   guestName             String               @map("guest_name")

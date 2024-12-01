@@ -4,8 +4,8 @@ import {
   publicProcedure,
 } from '~/core/server/api/trpc';
 import {
+  createBookingInputSchema,
   getUserBookingListInputSchema,
-  saveBookingInputSchema,
 } from '~/features/bookings/bookings.schema';
 
 export const bookingRouter = createTRPCRouter({
@@ -16,7 +16,7 @@ export const bookingRouter = createTRPCRouter({
     }),
 
   createBooking: protectedProcedure
-    .input(saveBookingInputSchema)
+    .input(createBookingInputSchema)
     .mutation(({ ctx, input }) => {
       return ctx.services.bookingsService.createBooking(input);
     }),

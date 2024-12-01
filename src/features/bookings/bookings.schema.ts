@@ -38,7 +38,7 @@ export const bookingDateRangeSchema = z
     },
   );
 
-export const saveBookingInputSchema = z.object({
+export const createBookingInputSchema = z.object({
   userId: z.string().uuid(),
   roomId: z.string().uuid(),
   checkIn: z.coerce.date(),
@@ -63,11 +63,18 @@ export const saveBookingInputSchema = z.object({
     .optional()
     .default(0),
   totalAmount: z.number().int().nonnegative(),
-  bookingStatus: z.nativeEnum(BookingStatus).optional().default('PENDING'),
+  bookingStatus: z
+    .nativeEnum(BookingStatus)
+    .optional()
+    .default(BookingStatus.PENDING),
   paymentStatus: z
     .nativeEnum(BookingPaymentStatus)
     .optional()
-    .default('PENDING'),
+    .default(BookingPaymentStatus.PENDING),
+});
+
+export const saveBookingSchema = createBookingInputSchema.extend({
+  bookingNumber: z.string().min(1),
 });
 
 export const getUserBookingListInputSchema = z.object({
@@ -75,7 +82,8 @@ export const getUserBookingListInputSchema = z.object({
 });
 
 export type BookingDateRange = z.infer<typeof bookingDateRangeSchema>;
-export type SaveBookingInput = z.infer<typeof saveBookingInputSchema>;
+export type CreateBookingInput = z.infer<typeof createBookingInputSchema>;
+export type SaveBookingInput = z.infer<typeof saveBookingSchema>;
 export type GetUserBookingListInput = z.infer<
   typeof getUserBookingListInputSchema
 >;

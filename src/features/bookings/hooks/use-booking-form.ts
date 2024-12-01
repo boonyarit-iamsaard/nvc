@@ -3,14 +3,14 @@ import { useRouter, useSearchParams } from 'next/navigation';
 
 import { useUserSession } from '~/core/auth/hooks/use-user-session';
 import { api } from '~/core/trpc/react';
-import type { SaveBookingInput } from '~/features/bookings/bookings.schema';
+import type { CreateBookingInput } from '~/features/bookings/bookings.schema';
 import { bookingDateRangeSchema } from '~/features/bookings/bookings.schema';
 import type { RoomTypeFilter } from '~/features/room-types/room-types.schema';
 
 import { getBookingDetails } from '../helpers/get-booking-details';
 
 type UseBookingFormResult = {
-  bookingDetails: SaveBookingInput | null;
+  bookingDetails: CreateBookingInput | null;
   isLoading: boolean;
   isSubmitting: boolean;
   handleSubmit: () => void;
@@ -20,9 +20,8 @@ export function useBookingForm(): UseBookingFormResult {
   const router = useRouter();
   const params = useSearchParams();
   const [filter, setFilter] = useState<RoomTypeFilter | undefined>(undefined);
-  const [bookingDetails, setBookingDetails] = useState<SaveBookingInput | null>(
-    null,
-  );
+  const [bookingDetails, setBookingDetails] =
+    useState<CreateBookingInput | null>(null);
 
   const { data: userSession } = useUserSession();
   const { data: roomType, isLoading: isLoadingRoomType } =

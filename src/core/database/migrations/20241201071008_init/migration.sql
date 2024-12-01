@@ -74,6 +74,7 @@ CREATE TABLE "bookings" (
     "id" TEXT NOT NULL,
     "user_id" TEXT,
     "room_id" TEXT,
+    "bookingNumber" TEXT NOT NULL,
     "check_in" TIMESTAMP(3) NOT NULL,
     "check_out" TIMESTAMP(3) NOT NULL,
     "guest_name" TEXT NOT NULL,
@@ -187,6 +188,9 @@ CREATE UNIQUE INDEX "room_types_price_id_key" ON "room_types"("price_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "rooms_name_key" ON "rooms"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "bookings_bookingNumber_key" ON "bookings"("bookingNumber");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "memberships_name_key" ON "memberships"("name");
