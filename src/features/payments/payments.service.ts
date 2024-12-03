@@ -25,6 +25,8 @@ export class PaymentsService {
       guestCustomerId,
       roomName,
       roomTypeName,
+      weekdayCount,
+      weekendCount,
       totalAmount,
     } = input;
 
@@ -41,7 +43,7 @@ export class PaymentsService {
             currency: this.stripeCurrency,
             product_data: {
               name: `${roomTypeName} (${roomName})`,
-              description: `Check-in: ${format(new Date(checkIn), 'PP')}\nCheck-out: ${format(new Date(checkOut), 'PP')}`,
+              description: `${format(checkIn, 'PPP')} - ${format(checkOut, 'PPP')} (${weekdayCount + weekendCount} nights)`,
               metadata: {
                 booking_number: bookingNumber,
               },

@@ -9,6 +9,8 @@ export const createCheckoutSessionInputSchema = z.object({
   guestCustomerId: z.string().min(1).optional(),
   roomName: z.string().min(1),
   roomTypeName: z.string().min(1),
+  weekdayCount: z.number().int().nonnegative(),
+  weekendCount: z.number().int().nonnegative(),
   totalAmount: z.number().int().nonnegative(),
 });
 

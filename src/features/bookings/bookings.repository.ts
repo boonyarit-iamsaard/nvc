@@ -60,6 +60,8 @@ export class BookingsRepository {
         // guestCustomerId: true,
         roomName: true,
         roomTypeName: true,
+        weekdayCount: true,
+        weekendCount: true,
         totalAmount: true,
       },
     });
