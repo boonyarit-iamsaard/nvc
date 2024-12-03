@@ -56,7 +56,7 @@ export function RoomTypeBrowser() {
   }, [roomTypeList]);
 
   return (
-    <div className="container space-y-8 py-8">
+    <section className="space-y-8">
       <RoomTypeBrowserFilter onSubmit={setFilter} />
 
       {overlappedBookings > 0 ? (
@@ -123,6 +123,6 @@ export function RoomTypeBrowser() {
               </li>
             ))}
       </ul>
-    </div>
+    </section>
   );
 }

@@ -110,7 +110,7 @@ export function ChangePasswordForm() {
   const isError = changePasswordState.status === 'error';
 
   return (
-    <Card className="mx-auto max-w-sm">
+    <Card>
       {isSuccess ? (
         <>
           <CardHeader className="space-y-6">

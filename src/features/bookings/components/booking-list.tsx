@@ -1,7 +1,8 @@
 'use client';
 
-import { AlertCircle, Loader2 } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 
+import { LoadingSpinner } from '~/common/components/loading-spinner';
 import {
   Alert,
   AlertDescription,
@@ -27,23 +28,16 @@ export function BookingList() {
 
   if (error) {
     return (
-      <div className="container py-8">
-        <Alert variant="destructive">
-          <AlertCircle className="size-4" />
-          <AlertTitle>Error</AlertTitle>
-          <AlertDescription>Failed to load your bookings.</AlertDescription>
-        </Alert>
-      </div>
+      <Alert variant="destructive" className="bg-background">
+        <AlertCircle className="size-4" />
+        <AlertTitle>Error</AlertTitle>
+        <AlertDescription>Failed to load your bookings.</AlertDescription>
+      </Alert>
     );
   }
 
   if (isLoading || !bookingList) {
-    return (
-      <Alert>
-        <Loader2 className="size-4 animate-spin" />
-        <AlertDescription>Loading your bookings...</AlertDescription>
-      </Alert>
-    );
+    return <LoadingSpinner />;
   }
 
   if (bookingList.length === 0) {

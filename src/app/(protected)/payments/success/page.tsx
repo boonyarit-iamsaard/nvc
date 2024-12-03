@@ -26,8 +26,8 @@ export default async function Page(props: PageProps) {
 
   if (!success) {
     return (
-      <div className="mx-auto flex max-w-screen-sm flex-col items-center gap-6">
-        <Alert variant="destructive">
+      <div className="flex flex-col items-center gap-6">
+        <Alert variant="destructive" className="bg-background">
           <AlertCircle className="size-4" />
           <AlertTitle>Error</AlertTitle>
           <AlertDescription>
@@ -44,7 +44,7 @@ export default async function Page(props: PageProps) {
   const { 'booking-number': bookingNumber } = data;
 
   return (
-    <Card className="mx-auto max-w-screen-sm bg-background">
+    <Card>
       <CardHeader className="flex flex-col items-center space-y-2 text-center">
         <CheckCircle2 className="h-16 w-16 text-green-500" />
         <h1 className="text-2xl font-bold">Payment Successful</h1>

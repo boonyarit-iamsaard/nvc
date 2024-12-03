@@ -48,7 +48,6 @@ export function VerifyEmail() {
   const isLoading = token && isPending && verifyEmailState.status === 'idle';
   const isSuccess =
     token && verifyEmailState.status === 'success' && verifyEmailState.data;
-  const isError = token && verifyEmailState.status === 'error';
 
   useEffect(() => {
     if (token && !hasVerified.current) {
@@ -62,58 +61,60 @@ export function VerifyEmail() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  if (!token) {
+    return (
+      <VerifyEmailStateCard title="Invalid Verification Link">
+        <p className="text-center text-muted-foreground">
+          The verification link is missing or invalid. Please use the link from
+          your verification email. The ability to request a new verification
+          link will be available soon.
+        </p>
+      </VerifyEmailStateCard>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <VerifyEmailStateCard title="Verifying Email">
+        <div className="flex justify-center">
+          <Loader2 className="h-6 w-6 animate-spin" />
+        </div>
+      </VerifyEmailStateCard>
+    );
+  }
+
+  if (isSuccess) {
+    return (
+      <VerifyEmailStateCard
+        title="Email Verified"
+        titleClassName="text-primary"
+      >
+        <div className="flex flex-col items-center gap-4">
+          <CheckCircle className="h-6 w-6 text-primary" />
+          <div className="flex flex-col gap-2 text-center text-muted-foreground">
+            <p>
+              Your email has been verified successfully. You will be redirected
+              to the login page shortly.
+            </p>
+            <p className="text-sm">
+              You can log in using the initial password that was sent with your
+              verification link.
+            </p>
+          </div>
+        </div>
+      </VerifyEmailStateCard>
+    );
+  }
+
   return (
-    <div className="container mx-auto flex w-full max-w-md flex-col gap-4">
-      {!token && (
-        <VerifyEmailStateCard title="Invalid Verification Link">
-          <p className="text-center text-muted-foreground">
-            The verification link is missing or invalid. Please use the link
-            from your verification email. The ability to request a new
-            verification link will be available soon.
-          </p>
-        </VerifyEmailStateCard>
-      )}
-
-      {isLoading && (
-        <VerifyEmailStateCard title="Verifying Email">
-          <div className="flex justify-center">
-            <Loader2 className="h-6 w-6 animate-spin" />
-          </div>
-        </VerifyEmailStateCard>
-      )}
-
-      {isSuccess && (
-        <VerifyEmailStateCard
-          title="Email Verified"
-          titleClassName="text-primary"
-        >
-          <div className="flex flex-col items-center gap-4">
-            <CheckCircle className="h-6 w-6 text-primary" />
-            <div className="flex flex-col gap-2 text-center text-muted-foreground">
-              <p>
-                Your email has been verified successfully. You will be
-                redirected to the login page shortly.
-              </p>
-              <p className="text-sm">
-                You can log in using the initial password that was sent with
-                your verification link.
-              </p>
-            </div>
-          </div>
-        </VerifyEmailStateCard>
-      )}
-
-      {isError && (
-        <VerifyEmailStateCard
-          title="Verification Failed"
-          titleClassName="text-destructive"
-        >
-          <p className="text-center text-muted-foreground">
-            {verifyEmailState.message ??
-              'Something went wrong. Please try again later.'}
-          </p>
-        </VerifyEmailStateCard>
-      )}
-    </div>
+    <VerifyEmailStateCard
+      title="Verification Failed"
+      titleClassName="text-destructive"
+    >
+      <p className="text-center text-muted-foreground">
+        {verifyEmailState.message ??
+          'Something went wrong. Please try again later.'}
+      </p>
+    </VerifyEmailStateCard>
   );
 }

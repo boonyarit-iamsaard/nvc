@@ -110,7 +110,7 @@ export function LoginForm() {
   }, [status, session, router]);
 
   return (
-    <Card className="mx-auto max-w-sm">
+    <Card>
       <CardHeader className="space-y-6">
         <div className="flex justify-center">
           <Link href="/">
