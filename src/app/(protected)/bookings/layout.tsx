@@ -12,7 +12,7 @@ export default function BookingsLayout({
   return (
     <div className="relative">
       <div className="absolute inset-x-0 top-0 h-[35vh] bg-gradient-to-b from-muted/60 via-muted/30 to-background" />
-      <ContentContainer className="relative" layout="header">
+      <ContentContainer className="relative" layout="header" size="lg">
         {children}
       </ContentContainer>
     </div>

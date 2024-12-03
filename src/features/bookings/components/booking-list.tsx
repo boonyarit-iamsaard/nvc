@@ -11,7 +11,7 @@ import {
 import { useUserSession } from '~/core/auth/hooks/use-user-session';
 import { api } from '~/core/trpc/react';
 
-import { BookingItem } from './booking-item';
+import { BookingListItem } from './booking-list-item';
 
 export function BookingList() {
   const { data } = useUserSession();
@@ -49,10 +49,14 @@ export function BookingList() {
   }
 
   return (
-    <div className="space-y-4">
-      {bookingList.map((booking) => (
-        <BookingItem key={booking.id} booking={booking} />
-      ))}
+    <div className="space-y-6">
+      <h1 className="text-2xl font-bold">Booking History</h1>
+
+      <div className="flex flex-col gap-4">
+        {bookingList.map((booking) => (
+          <BookingListItem key={booking.id} booking={booking} />
+        ))}
+      </div>
     </div>
   );
 }

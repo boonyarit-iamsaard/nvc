@@ -35,7 +35,17 @@ export class BookingsRepository {
         ? { bookingNumber: input.bookingNumber }
         : { id: input.id };
 
-    return this.db.booking.findUnique({ where });
+    return this.db.booking.findUnique({
+      where,
+      include: {
+        room: {
+          include: {
+            type: true,
+          },
+        },
+        user: true,
+      },
+    });
   }
 
   async createBooking(input: CreateBookingParams) {

@@ -35,7 +35,7 @@ export default async function Page(props: PageProps) {
           </AlertDescription>
         </Alert>
         <Button asChild size="lg">
-          <a href="/bookings">View Bookings</a>
+          <Link href="/bookings">View Booking</Link>
         </Button>
       </div>
     );
@@ -61,7 +61,7 @@ export default async function Page(props: PageProps) {
         </div>
         <div className="flex justify-center gap-4">
           <Button variant="outline" asChild>
-            <Link href="/bookings">View Bookings</Link>
+            <Link href={`/bookings/${bookingNumber}`}>View Booking</Link>
           </Button>
           <Button asChild>
             <Link href="/">Return Home</Link>
