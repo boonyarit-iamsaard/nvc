@@ -10,6 +10,7 @@ export class PaymentsService {
   private readonly stripeCurrency: string;
 
   constructor() {
+    // TODO: specify stripe version
     this.stripe = new Stripe(env.STRIPE_SECRET_KEY);
     this.stripeCurrency = env.STRIPE_CURRENCY;
   }
@@ -52,6 +53,9 @@ export class PaymentsService {
       ],
       customer: customer.id,
       payment_method_types: ['card', 'promptpay'],
+      metadata: {
+        booking_number: bookingNumber,
+      },
       mode: 'payment',
       success_url: `${env.APP_URL}/payments/success?booking-number=${bookingNumber}`,
       cancel_url: `${env.APP_URL}/payments/cancel`,

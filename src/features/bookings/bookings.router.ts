@@ -1,7 +1,10 @@
+import { z } from 'zod';
+
 import {
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
+  webhookProcedure,
 } from '~/core/server/api/trpc';
 
 import {
@@ -27,5 +30,11 @@ export const bookingRouter = createTRPCRouter({
     .input(createBookingInputSchema)
     .mutation(({ ctx, input }) => {
       return ctx.services.bookingsService.createBooking(input);
+    }),
+
+  markBookingAsPaid: webhookProcedure
+    .input(z.object({ bookingNumber: z.string().min(1) }))
+    .mutation(({ input }) => {
+      console.log('mark booking as paid: ', input.bookingNumber);
     }),
 });

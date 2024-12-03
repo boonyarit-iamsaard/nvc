@@ -212,6 +212,26 @@ export const protectedProcedure = t.procedure
     });
   });
 
+/**
+ * Webhook procedure
+ *
+ * This procedure is specifically for internal webhook handlers that have already
+ * been authenticated (e.g. by Stripe signature verification)
+ */
+export const webhookProcedure = t.procedure
+  .use(timingMiddleware)
+  .use(({ ctx, next }) => {
+    const isInternalWebhook = ctx.headers.get('x-internal-webhook') === 'true';
+    if (!isInternalWebhook) {
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+        message:
+          'This endpoint can only be called from internal webhook handlers',
+      });
+    }
+    return next();
+  });
+
 export type PublicContext = Awaited<ReturnType<typeof createTRPCContext>>;
 export type ProtectedContext = PublicContext & {
   session: NonNullable<PublicContext['session']> & {

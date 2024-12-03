@@ -41,6 +41,7 @@ export const env = createEnv({
 
     STRIPE_CURRENCY: z.string().toLowerCase().trim().length(3),
     STRIPE_SECRET_KEY: z.string(),
+    STRIPE_WEBHOOK_SECRET_KEY: z.string(),
   },
 
   /**
@@ -89,6 +90,7 @@ export const env = createEnv({
 
     STRIPE_CURRENCY: process.env.STRIPE_CURRENCY,
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+    STRIPE_WEBHOOK_SECRET_KEY: process.env.STRIPE_WEBHOOK_SECRET_KEY,
     NEXT_PUBLIC_STRIPE_CURRENCY: process.env.NEXT_PUBLIC_STRIPE_CURRENCY,
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
       process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
