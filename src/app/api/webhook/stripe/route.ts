@@ -56,7 +56,7 @@ const handler = async (req: NextRequest) => {
         data: null,
       },
       {
-        status: 400,
+        status: 500,
       },
     );
   }
@@ -69,14 +69,16 @@ async function handleSessionCompleted(
   caller: WebhookContextCaller,
 ) {
   const bookingNumber = session.metadata?.booking_number;
-  if (!bookingNumber) {
-    console.error('No booking number found in session metadata');
+  const amount = session.amount_total;
+  if (!bookingNumber || !amount) {
+    console.error('No booking number or amount found in session metadata');
 
     return;
   }
 
-  await caller.bookings.markBookingAsPaid({
+  await caller.bookings.updateBookingStatus({
     bookingNumber,
+    amount,
   });
 }
 

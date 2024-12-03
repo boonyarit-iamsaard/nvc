@@ -1,9 +1,10 @@
 import type { Prisma, PrismaClient } from '@prisma/client';
 
 import type {
+  CreateBookingParams,
   GetBookingInput,
   GetUserBookingListInput,
-  SaveBookingInput,
+  UpdateBookingStatusParams,
 } from './bookings.schema';
 
 export class BookingsRepository {
@@ -22,6 +23,9 @@ export class BookingsRepository {
         },
         user: true,
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
   }
 
@@ -34,7 +38,7 @@ export class BookingsRepository {
     return this.db.booking.findUnique({ where });
   }
 
-  async createBooking(input: SaveBookingInput) {
+  async createBooking(input: CreateBookingParams) {
     return this.db.booking.create({
       data: input,
       select: {
@@ -47,6 +51,20 @@ export class BookingsRepository {
         roomName: true,
         roomTypeName: true,
         totalAmount: true,
+      },
+    });
+  }
+
+  async updateBookingStatus(input: UpdateBookingStatusParams) {
+    const { bookingNumber, bookingStatus, paymentStatus } = input;
+
+    return this.db.booking.update({
+      where: {
+        bookingNumber,
+      },
+      data: {
+        bookingStatus,
+        paymentStatus,
       },
     });
   }

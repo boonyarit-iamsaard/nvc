@@ -73,7 +73,7 @@ export const createBookingInputSchema = z.object({
     .default(BookingPaymentStatus.PENDING),
 });
 
-export const saveBookingSchema = createBookingInputSchema.extend({
+export const createBookingParamsSchema = createBookingInputSchema.extend({
   bookingNumber: z.string().min(1),
 });
 
@@ -90,14 +90,33 @@ export const getBookingInputSchema = z.union([
   }),
 ]);
 
+export const updateBookingStatusInputSchema = z.object({
+  bookingNumber: z.string().min(1),
+  amount: z.number().int().nonnegative(),
+});
+
+export const updateBookingStatusParamsSchema = z.object({
+  bookingNumber: z.string().min(1),
+  bookingStatus: z.nativeEnum(BookingStatus),
+  paymentStatus: z.nativeEnum(BookingPaymentStatus),
+});
+
 export type BookingDateRange = z.infer<typeof bookingDateRangeSchema>;
+
 export type CreateBookingInput = z.infer<typeof createBookingInputSchema>;
-export type SaveBookingInput = z.infer<typeof saveBookingSchema>;
+export type CreateBookingParams = z.infer<typeof createBookingParamsSchema>;
+
 export type GetUserBookingListInput = z.infer<
   typeof getUserBookingListInputSchema
 >;
 export type GetBookingInput = z.infer<typeof getBookingInputSchema>;
-
 export type GetUserBookingListResult = Prisma.PromiseReturnType<
   BookingsService['getUserBookingList']
+>;
+
+export type UpdateBookingStatusInput = z.infer<
+  typeof updateBookingStatusInputSchema
+>;
+export type UpdateBookingStatusParams = z.infer<
+  typeof updateBookingStatusParamsSchema
 >;

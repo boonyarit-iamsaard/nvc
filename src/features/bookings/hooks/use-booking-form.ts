@@ -32,8 +32,6 @@ export function useBookingForm(): UseBookingFormResult {
     filter,
   });
 
-  const createCheckoutSessionMutation =
-    api.payments.createCheckoutSession.useMutation();
   const createBookingMutation = api.bookings.createBooking.useMutation();
 
   async function handleSubmit() {
@@ -44,15 +42,10 @@ export function useBookingForm(): UseBookingFormResult {
     try {
       setIsSubmitting(true);
 
-      const bookingResponse =
-        await createBookingMutation.mutateAsync(bookingDetails);
+      const response = await createBookingMutation.mutateAsync(bookingDetails);
 
-      const checkoutResponse =
-        await createCheckoutSessionMutation.mutateAsync(bookingResponse);
-
-      // TODO: sinc url is type string | null, ensure whether null handling is required
-      if (checkoutResponse.data.checkoutSession.url) {
-        window.location.href = checkoutResponse.data.checkoutSession.url;
+      if (response.data.checkoutSession.url) {
+        window.location.href = response.data.checkoutSession.url;
       }
     } catch (error) {
       console.error(error);

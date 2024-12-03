@@ -229,12 +229,8 @@ export const webhookProcedure = t.procedure
           'This endpoint can only be called from internal webhook handlers',
       });
     }
-    return next();
-  });
 
-export type PublicContext = Awaited<ReturnType<typeof createTRPCContext>>;
-export type ProtectedContext = PublicContext & {
-  session: NonNullable<PublicContext['session']> & {
-    user: NonNullable<NonNullable<PublicContext['session']>['user']>;
-  };
-};
+    return next({
+      ctx: { ...ctx },
+    });
+  });
