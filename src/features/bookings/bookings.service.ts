@@ -43,7 +43,7 @@ export class BookingsService {
 
   private generateBookingNumber(roomName: string) {
     const dateIdentifier = format(new Date(), 'yyyyMMdd');
-    const roomIdentifier = roomName.replace('-', '').toUpperCase();
+    const roomIdentifier = roomName.toUpperCase();
     const identifier = randomBytes(3).toString('hex').toUpperCase();
 
     return `${dateIdentifier}${roomIdentifier}${identifier}`;

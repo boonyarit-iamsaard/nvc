@@ -33,7 +33,7 @@ export async function roomTypeSeeder(prisma: PrismaClient) {
         rooms: {
           createMany: {
             data: Array.from({ length: quantity }).map((_, index) => ({
-              name: `${code}-${index + 1}`,
+              name: `${code}${index + 1}`,
             })),
           },
         },
