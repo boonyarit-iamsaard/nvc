@@ -4,7 +4,6 @@ import { VerificationType } from '@prisma/client';
 import { env } from '~/core/configs/app.env';
 import type { VerificationsService } from '~/core/verifications/verifications.service';
 import type { EmailsService } from '~/features/emails/emails.service';
-import { renderEmailVerificationTemplate } from '~/features/emails/templates/email-verification.template';
 import type {
   ChangePasswordInput,
   CreateUserInput,
@@ -50,17 +49,12 @@ export class UsersService {
     });
 
     const verificationUrl = `${env.APP_URL}/verify-email?token=${token}`;
-    const html = await renderEmailVerificationTemplate({
+
+    await this.emailsService.sendEmailVerification({
       name: user.name,
       email: user.email,
       initialPassword,
       verificationUrl,
-    });
-
-    await this.emailsService.sendEmail({
-      to: user.email,
-      subject: 'Welcome to Naturist Vacation Club - Verify Your Email',
-      html,
     });
 
     return user;

@@ -3,6 +3,7 @@ import { randomBytes } from 'crypto';
 import { BookingPaymentStatus, BookingStatus } from '@prisma/client';
 import { format } from 'date-fns';
 
+import type { EmailsService } from '../emails/emails.service';
 import type { BookingsRepository } from './bookings.repository';
 import type {
   CreateBookingInput,
@@ -12,7 +13,10 @@ import type {
 } from './bookings.schema';
 
 export class BookingsService {
-  constructor(private readonly bookingsRepository: BookingsRepository) {}
+  constructor(
+    private readonly bookingsRepository: BookingsRepository,
+    private readonly emailsService: EmailsService,
+  ) {}
 
   async getUserBookingList(input: GetUserBookingListInput) {
     return this.bookingsRepository.getUserBookingList(input);
@@ -45,11 +49,33 @@ export class BookingsService {
     return `${dateIdentifier}${roomIdentifier}${identifier}`;
   }
 
-  private markBookingAsPaid(bookingNumber: string) {
-    return this.bookingsRepository.updateBookingStatus({
+  private async markBookingAsPaid(bookingNumber: string) {
+    const booking = await this.bookingsRepository.updateBookingStatus({
       bookingNumber,
       bookingStatus: BookingStatus.CONFIRMED,
       paymentStatus: BookingPaymentStatus.PAID,
     });
+
+    const {
+      guestName,
+      guestEmail,
+      roomTypeName,
+      roomName,
+      checkIn,
+      checkOut,
+      totalAmount,
+    } = booking;
+
+    await this.emailsService.sendBookingConfirmationEmail({
+      guestName,
+      guestEmail,
+      bookingNumber,
+      roomName: `${roomTypeName} - ${roomName}`,
+      checkIn: `${format(checkIn, 'PPP')} - ${format(checkIn, 'p')}`,
+      checkOut: `${format(checkOut, 'PPP')} - ${format(checkOut, 'p')}`,
+      totalAmount,
+    });
+
+    return booking;
   }
 }

@@ -4,11 +4,13 @@ import type SMTPTransport from 'nodemailer/lib/smtp-transport';
 
 import { env } from '~/core/configs/app.env';
 
-export type SendMailParams = {
-  subject: string;
-  to: string | string[];
-  html: string;
-};
+import type {
+  SendBookingConfirmationEmailParams,
+  SendEmailVerificationParams,
+  SendMailParams,
+} from './emails.schema';
+import { renderBookingConfirmationTemplate } from './templates/booking-confirmation.template';
+import { renderEmailVerificationTemplate } from './templates/email-verification.template';
 
 export class EmailsService {
   private readonly transporter: Transporter<
@@ -39,6 +41,52 @@ export class EmailsService {
       from: this.mailFrom,
       to,
       subject,
+      html,
+    });
+  }
+
+  async sendBookingConfirmationEmail(
+    params: SendBookingConfirmationEmailParams,
+  ) {
+    const {
+      guestName,
+      guestEmail,
+      bookingNumber,
+      roomName,
+      checkIn,
+      checkOut,
+      totalAmount,
+    } = params;
+
+    const html = await renderBookingConfirmationTemplate({
+      guestName,
+      bookingNumber,
+      roomName,
+      checkIn,
+      checkOut,
+      totalAmount,
+    });
+
+    return this.sendEmail({
+      to: guestEmail,
+      subject: 'Your Booking Confirmation',
+      html,
+    });
+  }
+
+  async sendEmailVerification(params: SendEmailVerificationParams) {
+    const { name, email, initialPassword, verificationUrl } = params;
+
+    const html = await renderEmailVerificationTemplate({
+      name,
+      email,
+      initialPassword,
+      verificationUrl,
+    });
+
+    return this.sendEmail({
+      to: email,
+      subject: 'Welcome to Naturist Vacation Club - Verify Your Email',
       html,
     });
   }

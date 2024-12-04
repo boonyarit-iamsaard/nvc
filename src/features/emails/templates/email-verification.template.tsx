@@ -40,9 +40,9 @@ export default function EmailVerificationTemplate({
       </Head>
       <Tailwind>
         <Body className="bg-[#fafafa] font-[Montserrat,Arial,sans-serif]">
-          <Container className="mx-auto my-[40px] w-[580px] rounded-lg bg-white p-8 shadow-sm">
+          <Container className="mx-auto my-8 w-full max-w-lg rounded-lg bg-white p-6 shadow-sm">
             <Section>
-              <Text className="m-0 text-center text-4xl font-bold tracking-tight text-[#020817]">
+              <Text className="m-0 text-center text-2xl font-medium tracking-tight text-[#020817]">
                 Welcome
               </Text>
               <Text className="m-0 text-center text-xl font-medium tracking-tight text-[#020817]">

@@ -57,7 +57,6 @@ export function createServiceContext(db: PrismaClient) {
   const verificationsService = new VerificationsService(
     verificationsRepository,
   );
-  const bookingsService = new BookingsService(bookingsRepository);
   const membershipsService = new MembershipsService(membershipsRepository);
   const roomTypesService = new RoomTypesService(roomTypesRepository);
 
@@ -65,6 +64,10 @@ export function createServiceContext(db: PrismaClient) {
    * Composite services with repository
    * These services depend on both repositories and other services
    */
+  const bookingsService = new BookingsService(
+    bookingsRepository,
+    emailsService,
+  );
   const usersService = new UsersService(
     emailsService,
     usersRepository,
