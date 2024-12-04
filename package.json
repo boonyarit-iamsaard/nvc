@@ -20,7 +20,7 @@
     "lint:check": "next lint",
     "postinstall": "prisma generate",
     "prepare": "husky || true",
-    "start": "next start",
+    "start": "next start --port ${PORT-3000}",
     "typecheck": "tsc --noEmit",
     "typecheck:watch": "tsc --noEmit --watch"
   },
