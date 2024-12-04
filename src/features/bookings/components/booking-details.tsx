@@ -1,9 +1,12 @@
 'use client';
 
+import Link from 'next/link';
+
 import { format } from 'date-fns';
 import {
   AlertCircle,
   Calendar,
+  ChevronLeft,
   Clock,
   CreditCard,
   Home,
@@ -18,6 +21,7 @@ import {
   AlertTitle,
 } from '~/common/components/ui/alert';
 import { Badge } from '~/common/components/ui/badge';
+import { Button } from '~/common/components/ui/button';
 import {
   Card,
   CardContent,
@@ -63,7 +67,17 @@ export function BookingDetails({ bookingNumber }: BookingDetailsProps) {
   if (booking) {
     return (
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold">Booking #{booking.bookingNumber}</h1>
+        <div className="flex items-center gap-4">
+          <Button variant="outline" size="icon" asChild className="shrink-0">
+            <Link href="/bookings">
+              <ChevronLeft className="size-4" />
+              <span className="sr-only">Back to bookings</span>
+            </Link>
+          </Button>
+          <h1 className="text-2xl font-bold">
+            Booking #{booking.bookingNumber}
+          </h1>
+        </div>
 
         <Card className="overflow-hidden">
           <CardHeader className="bg-gradient-to-b from-muted/30 to-background">
