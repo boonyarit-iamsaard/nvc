@@ -4,7 +4,7 @@ import { type HTMLAttributes } from 'react';
 
 import { format } from 'date-fns';
 import { Calendar as CalendarIcon } from 'lucide-react';
-import type { DateRange } from 'react-day-picker';
+import type { DateRange, Matcher } from 'react-day-picker';
 
 import { Button } from '~/common/components/ui/button';
 import { Calendar } from '~/common/components/ui/calendar';
@@ -18,6 +18,7 @@ import { cn } from '~/common/helpers/cn';
 type DateRangePickerProps = Readonly<HTMLAttributes<HTMLDivElement>> & {
   placeholder?: string;
   dateRange: DateRange | undefined;
+  disabled?: Matcher | Matcher[];
   onDateRangeChange?: (range: DateRange | undefined) => void;
 };
 
@@ -25,6 +26,7 @@ export function DateRangePicker({
   className,
   placeholder = 'Please select date',
   dateRange,
+  disabled,
   onDateRangeChange,
 }: DateRangePickerProps) {
   function getFormattedDate(date: DateRange | undefined) {
@@ -70,6 +72,7 @@ export function DateRangePicker({
             selected={dateRange}
             onSelect={handleDateRangeChange}
             numberOfMonths={2}
+            disabled={disabled}
           />
         </PopoverContent>
       </Popover>

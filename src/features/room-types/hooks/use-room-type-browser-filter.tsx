@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { setHours, startOfHour } from 'date-fns';
+import { isBefore, setHours, startOfDay, startOfHour } from 'date-fns';
 import type { DateRange } from 'react-day-picker';
 import { useForm } from 'react-hook-form';
 
@@ -41,6 +41,10 @@ export function useRoomTypeBrowserFilter(
     });
   }
 
+  function isBeforeToday(date: Date) {
+    return isBefore(startOfDay(date), startOfDay(new Date()));
+  }
+
   return {
     disabled,
     form,
@@ -49,5 +53,6 @@ export function useRoomTypeBrowserFilter(
     handleClear,
     handleDateRangeChange,
     handleSubmit,
+    isBeforeToday,
   };
 }

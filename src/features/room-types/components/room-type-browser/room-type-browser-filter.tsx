@@ -22,6 +22,7 @@ export function RoomTypeBrowserFilter({
     handleClear,
     handleDateRangeChange,
     handleSubmit,
+    isBeforeToday,
   } = useRoomTypeBrowserFilter(onSubmit);
 
   return (
@@ -33,6 +34,7 @@ export function RoomTypeBrowserFilter({
             <div className="grid sm:flex-1">
               <DateRangePicker
                 dateRange={dateRange}
+                disabled={isBeforeToday}
                 onDateRangeChange={handleDateRangeChange}
                 placeholder="Select your stay"
               />
