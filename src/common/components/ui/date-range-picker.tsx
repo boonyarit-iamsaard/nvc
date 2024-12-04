@@ -1,9 +1,15 @@
 'use client';
 
-import { type HTMLAttributes } from 'react';
+import {
+  forwardRef,
+  useImperativeHandle,
+  useRef,
+  useState,
+  type HTMLAttributes,
+} from 'react';
 
 import { format } from 'date-fns';
-import { Calendar as CalendarIcon } from 'lucide-react';
+import { Calendar as CalendarIcon, X } from 'lucide-react';
 import type { DateRange, Matcher } from 'react-day-picker';
 
 import { Button } from '~/common/components/ui/button';
@@ -15,22 +21,54 @@ import {
 } from '~/common/components/ui/popover';
 import { cn } from '~/common/helpers/cn';
 
+export type DateRangePickerRef = {
+  focus: () => void;
+  scrollIntoView: (options?: ScrollIntoViewOptions) => void;
+  openCalendar: () => void;
+};
+
 type DateRangePickerProps = Readonly<HTMLAttributes<HTMLDivElement>> & {
   placeholder?: string;
   dateRange: DateRange | undefined;
   disabled?: Matcher | Matcher[];
   onDateRangeChange?: (range: DateRange | undefined) => void;
+  onClear?: () => void;
 };
 
-export function DateRangePicker({
-  className,
-  placeholder = 'Please select date',
-  dateRange,
-  disabled,
-  onDateRangeChange,
-}: DateRangePickerProps) {
-  function getFormattedDate(date: DateRange | undefined) {
-    const dateFormat = 'PPP';
+export const DateRangePicker = forwardRef<
+  DateRangePickerRef,
+  DateRangePickerProps
+>(function DateRangePicker(
+  {
+    className,
+    placeholder = 'Please select date',
+    dateRange,
+    disabled,
+    onDateRangeChange,
+    onClear,
+  },
+  ref,
+) {
+  const [open, setOpen] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const showClearButton = dateRange?.from && dateRange?.to && onClear;
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      focus: () => buttonRef.current?.focus(),
+      scrollIntoView: (options?: ScrollIntoViewOptions) =>
+        buttonRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+          ...options,
+        }),
+      openCalendar: () => setOpen(true),
+    }),
+    [],
+  );
+
+  function getFormattedDate(date: DateRange | undefined, dateFormat: string) {
     if (!date?.from && !date?.to) {
       return placeholder;
     }
@@ -50,18 +88,33 @@ export function DateRangePicker({
 
   return (
     <div className={cn('grid gap-2', className)}>
-      <Popover>
+      <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
+            ref={buttonRef}
             id="date"
             variant="outline"
             className={cn(
-              'w-full justify-start text-left font-normal',
+              'w-full justify-start truncate text-left font-normal',
               !dateRange && 'text-muted-foreground',
             )}
           >
-            <CalendarIcon className="mr-2 h-4 w-4" />
-            <span>{getFormattedDate(dateRange)}</span>
+            <CalendarIcon className="mr-2 h-4 w-4 shrink-0" />
+            <span className="hidden truncate sm:block">
+              {getFormattedDate(dateRange, 'PPP')}
+            </span>
+            <span className="truncate sm:hidden">
+              {getFormattedDate(dateRange, 'MMM d, yyyy')}
+            </span>
+            {showClearButton && (
+              <X
+                className="ml-auto h-4 w-4 shrink-0"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onClear();
+                }}
+              />
+            )}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
@@ -78,4 +131,4 @@ export function DateRangePicker({
       </Popover>
     </div>
   );
-}
+});

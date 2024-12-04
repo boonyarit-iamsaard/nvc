@@ -1,6 +1,7 @@
 import { authRouter } from '~/core/auth/auth.router';
 import { createCallerFactory, createTRPCRouter } from '~/core/server/api/trpc';
 import { bookingRouter } from '~/features/bookings/bookings.router';
+import { membershipsRouter } from '~/features/memberships/memberships.router';
 import { paymentsRouter } from '~/features/payments/payments.router';
 import { roomTypesRouter } from '~/features/room-types/room-types.router';
 import { usersRouter } from '~/features/users/users.router';
@@ -13,6 +14,7 @@ import { usersRouter } from '~/features/users/users.router';
 export const appRouter = createTRPCRouter({
   auth: authRouter,
   bookings: bookingRouter,
+  memberships: membershipsRouter,
   payments: paymentsRouter,
   roomTypes: roomTypesRouter,
   users: usersRouter,
