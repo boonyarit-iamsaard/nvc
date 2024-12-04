@@ -16,8 +16,7 @@ export function useRoomTypeBrowserFilter(
   });
   const [checkIn, checkOut] = form.watch(['checkIn', 'checkOut']);
   const dateRange = { from: checkIn, to: checkOut };
-  const disabled = !checkIn || !checkOut;
-  const hasFilled = !!dateRange.from || !!dateRange.to;
+  const showSubmitButton = !!checkIn && !!checkOut;
 
   function handleClear() {
     form.reset();
@@ -46,10 +45,9 @@ export function useRoomTypeBrowserFilter(
   }
 
   return {
-    disabled,
     form,
-    hasFilled,
     dateRange,
+    showSubmitButton,
     handleClear,
     handleDateRangeChange,
     handleSubmit,

@@ -1,32 +1,49 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { setHours, startOfHour } from 'date-fns';
 import { CircleAlert } from 'lucide-react';
 
-import { Badge } from '~/common/components/ui/badge';
-import { Button } from '~/common/components/ui/button';
+import type { DateRangePickerRef } from '~/common/components/ui/date-range-picker';
 import { api } from '~/core/trpc/react';
-import type { RoomTypeFilter } from '~/features/room-types/room-types.schema';
 
+import type { RoomTypeFilter } from '../../room-types.schema';
 import { RoomTypeBrowserFilter } from './room-type-browser-filter';
+import { RoomTypeBrowserItem } from './room-type-browser-item';
 import { RoomTypeBrowserPlaceholder } from './room-type-browser-placeholder';
 
 export function RoomTypeBrowser() {
   const router = useRouter();
+  const filterRef = useRef<DateRangePickerRef>(null);
 
   const [filter, setFilter] = useState<RoomTypeFilter>();
   const [overlappedBookings, setOverlappedBookings] = useState<number>(0);
 
+  const hasFilter = !!filter?.checkIn && !!filter?.checkOut;
+
   // TODO: implement error states
-  const { data: roomTypeList, isLoading } =
+  const { data: roomTypes, isLoading: isLoadingRoomTypes } =
     api.roomTypes.getRoomTypeList.useQuery({ filter });
+  const { data: memberships, isLoading: isLoadingMemberships } =
+    api.memberships.getMemberships.useQuery();
+
+  const isLoading = isLoadingRoomTypes || isLoadingMemberships;
 
   function handleChooseRoom(id: string) {
     if (!filter?.checkIn || !filter?.checkOut) {
+      filterRef.current?.scrollIntoView();
+
+      /**
+       * Defer the focus and open calendar to the next tick to ensure that the
+       * calendar is visible when the button is clicked.
+       */
+      setTimeout(() => {
+        filterRef.current?.focus();
+        filterRef.current?.openCalendar();
+      }, 500);
+
       return;
     }
 
@@ -44,7 +61,7 @@ export function RoomTypeBrowser() {
   }
 
   useEffect(() => {
-    const overlappedBookings = roomTypeList?.reduce((acc, roomType) => {
+    const overlappedBookings = roomTypes?.reduce((acc, roomType) => {
       return acc + roomType._count?.rooms;
     }, 0);
 
@@ -53,11 +70,11 @@ export function RoomTypeBrowser() {
     return () => {
       setOverlappedBookings(0);
     };
-  }, [roomTypeList]);
+  }, [roomTypes]);
 
   return (
     <section className="space-y-8">
-      <RoomTypeBrowserFilter onSubmit={setFilter} />
+      <RoomTypeBrowserFilter ref={filterRef} onSubmit={setFilter} />
 
       {overlappedBookings > 0 ? (
         <div className="flex items-center gap-2 rounded-lg border border-destructive/50 bg-destructive/10 px-6 py-4 text-destructive shadow-sm">
@@ -74,53 +91,14 @@ export function RoomTypeBrowser() {
           ? Array.from({ length: 3 }).map(() => (
               <RoomTypeBrowserPlaceholder key={crypto.randomUUID()} />
             ))
-          : roomTypeList?.map((roomType) => (
-              <li
+          : roomTypes?.map((roomType) => (
+              <RoomTypeBrowserItem
                 key={roomType.id}
-                className="overflow-hidden rounded-lg border bg-card text-card-foreground shadow-sm"
-              >
-                <div className="flex flex-col md:flex-row">
-                  <div className="relative aspect-[3/2] w-full bg-border md:aspect-square md:w-1/4"></div>
-
-                  <div className="flex flex-col space-y-4 p-6 md:w-3/4">
-                    <div className="flex items-center justify-between">
-                      <h2 className="font-serif text-lg font-semibold">
-                        {roomType.name}
-                      </h2>
-                      {roomType.rooms.length > 0 && (
-                        <Badge variant="outline">
-                          {roomType.rooms.length} available rooms
-                        </Badge>
-                      )}
-                    </div>
-
-                    <p>{roomType.description}</p>
-
-                    <div>
-                      <Link
-                        href="/"
-                        className="text-sm text-muted-foreground underline-offset-2 hover:underline"
-                      >
-                        More Details
-                      </Link>
-                    </div>
-
-                    <div className="flex flex-1 flex-col justify-end">
-                      <div className="flex items-center justify-end gap-4">
-                        <Button
-                          type="button"
-                          onClick={() => handleChooseRoom(roomType.id)}
-                          disabled={roomType.rooms.length === 0}
-                        >
-                          {roomType.rooms.length === 0
-                            ? 'No rooms available'
-                            : 'Choose Room'}
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </li>
+                roomType={roomType}
+                memberships={memberships}
+                hasFilter={hasFilter}
+                onChooseRoom={handleChooseRoom}
+              />
             ))}
       </ul>
     </section>

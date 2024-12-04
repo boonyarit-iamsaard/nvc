@@ -21,6 +21,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -186,13 +187,16 @@ export function ChangePasswordForm() {
                       <FormLabel>New Password</FormLabel>
                       <FormControl>
                         <Input
-                          {...field}
-                          disabled={isLoading}
-                          onChange={handlePasswordChange('newPassword')}
-                          placeholder="New Password"
                           type="password"
+                          placeholder="Enter your new password"
+                          onChange={handlePasswordChange('newPassword')}
+                          value={field.value}
                         />
                       </FormControl>
+                      <FormDescription>
+                        Password must be at least 8 characters and contain at
+                        least one letter and one number.
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
