@@ -20,6 +20,7 @@ export async function getUserFormDefaultValues({
         image: user.image ?? '',
         role: user.role,
         gender: user.gender,
+        stripeCustomerId: user.stripeCustomerId ?? null,
       };
     }
   }
@@ -30,5 +31,6 @@ export async function getUserFormDefaultValues({
     image: '',
     role: Role.GUEST,
     gender: Gender.MALE,
+    stripeCustomerId: null,
   };
 }

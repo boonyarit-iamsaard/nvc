@@ -57,7 +57,7 @@ export class BookingsRepository {
         checkOut: true,
         guestName: true,
         guestEmail: true,
-        // guestCustomerId: true,
+        stripeCustomerId: true,
         roomName: true,
         roomTypeName: true,
         weekdayCount: true,
@@ -68,7 +68,8 @@ export class BookingsRepository {
   }
 
   async updateBookingStatus(input: UpdateBookingStatusParams) {
-    const { bookingNumber, bookingStatus, paymentStatus } = input;
+    const { bookingNumber, bookingStatus, paymentStatus, stripeCustomerId } =
+      input;
 
     return this.db.booking.update({
       where: {
@@ -77,6 +78,7 @@ export class BookingsRepository {
       data: {
         bookingStatus,
         paymentStatus,
+        stripeCustomerId,
       },
     });
   }

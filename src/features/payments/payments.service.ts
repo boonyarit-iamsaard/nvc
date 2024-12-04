@@ -22,7 +22,7 @@ export class PaymentsService {
       checkOut,
       guestName,
       guestEmail,
-      guestCustomerId,
+      stripeCustomerId,
       roomName,
       roomTypeName,
       weekdayCount,
@@ -33,7 +33,7 @@ export class PaymentsService {
     const customer = await this.retrieveOrCreateCustomer(
       guestEmail,
       guestName,
-      guestCustomerId,
+      stripeCustomerId,
     );
 
     return this.stripe.checkout.sessions.create({
@@ -67,7 +67,7 @@ export class PaymentsService {
   private async retrieveOrCreateCustomer(
     email: string,
     name: string,
-    customerId?: string,
+    customerId?: string | null,
   ) {
     if (customerId) {
       try {

@@ -10,11 +10,17 @@ export const baseUserInputSchema = z.object({
   image: z.string().optional(),
   role: z.nativeEnum(Role).optional().default(Role.GUEST),
   gender: z.nativeEnum(Gender),
+  stripeCustomerId: z.string().min(1).nullish().default(null),
 });
 
-export const getUserInputSchema = z.object({
-  id: z.string().uuid(),
-});
+export const getUserInputSchema = z.union([
+  z.object({
+    email: z.string().email(),
+  }),
+  z.object({
+    id: z.string().uuid(),
+  }),
+]);
 
 export const getUserCredentialsInputSchema = z.object({
   id: z.string().uuid(),
@@ -53,6 +59,11 @@ export const updateUserInputSchema = z.object({
   }),
 });
 
+export const updateStripeCustomerIdInputSchema = z.object({
+  email: z.string().email(),
+  stripeCustomerId: z.string().min(1),
+});
+
 export type GetUserInput = z.infer<typeof getUserInputSchema>;
 export type GetUserCredentialsInput = z.infer<
   typeof getUserCredentialsInputSchema
@@ -65,6 +76,9 @@ export type ChangePasswordInput = z.infer<typeof changePasswordInputSchema>;
 export type UpdatePasswordInput = z.infer<typeof updatePasswordInputSchema>;
 
 export type UpdateUserInput = z.infer<typeof updateUserInputSchema>;
+export type UpdateStripeCustomerIdInput = z.infer<
+  typeof updateStripeCustomerIdInputSchema
+>;
 
 export type GetUsersResult = Prisma.PromiseReturnType<UsersService['getUsers']>;
 export type GetUserResult = Prisma.PromiseReturnType<UsersService['getUser']>;

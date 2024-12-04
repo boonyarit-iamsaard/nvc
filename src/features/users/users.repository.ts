@@ -27,10 +27,11 @@ export class UsersRepository {
   }
 
   async getUser(input: GetUserInput) {
-    const { id } = input;
+    const where: Prisma.UserWhereUniqueInput =
+      'email' in input ? { email: input.email } : { id: input.id };
 
     return this.db.user.findUnique({
-      where: { id },
+      where,
       select: this.defaultFields,
     });
   }

@@ -70,7 +70,13 @@ async function handleSessionCompleted(
 ) {
   const bookingNumber = session.metadata?.booking_number;
   const amount = session.amount_total;
-  if (!bookingNumber || !amount) {
+  const stripeCustomerId = session.customer;
+  if (
+    !bookingNumber ||
+    !amount ||
+    !stripeCustomerId ||
+    typeof stripeCustomerId !== 'string'
+  ) {
     console.error('No booking number or amount found in session metadata');
 
     return;
@@ -79,13 +85,26 @@ async function handleSessionCompleted(
   await caller.bookings.updateBookingStatus({
     bookingNumber,
     amount,
+    stripeCustomerId,
   });
 }
 
 async function handleCustomerCreated(
-  _customer: Stripe.Customer,
-  _caller: WebhookContextCaller,
+  customer: Stripe.Customer,
+  caller: WebhookContextCaller,
 ) {
-  console.log('handle customer created');
-  // TODO: set customer id to user
+  if (!customer.email) {
+    console.error('No email found in customer object');
+
+    return;
+  }
+
+  try {
+    await caller.users.updateUserStripeCustomerId({
+      email: customer.email,
+      stripeCustomerId: customer.id,
+    });
+  } catch (error) {
+    console.error('Failed to update user with Stripe customer ID:', error);
+  }
 }

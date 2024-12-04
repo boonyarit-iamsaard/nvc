@@ -31,8 +31,9 @@ declare module 'next-auth' {
       email: string;
       image: string | null;
       name: string;
-      role: Role;
       gender: Gender;
+      role: Role;
+      stripeCustomerId: string | null;
       emailVerifiedAt: Date | null;
       firstLoginAt: Date | null;
       membership?: SessionMembership;
@@ -49,8 +50,9 @@ declare module 'next-auth' {
     email: string;
     image: string | null;
     name: string;
-    role: Role;
     gender: Gender;
+    role: Role;
+    stripeCustomerId: string | null;
     emailVerifiedAt: Date | null;
     firstLoginAt: Date | null;
     membership?: SessionMembership;
@@ -66,6 +68,7 @@ declare module 'next-auth/jwt' {
     id: string;
     gender: Gender;
     role: Role;
+    stripeCustomerId: string | null;
     emailVerifiedAt: Date | null;
     firstLoginAt: Date | null;
     membership?: SessionMembership;
@@ -91,8 +94,9 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.role = user.role;
         token.gender = user.gender;
+        token.role = user.role;
+        token.stripeCustomerId = user.stripeCustomerId;
         token.emailVerifiedAt = user.emailVerifiedAt;
         token.firstLoginAt = user.firstLoginAt;
         token.membership = user.membership;
@@ -104,6 +108,7 @@ export const authOptions: NextAuthOptions = {
       session.user.id = token.id;
       session.user.role = token.role;
       session.user.gender = token.gender;
+      session.user.stripeCustomerId = token.stripeCustomerId;
       session.user.emailVerifiedAt = token.emailVerifiedAt;
       session.user.firstLoginAt = token.firstLoginAt;
       session.user.membership = token.membership;
@@ -191,6 +196,7 @@ export const authOptions: NextAuthOptions = {
           name,
           role,
           gender,
+          stripeCustomerId,
           image,
           emailVerifiedAt,
           firstLoginAt,
@@ -203,6 +209,7 @@ export const authOptions: NextAuthOptions = {
           name,
           role,
           gender,
+          stripeCustomerId,
           image,
           emailVerifiedAt,
           firstLoginAt,

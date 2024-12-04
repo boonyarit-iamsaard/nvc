@@ -14,7 +14,7 @@ type UseBookingFormResult = {
   error: Error | null;
   isLoading: boolean;
   isSubmitting: boolean;
-  handleSubmit: () => Promise<void>;
+  handleSubmit: () => void;
 };
 
 export function useBookingForm(): UseBookingFormResult {
@@ -24,7 +24,6 @@ export function useBookingForm(): UseBookingFormResult {
     useState<CreateBookingInput | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const [filter, setFilter] = useState<RoomTypeFilter | undefined>(undefined);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { data: userSession } = useUserSession();
   const { data: roomType, isLoading } = api.roomTypes.getRoomType.useQuery({
@@ -32,31 +31,30 @@ export function useBookingForm(): UseBookingFormResult {
     filter,
   });
 
-  const createBookingMutation = api.bookings.createBooking.useMutation();
+  const createBookingMutation = api.bookings.createBooking.useMutation({
+    onError(error) {
+      console.error('Create booking error: ', JSON.stringify(error));
+      if (error instanceof Error) {
+        setError(error);
 
-  async function handleSubmit() {
+        return;
+      }
+
+      setError(new Error('Failed to create booking. Please try again.'));
+    },
+    onSuccess(data) {
+      if (data.data.checkoutSession.url) {
+        window.location.href = data.data.checkoutSession.url;
+      }
+    },
+  });
+
+  function handleSubmit() {
     if (!bookingDetails) {
       return;
     }
 
-    try {
-      setIsSubmitting(true);
-
-      const response = await createBookingMutation.mutateAsync(bookingDetails);
-
-      if (response.data.checkoutSession.url) {
-        window.location.href = response.data.checkoutSession.url;
-      }
-    } catch (error) {
-      console.error(error);
-      if (error instanceof Error) {
-        setError(error);
-      }
-
-      setError(new Error('Failed to create booking. Please try again.'));
-    } finally {
-      setIsSubmitting(false);
-    }
+    createBookingMutation.mutate(bookingDetails);
   }
 
   useEffect(() => {
@@ -116,7 +114,7 @@ export function useBookingForm(): UseBookingFormResult {
     bookingDetails,
     error,
     isLoading,
-    isSubmitting,
+    isSubmitting: createBookingMutation.isPending,
     handleSubmit,
   };
 }

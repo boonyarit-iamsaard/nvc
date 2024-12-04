@@ -37,8 +37,10 @@ export class BookingsService {
   }
 
   async updateBookingStatus(input: UpdateBookingStatusInput) {
+    const { bookingNumber, stripeCustomerId } = input;
+
     // TODO: may be more complex logic later
-    return this.markBookingAsPaid(input.bookingNumber);
+    return this.markBookingAsPaid(bookingNumber, stripeCustomerId);
   }
 
   private generateBookingNumber(roomName: string) {
@@ -49,11 +51,15 @@ export class BookingsService {
     return `${dateIdentifier}${roomIdentifier}${identifier}`;
   }
 
-  private async markBookingAsPaid(bookingNumber: string) {
+  private async markBookingAsPaid(
+    bookingNumber: string,
+    stripeCustomerId: string,
+  ) {
     const booking = await this.bookingsRepository.updateBookingStatus({
       bookingNumber,
       bookingStatus: BookingStatus.CONFIRMED,
       paymentStatus: BookingPaymentStatus.PAID,
+      stripeCustomerId,
     });
 
     const {

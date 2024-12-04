@@ -45,21 +45,22 @@ enum VerificationType {
 }
 
 model User {
-  id              String             @id @default(uuid())
-  name            String
-  email           String             @unique
-  emailVerifiedAt DateTime?          @map("email_verified_at")
-  firstLoginAt    DateTime?          @map("first_login_at")
-  hashedPassword  String             @map("hashed_password")
-  image           String?
-  gender          Gender
-  role            Role               @default(GUEST)
-  bookings        Booking[]
-  memberships     UserMembership[]
-  verifications   UserVerification[]
-  createdAt       DateTime           @default(now()) @map("created_at")
-  updatedAt       DateTime           @updatedAt @map("updated_at")
-  deletedAt       DateTime?          @map("deleted_at")
+  id               String             @id @default(uuid())
+  name             String
+  email            String             @unique
+  emailVerifiedAt  DateTime?          @map("email_verified_at")
+  firstLoginAt     DateTime?          @map("first_login_at")
+  hashedPassword   String             @map("hashed_password")
+  image            String?
+  gender           Gender
+  role             Role               @default(GUEST)
+  stripeCustomerId String?            @map("stripe_customer_id")
+  bookings         Booking[]
+  memberships      UserMembership[]
+  verifications    UserVerification[]
+  createdAt        DateTime           @default(now()) @map("created_at")
+  updatedAt        DateTime           @updatedAt @map("updated_at")
+  deletedAt        DateTime?          @map("deleted_at")
 
   @@index([email])
   @@map("users")
@@ -118,6 +119,7 @@ model Booking {
   guestEmail            String               @map("guest_email")
   guestMembershipName   String?              @map("guest_membership_name") // Since non-member can make a booking, it should be nullable here
   guestMembershipNumber String?              @map("guest_membership_number") // Since non-member can make a booking, it should be nullable here
+  stripeCustomerId      String?              @map("stripe_customer_id")
   roomTypeName          String               @map("room_type_name")
   roomName              String               @map("room_name")
   weekdayCount          Int                  @map("weekday_count")

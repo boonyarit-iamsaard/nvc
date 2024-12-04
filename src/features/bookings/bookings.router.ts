@@ -34,13 +34,23 @@ export const bookingRouter = createTRPCRouter({
       try {
         const booking = await ctx.services.bookingsService.createBooking(input);
         const checkoutSession =
-          await ctx.services.paymentsService.createCheckoutSession(booking);
+          await ctx.services.paymentsService.createCheckoutSession({
+            ...booking,
+            userId: input.userId,
+            /**
+             * Pass the stripeCustomerId from the user's session (if it exists)
+             * For new users, this will be null/undefined, triggering the creation
+             * of a new Stripe customer in the PaymentsService
+             */
+            stripeCustomerId: input.stripeCustomerId,
+          });
 
         return {
           success: true,
           data: {
             checkoutSession: {
               url: checkoutSession.url,
+              stripeCustomerId: checkoutSession.customer,
               // TODO: consider returning more checkout session details if needed
             },
           },

@@ -47,6 +47,7 @@ export const createBookingInputSchema = z.object({
   guestEmail: z.string().email(),
   guestMembershipName: z.string().min(1).nullish().default(null),
   guestMembershipNumber: z.string().min(1).nullish().default(null),
+  stripeCustomerId: z.string().min(1).nullish().default(null),
   roomTypeName: z.string().min(1),
   roomName: z.string().min(1),
   weekdayCount: z.number().int().nonnegative(),
@@ -93,12 +94,14 @@ export const getBookingInputSchema = z.union([
 export const updateBookingStatusInputSchema = z.object({
   bookingNumber: z.string().min(1),
   amount: z.number().int().nonnegative(),
+  stripeCustomerId: z.string().min(1),
 });
 
 export const updateBookingStatusParamsSchema = z.object({
   bookingNumber: z.string().min(1),
   bookingStatus: z.nativeEnum(BookingStatus),
   paymentStatus: z.nativeEnum(BookingPaymentStatus),
+  stripeCustomerId: z.string().min(1),
 });
 
 export type BookingDateRange = z.infer<typeof bookingDateRangeSchema>;

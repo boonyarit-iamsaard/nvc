@@ -108,6 +108,7 @@ export function getGuestDetails(user: Session['user']) {
     guestEmail: user.email,
     guestMembershipName: user.membership?.membershipName ?? null,
     guestMembershipNumber: user.membership?.membershipNumber ?? null,
+    stripeCustomerId: user.stripeCustomerId,
   };
 }
 
