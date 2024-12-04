@@ -26,6 +26,10 @@ export function BookingList() {
     },
   );
 
+  if (isLoading || !bookingList) {
+    return <LoadingSpinner />;
+  }
+
   if (error) {
     return (
       <Alert variant="destructive" className="bg-background">
@@ -36,27 +40,27 @@ export function BookingList() {
     );
   }
 
-  if (isLoading || !bookingList) {
-    return <LoadingSpinner />;
-  }
-
-  if (bookingList.length === 0) {
+  if (bookingList.length > 0) {
     return (
-      <Alert>
-        <AlertDescription>You do not have any bookings.</AlertDescription>
-      </Alert>
+      <div className="space-y-6">
+        <h1 className="text-2xl font-bold">Booking History</h1>
+
+        <div className="flex flex-col gap-4">
+          {bookingList.map((booking) => (
+            <BookingListItem key={booking.id} booking={booking} />
+          ))}
+        </div>
+      </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Booking History</h1>
-
-      <div className="flex flex-col gap-4">
-        {bookingList.map((booking) => (
-          <BookingListItem key={booking.id} booking={booking} />
-        ))}
-      </div>
-    </div>
+    <Alert>
+      <AlertCircle className="size-4" />
+      <AlertTitle>No Bookings Found</AlertTitle>
+      <AlertDescription>
+        You don&apos;t have any bookings yet. Make a reservation to get started.
+      </AlertDescription>
+    </Alert>
   );
 }
