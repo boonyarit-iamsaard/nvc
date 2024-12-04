@@ -8,10 +8,21 @@ import { createContext } from '~/core/trpc/stripe';
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY, {});
 
-const handler = async (req: NextRequest) => {
+/**
+ * Route segment config
+ * @see https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config
+ */
+export const dynamic = 'force-dynamic';
+
+export async function POST(request: Request) {
+  const req = request as unknown as NextRequest;
+
+  if (req.method !== 'POST') {
+    return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
+  }
+
   try {
     const context = await createContext(req);
-
     const event = stripe.webhooks.constructEvent(
       context.payload,
       context.signature,
@@ -39,30 +50,27 @@ const handler = async (req: NextRequest) => {
         message: 'Webhook processed successfully',
         data: null,
       },
-      {
-        status: 200,
-      },
+      { status: 200 },
     );
   } catch (error) {
     // TODO: implement logger and standardize logging messages
     console.error('Failed to process webhook', error);
 
-    // TODO: improve error response
+    const status =
+      error instanceof Stripe.errors.StripeSignatureVerificationError
+        ? 400
+        : 500;
+
     return NextResponse.json(
       {
         success: false,
-        message:
-          error instanceof Error ? error.message : 'Unknown error occurred',
-        data: null,
+        message: 'Failed to process webhook',
+        error: error instanceof Error ? error.message : 'Unknown error',
       },
-      {
-        status: 500,
-      },
+      { status },
     );
   }
-};
-
-export const POST = handler;
+}
 
 async function handleSessionCompleted(
   session: Stripe.Checkout.Session,

@@ -14,11 +14,15 @@ export type WebhookContext = {
 export const createContext = async (
   req: NextRequest,
 ): Promise<WebhookContext> => {
-  const payload = await req.text();
+  /**
+   * Get the raw body as a buffer to preserve exact bytes
+   */
+  const buffer = await req.arrayBuffer();
+  const payload = Buffer.from(buffer).toString();
   const signature = req.headers.get('stripe-signature');
 
   if (!signature) {
-    throw new Error('Signature is missing');
+    throw new Error('Stripe signature is missing');
   }
 
   const trpcContext = await createTRPCContext({
