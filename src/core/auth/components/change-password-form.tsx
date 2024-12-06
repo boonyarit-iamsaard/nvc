@@ -5,11 +5,16 @@ import { useState } from 'react';
 import Link from 'next/link';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CheckCircle, Loader2 } from 'lucide-react';
+import { AlertCircle, LightbulbIcon, Loader2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 
-import { StatusMessage } from '~/common/components/form/status-message';
 import { Icons } from '~/common/components/icons';
+import { Message } from '~/common/components/message';
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from '~/common/components/ui/alert';
 import { Button } from '~/common/components/ui/button';
 import {
   Card,
@@ -21,7 +26,6 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -110,139 +114,146 @@ export function ChangePasswordForm() {
   const isSuccess = changePasswordState.status === 'success';
   const isError = changePasswordState.status === 'error';
 
+  if (isSuccess) {
+    return (
+      <Message
+        variant="success"
+        title="Password Changed"
+        message="Your password has been changed successfully."
+        confirmLabel="Back to login"
+        onConfirm={handleSignOut}
+      />
+    );
+  }
+
   return (
-    <Card>
-      {isSuccess ? (
-        <>
-          <CardHeader className="space-y-6">
-            <div className="flex justify-center">
-              <Link href="/">
-                <Icons.Logo className="h-12 w-auto hover:fill-muted-foreground" />
-              </Link>
-            </div>
-            <div className="space-y-2">
-              <CardTitle className="text-center text-2xl">
-                Password Changed
-              </CardTitle>
-              <CardDescription className="text-center">
-                Your password has been changed successfully. Please log in again
-                with your new password.
-              </CardDescription>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <Button type="button" className="w-full" onClick={handleSignOut}>
-              <CheckCircle className="mr-2 h-4 w-4" />
-              Back to Login
-            </Button>
-          </CardContent>
-        </>
-      ) : (
-        <>
-          <CardHeader className="space-y-6">
-            <div className="flex justify-center">
-              <Link href="/">
-                <Icons.Logo className="h-12 w-auto hover:fill-muted-foreground" />
-              </Link>
-            </div>
-            <div className="space-y-2">
-              <CardTitle className="text-center text-2xl">
-                Change Password
-              </CardTitle>
-              <CardDescription className="text-center">
-                Enter your current password and choose a new password
-              </CardDescription>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(handleSubmit)}
-                className="space-y-4"
-              >
-                <FormField
-                  control={form.control}
-                  name="currentPassword"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Current Password</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          disabled={isLoading}
-                          onChange={handlePasswordChange('currentPassword')}
-                          placeholder="Current Password"
-                          type="password"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="newPassword"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>New Password</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="password"
-                          placeholder="Enter your new password"
-                          onChange={handlePasswordChange('newPassword')}
-                          value={field.value}
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        Password must be at least 8 characters and contain at
-                        least one letter and one number.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="confirmNewPassword"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Confirm New Password</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          disabled={isLoading}
-                          onChange={handlePasswordChange('confirmNewPassword')}
-                          placeholder="Confirm New Password"
-                          type="password"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+    <>
+      <Card>
+        <CardHeader className="space-y-6">
+          <div className="flex justify-center">
+            <Link href="/">
+              <Icons.Logo className="h-12 w-auto hover:fill-muted-foreground" />
+            </Link>
+          </div>
+          <div className="space-y-2">
+            <CardTitle className="text-center text-2xl">
+              Change Password
+            </CardTitle>
+            <CardDescription className="text-center">
+              Enter your current password and choose a new password
+            </CardDescription>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {session && !session.user.firstLoginAt && (
+            <Alert className="mb-4">
+              <LightbulbIcon className="size-4" />
+              <AlertTitle>First-time setup</AlertTitle>
+              <AlertDescription>
+                For better security, we recommend changing the temporary
+                password that was sent to your email.
+              </AlertDescription>
+            </Alert>
+          )}
 
-                {form.formState.errors.root?.message && (
-                  <StatusMessage variant="destructive">
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="space-y-4"
+            >
+              <FormField
+                control={form.control}
+                name="currentPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Current Password</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        disabled={isLoading}
+                        onChange={handlePasswordChange('currentPassword')}
+                        placeholder="Current Password"
+                        type="password"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="newPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>New Password</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        placeholder="Enter your new password"
+                        onChange={handlePasswordChange('newPassword')}
+                        value={field.value}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="confirmNewPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Confirm New Password</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        disabled={isLoading}
+                        onChange={handlePasswordChange('confirmNewPassword')}
+                        placeholder="Confirm New Password"
+                        type="password"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {form.formState.errors.root?.message && (
+                <Alert variant="destructive" className="mt-4">
+                  <AlertCircle className="size-4" />
+                  <AlertTitle>Error</AlertTitle>
+                  <AlertDescription>
                     {form.formState.errors.root.message}
-                  </StatusMessage>
-                )}
-                {isError && changePasswordState.message && (
-                  <StatusMessage variant="destructive">
+                  </AlertDescription>
+                </Alert>
+              )}
+              {isError && changePasswordState.message && (
+                <Alert variant="destructive" className="mt-4">
+                  <AlertCircle className="size-4" />
+                  <AlertTitle>Error</AlertTitle>
+                  <AlertDescription>
                     {changePasswordState.message}
-                  </StatusMessage>
-                )}
+                  </AlertDescription>
+                </Alert>
+              )}
 
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading && (
-                    <Loader2 className="mr-2 size-4 animate-spin" />
-                  )}
-                  Change Password
-                </Button>
-              </form>
-            </Form>
-          </CardContent>
-        </>
-      )}
-    </Card>
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading && <Loader2 className="mr-2 size-4 animate-spin" />}
+                Change Password
+              </Button>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
+
+      <Alert className="mt-4">
+        <LightbulbIcon className="size-4" />
+        <AlertTitle>Password requirements</AlertTitle>
+        <AlertDescription>
+          Your new password must be at least 8 characters and contain at least
+          one letter and one number.
+        </AlertDescription>
+      </Alert>
+    </>
   );
 }
