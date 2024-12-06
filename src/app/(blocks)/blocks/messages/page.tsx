@@ -1,6 +1,7 @@
 'use client';
 
 import { ContentContainer } from '~/common/components/content-container';
+import { ContentHeader } from '~/common/components/content-header';
 import { Message } from '~/common/components/message';
 
 export default function Page() {
@@ -11,12 +12,10 @@ export default function Page() {
   return (
     <ContentContainer layout="header" size="lg">
       <div className="space-y-8">
-        <div>
-          <h1 className="mb-4 text-2xl font-bold">Message Component</h1>
-          <p className="text-muted-foreground">
-            A collection of message variants for different states and actions
-          </p>
-        </div>
+        <ContentHeader
+          title="Message"
+          description="A collection of message variants for different states and actions"
+        />
 
         <div className="grid gap-4">
           <Message
