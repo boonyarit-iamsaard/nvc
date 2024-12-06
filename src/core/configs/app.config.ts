@@ -64,6 +64,21 @@ export const navConfig = {
     },
   ] as NavLink[],
 
+  user: [
+    {
+      title: 'Profile',
+      href: '/profile',
+    },
+    {
+      title: 'Change Password',
+      href: '/change-password',
+    },
+    {
+      title: 'Bookings',
+      href: '/bookings',
+    },
+  ] as NavLink[],
+
   footer: [
     {
       title: 'Legal',
