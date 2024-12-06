@@ -93,21 +93,35 @@ export function Message({
       {children && <CardContent>{children}</CardContent>}
 
       {(onConfirm ?? onCancel) && (
-        <CardFooter className="flex justify-center gap-3">
-          {onCancel && (
-            <Button size="sm" variant="outline" onClick={onCancel}>
-              {cancelLabel ?? 'Cancel'}
-            </Button>
-          )}
-          {onConfirm && (
-            <Button
-              size="sm"
-              variant={variant === 'error' ? 'destructive' : 'default'}
-              onClick={onConfirm}
-            >
-              {confirmLabel ?? 'Confirm'}
-            </Button>
-          )}
+        <CardFooter>
+          <div className="grid w-full gap-3 sm:grid-cols-6">
+            {onCancel && (
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={onCancel}
+                className={cn(
+                  'sm:col-span-2',
+                  onConfirm ? 'sm:col-start-2' : 'sm:col-start-3',
+                )}
+              >
+                {cancelLabel ?? 'Cancel'}
+              </Button>
+            )}
+            {onConfirm && (
+              <Button
+                size="sm"
+                variant={variant === 'error' ? 'destructive' : 'default'}
+                onClick={onConfirm}
+                className={cn(
+                  'sm:col-span-2',
+                  onCancel ? 'sm:col-start-4' : 'sm:col-start-3',
+                )}
+              >
+                {confirmLabel ?? 'Confirm'}
+              </Button>
+            )}
+          </div>
         </CardFooter>
       )}
     </Card>
