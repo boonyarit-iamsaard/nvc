@@ -1,14 +1,7 @@
 import Link from 'next/link';
 
-import { AlertCircle, CheckCircle2 } from 'lucide-react';
-
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from '~/common/components/ui/alert';
+import { Message } from '~/common/components/message';
 import { Button } from '~/common/components/ui/button';
-import { Card, CardContent, CardHeader } from '~/common/components/ui/card';
 import { paymentSuccessParamsSchema } from '~/features/payments/payments.schema';
 
 type PageProps = {
@@ -26,33 +19,29 @@ export default async function Page(props: PageProps) {
 
   if (!success) {
     return (
-      <div className="flex flex-col items-center gap-6">
-        <Alert variant="destructive" className="bg-background">
-          <AlertCircle className="size-4" />
-          <AlertTitle>Error</AlertTitle>
-          <AlertDescription>
-            Booking reference not found. Please check your booking details.
-          </AlertDescription>
-        </Alert>
-        <Button asChild size="lg">
-          <Link href="/bookings">View Booking</Link>
-        </Button>
-      </div>
+      <Message
+        variant="error"
+        title="Booking Not Found"
+        message="Please check your booking details."
+      >
+        <div className="flex justify-center">
+          <Button asChild size="sm">
+            <Link href="/bookings">View Booking</Link>
+          </Button>
+        </div>
+      </Message>
     );
   }
 
   const { 'booking-number': bookingNumber } = data;
 
   return (
-    <Card>
-      <CardHeader className="flex flex-col items-center space-y-2 text-center">
-        <CheckCircle2 className="h-16 w-16 text-green-500" />
-        <h1 className="text-2xl font-bold">Payment Successful</h1>
-        <p className="text-muted-foreground">
-          Thank you for your payment. Your booking has been confirmed.
-        </p>
-      </CardHeader>
-      <CardContent className="space-y-6">
+    <Message
+      variant="success"
+      title="Payment Successful"
+      message="Thank you for your payment. Your booking has been confirmed."
+    >
+      <div className="space-y-6">
         <div className="rounded-lg border p-4">
           <div className="space-y-2">
             <p className="text-sm text-muted-foreground">Booking Reference</p>
@@ -67,7 +56,7 @@ export default async function Page(props: PageProps) {
             <Link href="/">Return Home</Link>
           </Button>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </Message>
   );
 }
