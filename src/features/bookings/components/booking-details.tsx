@@ -4,7 +4,6 @@ import Link from 'next/link';
 
 import { format } from 'date-fns';
 import {
-  AlertCircle,
   Calendar,
   ChevronLeft,
   Clock,
@@ -15,11 +14,7 @@ import {
 } from 'lucide-react';
 
 import { LoadingSpinner } from '~/common/components/loading-spinner';
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from '~/common/components/ui/alert';
+import { Message } from '~/common/components/message';
 import { Badge } from '~/common/components/ui/badge';
 import { Button } from '~/common/components/ui/button';
 import {
@@ -56,11 +51,17 @@ export function BookingDetails({ bookingNumber }: BookingDetailsProps) {
 
   if (error) {
     return (
-      <Alert variant="destructive" className="bg-background">
-        <AlertCircle className="size-4" />
-        <AlertTitle>Error</AlertTitle>
-        <AlertDescription>Failed to load booking details.</AlertDescription>
-      </Alert>
+      <Message
+        variant="error"
+        title="Unable to Load Booking Details"
+        message="We encountered an error while loading your booking information. This could be due to a network issue or the booking may be temporarily unavailable."
+      >
+        <div className="flex justify-center">
+          <Button asChild size="sm">
+            <Link href="/bookings">View Booking</Link>
+          </Button>
+        </div>
+      </Message>
     );
   }
 
@@ -193,13 +194,16 @@ export function BookingDetails({ bookingNumber }: BookingDetailsProps) {
   }
 
   return (
-    <Alert>
-      <AlertCircle className="size-4" />
-      <AlertTitle>No Bookings Found</AlertTitle>
-      <AlertDescription>
-        We couldn&apos;t find the booking with the provided booking number.
-        Please check the booking number and try again.
-      </AlertDescription>
-    </Alert>
+    <Message
+      variant="error"
+      title="Booking Not Found"
+      message="We couldn't find the booking with the provided booking number. Please check the booking number and try again."
+    >
+      <div className="flex justify-center">
+        <Button asChild size="sm">
+          <Link href="/bookings">View Booking</Link>
+        </Button>
+      </div>
+    </Message>
   );
 }

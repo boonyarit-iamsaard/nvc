@@ -1,10 +1,6 @@
-import { AlertCircle } from 'lucide-react';
+import Link from 'next/link';
 
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from '~/common/components/ui/alert';
+import { Message } from '~/common/components/message';
 import { Button } from '~/common/components/ui/button';
 import { BookingDetails } from '~/features/bookings/components/booking-details';
 
@@ -17,18 +13,17 @@ export default async function Page({ params }: PageProps) {
 
   if (!bookingNumber) {
     return (
-      <div className="flex flex-col items-center gap-6">
-        <Alert variant="destructive" className="bg-background">
-          <AlertCircle className="size-4" />
-          <AlertTitle>Error</AlertTitle>
-          <AlertDescription>
-            Booking reference not found. Please check your booking details.
-          </AlertDescription>
-        </Alert>
-        <Button asChild size="lg">
-          <a href="/bookings">View Bookings</a>
-        </Button>
-      </div>
+      <Message
+        variant="error"
+        title="Booking Not Found"
+        message="Please check your booking details."
+      >
+        <div className="flex justify-center">
+          <Button asChild size="sm">
+            <Link href="/bookings">View Booking</Link>
+          </Button>
+        </div>
+      </Message>
     );
   }
 

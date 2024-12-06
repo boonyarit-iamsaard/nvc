@@ -1,5 +1,7 @@
 'use client';
 
+import Link from 'next/link';
+
 import {
   Calendar,
   Clock,
@@ -10,6 +12,7 @@ import {
   User,
 } from 'lucide-react';
 
+import { Message } from '~/common/components/message';
 import { Button } from '~/common/components/ui/button';
 import {
   Card,
@@ -34,9 +37,17 @@ export function BookingForm() {
 
   if (!bookingDetails) {
     return (
-      <Card className="flex items-center justify-center border-border p-8">
-        <div className="text-lg">No booking details available</div>
-      </Card>
+      <Message
+        variant="info"
+        title="No Booking Details"
+        message="Unable to find your booking details. Would you like to make a new reservation?"
+      >
+        <div className="flex justify-center">
+          <Button asChild size="sm">
+            <Link href="/rooms">Find a Room</Link>
+          </Button>
+        </div>
+      </Message>
     );
   }
 
