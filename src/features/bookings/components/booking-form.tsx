@@ -64,17 +64,27 @@ export function BookingForm() {
         <div className="space-y-3">
           <h4 className="font-medium">Room Information</h4>
           <div className="space-y-2">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center">
               <div className="flex items-center space-x-2">
                 <Home className="size-4 text-muted-foreground" />
-                <span className="text-muted-foreground">Room Type</span>
+                <span className="text-sm text-muted-foreground sm:hidden">
+                  Type
+                </span>
+                <span className="hidden text-muted-foreground sm:inline">
+                  Room Type
+                </span>
               </div>
               <span className="font-medium">{bookingDetails.roomTypeName}</span>
             </div>
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center">
               <div className="flex items-center space-x-2">
                 <Tag className="size-4 text-muted-foreground" />
-                <span className="text-muted-foreground">Room Number</span>
+                <span className="text-sm text-muted-foreground sm:hidden">
+                  No.
+                </span>
+                <span className="hidden text-muted-foreground sm:inline">
+                  Room Number
+                </span>
               </div>
               <span className="font-medium">{bookingDetails.roomName}</span>
             </div>
@@ -86,40 +96,55 @@ export function BookingForm() {
         <div className="space-y-3">
           <h4 className="font-medium">Stay Duration</h4>
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center">
               <div className="flex items-center space-x-2">
                 <Clock className="size-4 text-muted-foreground" />
-                <span className="text-muted-foreground">Duration</span>
+                <span className="text-sm text-muted-foreground sm:hidden">
+                  Stay
+                </span>
+                <span className="hidden text-muted-foreground sm:inline">
+                  Duration
+                </span>
               </div>
-              <div className="text-lg font-medium">
+              <div className="text-base font-medium sm:text-lg">
                 {bookingDetails.weekdayCount + bookingDetails.weekendCount}{' '}
                 nights
               </div>
             </div>
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center">
               <div className="flex items-center space-x-2">
                 <Calendar className="size-4 text-muted-foreground" />
-                <span className="text-muted-foreground">Check-in</span>
+                <span className="text-sm text-muted-foreground sm:hidden">
+                  In
+                </span>
+                <span className="hidden text-muted-foreground sm:inline">
+                  Check-in
+                </span>
               </div>
-              <div className="text-right">
-                <div className="text-lg font-medium">
+              <div className="text-left sm:text-right">
+                <div className="text-base font-medium sm:text-lg">
                   {formatDisplayDatetime(bookingDetails.checkIn).date}
                 </div>
-                <div className="text-sm text-muted-foreground">
+                <div className="text-xs text-muted-foreground sm:text-sm">
                   {formatDisplayDatetime(bookingDetails.checkIn).time}
                 </div>
               </div>
             </div>
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center">
               <div className="flex items-center space-x-2">
                 <Calendar className="size-4 text-muted-foreground" />
-                <span className="text-muted-foreground">Check-out</span>
+                <span className="text-sm text-muted-foreground sm:hidden">
+                  Out
+                </span>
+                <span className="hidden text-muted-foreground sm:inline">
+                  Check-out
+                </span>
               </div>
-              <div className="text-right">
-                <div className="text-lg font-medium">
+              <div className="text-left sm:text-right">
+                <div className="text-base font-medium sm:text-lg">
                   {formatDisplayDatetime(bookingDetails.checkOut).date}
                 </div>
-                <div className="text-sm text-muted-foreground">
+                <div className="text-xs text-muted-foreground sm:text-sm">
                   {formatDisplayDatetime(bookingDetails.checkOut).time}
                 </div>
               </div>
@@ -132,18 +157,23 @@ export function BookingForm() {
         <div className="space-y-3">
           <h4 className="font-medium">Summary</h4>
           <div className="space-y-2.5">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center">
               <div className="flex items-center space-x-2">
                 <CreditCard className="size-4 text-muted-foreground" />
-                <span className="text-muted-foreground">Base Amount</span>
+                <span className="text-sm text-muted-foreground sm:hidden">
+                  Base
+                </span>
+                <span className="hidden text-muted-foreground sm:inline">
+                  Base Amount
+                </span>
               </div>
               <span>฿{formatCurrency(bookingDetails.baseAmount)}</span>
             </div>
             {bookingDetails.discountAmount > 0 && (
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center">
                 <div className="flex items-center space-x-2">
                   <User className="size-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">
+                  <span className="hidden text-muted-foreground sm:inline">
                     Discount (
                     {(
                       (bookingDetails.discountAmount /
@@ -151,6 +181,15 @@ export function BookingForm() {
                       100
                     ).toFixed(0)}
                     %)
+                  </span>
+                  <span className="text-sm text-muted-foreground sm:hidden">
+                    Disc.{' '}
+                    {(
+                      (bookingDetails.discountAmount /
+                        bookingDetails.baseAmount) *
+                      100
+                    ).toFixed(0)}
+                    %
                   </span>
                 </div>
                 <span className="text-destructive">
@@ -164,12 +203,13 @@ export function BookingForm() {
         <div className="h-px bg-border" />
 
         <div>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center">
             <div className="flex items-center space-x-2">
               <CreditCard className="size-4" />
-              <span className="font-medium">Total Amount</span>
+              <span className="text-sm font-medium sm:hidden">Total</span>
+              <span className="hidden font-medium sm:inline">Total Amount</span>
             </div>
-            <span className="text-lg font-medium">
+            <span className="text-base font-medium sm:text-lg">
               ฿{formatCurrency(bookingDetails.totalAmount)}
             </span>
           </div>
