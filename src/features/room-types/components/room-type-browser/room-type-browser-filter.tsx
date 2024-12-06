@@ -14,22 +14,28 @@ import type { RoomTypeFilter } from '../../room-types.schema';
 
 type RoomTypeBrowserFilterProps = Readonly<{
   onSubmit?: (filter: RoomTypeFilter) => void;
+  onClear?: () => void;
   ref?: ForwardedRef<DateRangePickerRef>;
 }>;
 
 export const RoomTypeBrowserFilter = forwardRef<
   DateRangePickerRef,
   Omit<RoomTypeBrowserFilterProps, 'ref'>
->(function RoomTypeBrowserFilter({ onSubmit }, ref) {
+>(function RoomTypeBrowserFilter({ onSubmit, onClear }, ref) {
   const {
     dateRange,
     form,
     showSubmitButton,
-    handleClear,
+    handleClear: handleDateRangeClear,
     handleDateRangeChange,
     handleSubmit,
     isBeforeToday,
   } = useRoomTypeBrowserFilter(onSubmit);
+
+  const handleClear = () => {
+    handleDateRangeClear();
+    onClear?.();
+  };
 
   return (
     <Form {...form}>
@@ -53,7 +59,7 @@ export const RoomTypeBrowserFilter = forwardRef<
                 disabled={!showSubmitButton}
                 className={cn(
                   'w-full sm:w-auto',
-                  !showSubmitButton && 'invisible',
+                  !showSubmitButton && 'hidden',
                 )}
               >
                 See availability

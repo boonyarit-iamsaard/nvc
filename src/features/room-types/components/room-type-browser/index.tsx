@@ -4,8 +4,13 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { setHours, startOfHour } from 'date-fns';
-import { CircleAlert } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from '~/common/components/ui/alert';
 import type { DateRangePickerRef } from '~/common/components/ui/date-range-picker';
 import { api } from '~/core/trpc/react';
 
@@ -16,6 +21,7 @@ import { RoomTypeBrowserPlaceholder } from './room-type-browser-placeholder';
 
 export function RoomTypeBrowser() {
   const router = useRouter();
+  const utils = api.useUtils();
   const filterRef = useRef<DateRangePickerRef>(null);
 
   const [filter, setFilter] = useState<RoomTypeFilter>();
@@ -60,6 +66,13 @@ export function RoomTypeBrowser() {
     router.push(url);
   }
 
+  function handleClear() {
+    setFilter(undefined);
+    setOverlappedBookings(0);
+    void utils.roomTypes.getRoomTypeList.reset();
+    void utils.memberships.getMemberships.reset();
+  }
+
   useEffect(() => {
     const overlappedBookings = roomTypes?.reduce((acc, roomType) => {
       return acc + roomType._count?.rooms;
@@ -74,16 +87,21 @@ export function RoomTypeBrowser() {
 
   return (
     <section className="space-y-8">
-      <RoomTypeBrowserFilter ref={filterRef} onSubmit={setFilter} />
+      <RoomTypeBrowserFilter
+        ref={filterRef}
+        onSubmit={setFilter}
+        onClear={handleClear}
+      />
 
       {overlappedBookings > 0 ? (
-        <div className="flex items-center gap-2 rounded-lg border border-destructive/50 bg-destructive/10 px-6 py-4 text-destructive shadow-sm">
-          <CircleAlert className="h-4 w-4" />
-          <span className="text-sm font-medium">
+        <Alert variant="destructive" className="mt-4">
+          <AlertCircle className="size-4" />
+          <AlertTitle>Overlapping Bookings</AlertTitle>
+          <AlertDescription>
             You have {overlappedBookings} overlapping bookings for the selected
             dates
-          </span>
-        </div>
+          </AlertDescription>
+        </Alert>
       ) : null}
 
       <ul className="space-y-6">
@@ -97,6 +115,7 @@ export function RoomTypeBrowser() {
                 roomType={roomType}
                 memberships={memberships}
                 hasFilter={hasFilter}
+                isLoading={isLoading}
                 onChooseRoom={handleChooseRoom}
               />
             ))}

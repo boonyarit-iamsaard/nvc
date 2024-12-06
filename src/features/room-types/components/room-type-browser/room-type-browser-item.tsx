@@ -13,6 +13,7 @@ type RoomTypeBrowserItemProps = {
   roomType: GetRoomTypeListResult[number];
   memberships?: GetMembershipsResult;
   hasFilter: boolean;
+  isLoading: boolean;
   onChooseRoom: (id: string) => void;
 };
 
@@ -20,6 +21,7 @@ export function RoomTypeBrowserItem({
   roomType,
   memberships,
   hasFilter,
+  isLoading,
   onChooseRoom,
 }: RoomTypeBrowserItemProps) {
   return (
@@ -36,7 +38,7 @@ export function RoomTypeBrowserItem({
                 <h2 className="order-2 font-serif text-lg font-semibold sm:order-1">
                   {roomType.name}
                 </h2>
-                {roomType.rooms.length > 0 && (
+                {hasFilter && !isLoading && roomType.rooms.length > 0 && (
                   <Badge variant="outline" className="order-1 sm:order-2">
                     {roomType.rooms.length} available rooms
                   </Badge>
