@@ -6,17 +6,21 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader2 } from 'lucide-react';
+import { AlertCircle, Loader2 } from 'lucide-react';
 import { signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 
 import { Icons } from '~/common/components/icons';
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from '~/common/components/ui/alert';
 import { Button } from '~/common/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '~/common/components/ui/card';
@@ -29,8 +33,8 @@ import {
   FormMessage,
 } from '~/common/components/ui/form';
 import { Input } from '~/common/components/ui/input';
-import { loginInputSchema } from '~/core/auth/auth.schema';
 import type { LoginInput } from '~/core/auth/auth.schema';
+import { loginInputSchema } from '~/core/auth/auth.schema';
 import { useUserSession } from '~/core/auth/hooks/use-user-session';
 import { env } from '~/core/configs/app.env';
 
@@ -173,16 +177,24 @@ export function LoginForm() {
                 </FormItem>
               )}
             />
+
             {form.formState.errors.root && (
-              <p className="text-sm text-red-500">
-                {form.formState.errors.root.message}
-              </p>
+              <Alert variant="destructive" className="mt-4">
+                <AlertCircle className="size-4" />
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>
+                  {form.formState.errors.root.message}
+                </AlertDescription>
+              </Alert>
             )}
             {loginErrorMessage && (
-              <div className="rounded-md border border-destructive/50 bg-destructive/10 px-4 py-2 text-center text-sm text-destructive">
-                {loginErrorMessage}
-              </div>
+              <Alert variant="destructive" className="mt-4">
+                <AlertCircle className="size-4" />
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>{loginErrorMessage}</AlertDescription>
+              </Alert>
             )}
+
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Sign in
@@ -190,17 +202,6 @@ export function LoginForm() {
           </form>
         </Form>
       </CardContent>
-      <CardFooter className="flex flex-col gap-4">
-        <div className="text-center text-sm text-muted-foreground">
-          Don&apos;t have an account?{' '}
-          <Link
-            href="/register"
-            className="text-primary underline-offset-4 hover:underline"
-          >
-            Sign up
-          </Link>
-        </div>
-      </CardFooter>
     </Card>
   );
 }
