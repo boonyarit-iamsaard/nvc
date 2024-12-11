@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 
+import {
+  roomTypeFilterInputSchema,
+  type RoomTypeFilterInput,
+} from '~/common/common.schema';
 import { useUserSession } from '~/core/auth/hooks/use-user-session';
 import { api } from '~/core/trpc/react';
 import type { CreateBookingInput } from '~/features/bookings/bookings.schema';
-import { bookingDateRangeSchema } from '~/features/bookings/bookings.schema';
-import type { RoomTypeFilter } from '~/features/room-types/room-types.schema';
 
 import { getBookingDetails } from '../helpers/get-booking-details';
 
@@ -23,7 +25,9 @@ export function useBookingForm(): UseBookingFormResult {
   const [bookingDetails, setBookingDetails] =
     useState<CreateBookingInput | null>(null);
   const [error, setError] = useState<Error | null>(null);
-  const [filter, setFilter] = useState<RoomTypeFilter | undefined>(undefined);
+  const [filter, setFilter] = useState<RoomTypeFilterInput | undefined>(
+    undefined,
+  );
 
   const { data: userSession } = useUserSession();
   const { data: roomType, isLoading } = api.roomTypes.getRoomType.useQuery({
@@ -65,7 +69,7 @@ export function useBookingForm(): UseBookingFormResult {
       return;
     }
 
-    const { data, success } = bookingDateRangeSchema.safeParse({
+    const { data, success } = roomTypeFilterInputSchema.safeParse({
       checkIn,
       checkOut,
     });
@@ -76,12 +80,13 @@ export function useBookingForm(): UseBookingFormResult {
     setFilter({
       checkIn: data.checkIn,
       checkOut: data.checkOut,
+      userId: userSession?.user?.id,
     });
 
     return () => {
       setFilter(undefined);
     };
-  }, [params]);
+  }, [params, userSession?.user?.id]);
 
   useEffect(() => {
     if (
