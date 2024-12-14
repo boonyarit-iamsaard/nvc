@@ -9,16 +9,16 @@ import {
 } from 'react';
 
 import { format } from 'date-fns';
-import { Calendar as CalendarIcon, X } from 'lucide-react';
+import { Calendar as CalendarIcon } from 'lucide-react';
 import type { DateRange, Matcher } from 'react-day-picker';
 
-import { Button } from '~/common/components/ui/button';
 import { Calendar } from '~/common/components/ui/calendar';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '~/common/components/ui/popover';
+import { Separator } from '~/common/components/ui/separator';
 import { cn } from '~/common/helpers/cn';
 
 export type DateRangePickerRef = {
@@ -28,30 +28,35 @@ export type DateRangePickerRef = {
 };
 
 type DateRangePickerProps = Readonly<HTMLAttributes<HTMLDivElement>> & {
-  placeholder?: string;
   dateRange: DateRange | undefined;
   disabled?: Matcher | Matcher[];
   onDateRangeChange?: (range: DateRange | undefined) => void;
   onClear?: () => void;
 };
 
+type DateInputProps = Readonly<{
+  date: string;
+}>;
+
+function DateInput({ date }: DateInputProps) {
+  return (
+    <div className="flex h-14 w-full items-center px-3 py-2 text-left text-sm">
+      <CalendarIcon className="mr-4 size-4" />
+      <span className="hidden truncate sm:block">{date}</span>
+      <span className="block truncate sm:hidden">{date}</span>
+    </div>
+  );
+}
+
 export const DateRangePicker = forwardRef<
   DateRangePickerRef,
   DateRangePickerProps
 >(function DateRangePicker(
-  {
-    className,
-    placeholder = 'Please select date',
-    dateRange,
-    disabled,
-    onDateRangeChange,
-    onClear,
-  },
+  { className, dateRange, disabled, onDateRangeChange },
   ref,
 ) {
   const [open, setOpen] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const showClearButton = dateRange?.from && dateRange?.to && onClear;
 
   useImperativeHandle(
     ref,
@@ -68,18 +73,12 @@ export const DateRangePicker = forwardRef<
     [],
   );
 
-  function getFormattedDate(date: DateRange | undefined, dateFormat: string) {
-    if (!date?.from && !date?.to) {
+  function getDisplayDate(date: Date | undefined, placeholder: string): string {
+    if (!date) {
       return placeholder;
     }
 
-    if (date.from && date.to) {
-      return `${format(date.from, dateFormat)} - ${format(date.to, dateFormat)}`;
-    }
-
-    if (date.from) {
-      return format(date.from, dateFormat);
-    }
+    return format(date, 'LLLL dd, yyyy');
   }
 
   function handleDateRangeChange(range: DateRange | undefined) {
@@ -90,37 +89,25 @@ export const DateRangePicker = forwardRef<
     <div className={cn('grid gap-2', className)}>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <Button
+          <button
             ref={buttonRef}
             id="date"
-            variant="outline"
             className={cn(
-              'w-full justify-start truncate text-left font-normal',
+              'flex flex-col bg-background ring-1 ring-inset ring-border sm:flex-row',
               !dateRange && 'text-muted-foreground',
             )}
           >
-            <CalendarIcon className="mr-2 h-4 w-4 shrink-0" />
-            <span className="hidden truncate sm:block">
-              {getFormattedDate(dateRange, 'PPP')}
-            </span>
-            <span className="truncate sm:hidden">
-              {getFormattedDate(dateRange, 'MMM d, yyyy')}
-            </span>
-            {showClearButton && (
-              <X
-                className="ml-auto h-4 w-4 shrink-0"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onClear();
-                }}
-              />
-            )}
-          </Button>
+            <DateInput date={getDisplayDate(dateRange?.from, 'Check-in')} />
+            <Separator orientation="vertical" className="hidden sm:block" />
+            <Separator orientation="horizontal" className="sm:hidden" />
+            <DateInput date={getDisplayDate(dateRange?.to, 'Check-out')} />
+          </button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
+        <PopoverContent className="w-auto rounded-none p-0" align="start">
           <Calendar
             initialFocus
             mode="range"
+            appearance="luxury"
             defaultMonth={dateRange?.from}
             selected={dateRange}
             onSelect={handleDateRangeChange}
