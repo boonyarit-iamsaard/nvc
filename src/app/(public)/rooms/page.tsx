@@ -9,7 +9,7 @@ export default async function Page() {
   return (
     <HydrateClient>
       <HeroSectionPlaceholder title="Our Rooms" />
-      <ContentContainer className="relative" layout="header">
+      <ContentContainer className="relative" layout="hero">
         <RoomTypeBrowserWithFilterParams />
       </ContentContainer>
     </HydrateClient>

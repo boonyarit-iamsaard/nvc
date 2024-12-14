@@ -11,6 +11,26 @@ import { cn } from '~/common/helpers/cn';
 import { useUserSession } from '~/core/auth/hooks/use-user-session';
 import { navConfig } from '~/core/configs/app.config';
 
+type MainNavItemProps = {
+  href: string;
+  title: string;
+  active: boolean;
+};
+
+function MainNaveItem({ href, title, active }: MainNavItemProps) {
+  return (
+    <Link
+      href={href}
+      className={cn(
+        'inline-flex items-center font-medium text-foreground/60 transition-colors hover:text-foreground/80 md:h-full md:text-background/60 md:hover:text-background/80',
+        active && 'text-foreground/80 md:text-background/80',
+      )}
+    >
+      {title}
+    </Link>
+  );
+}
+
 export function MainNav() {
   const pathname = usePathname();
   const { status, hasAdministrativeRights, handleSignOut } = useUserSession();
@@ -22,23 +42,23 @@ export function MainNav() {
     <div className="flex flex-1 flex-col gap-4 md:flex-row">
       <div className="flex h-14 items-center">
         <Link href="/">
-          <Icons.Logo className="h-8 w-auto hover:fill-muted-foreground" />
+          <Icons.Logo
+            className={cn(
+              'h-8 w-auto fill-foreground/60 hover:fill-foreground/80 md:fill-background/60 md:hover:fill-background/80',
+            )}
+          />
         </Link>
       </div>
 
       <nav className="flex flex-col gap-4 text-sm font-medium md:flex-row md:items-center">
         {navConfig.main.map(({ href, title }) => {
           return href ? (
-            <Link
-              key={href}
+            <MainNaveItem
+              key={crypto.randomUUID()}
               href={href}
-              className={cn(
-                'transition-colors hover:text-foreground/80',
-                pathname === href ? 'text-foreground' : 'text-foreground/60',
-              )}
-            >
-              {title}
-            </Link>
+              title={title}
+              active={pathname === href}
+            />
           ) : null;
         })}
       </nav>
@@ -46,47 +66,50 @@ export function MainNav() {
       <Separator className="md:hidden" />
 
       <nav className="flex flex-1 flex-col justify-end gap-4 text-sm font-medium md:hidden">
-        {navConfig.user.map(({ href, title }) => {
-          return href ? (
-            <Link
-              key={href}
-              href={href}
-              className={cn(
-                'transition-colors hover:text-foreground/80',
-                pathname === href ? 'text-foreground' : 'text-foreground/60',
-              )}
-            >
-              {title}
-            </Link>
-          ) : null;
-        })}
-        {hasAdministrativeRights ? (
-          <Link
-            href="/admin"
-            className={cn(
-              'transition-colors hover:text-foreground/80',
-              pathname === '/admin' ? 'text-foreground' : 'text-foreground/60',
-            )}
-          >
-            Admin
-          </Link>
-        ) : null}
-        <Button size="sm" onClick={handleSignOut}>
-          Logout
-        </Button>
+        {authenticated ? (
+          <>
+            {navConfig.user.map(({ href, title }) => {
+              return href ? (
+                <MainNaveItem
+                  key={crypto.randomUUID()}
+                  href={href}
+                  title={title}
+                  active={pathname === href}
+                />
+              ) : null;
+            })}
+            {hasAdministrativeRights ? (
+              <MainNaveItem
+                href="/admin"
+                title="Admin"
+                active={pathname === '/admin'}
+              />
+            ) : null}
+            <Button appearance="luxury" size="sm" onClick={handleSignOut}>
+              Logout
+            </Button>
+          </>
+        ) : (
+          <Button appearance="luxury" size="sm" asChild>
+            <Link href="/login">Login</Link>
+          </Button>
+        )}
       </nav>
 
       <div className="mt-4 hidden flex-1 items-center text-sm md:mt-0 md:flex md:justify-end">
-        {isLoginPage || authenticated ? null : (
+        {isLoginPage ? null : authenticated ? (
+          <ProfileButton />
+        ) : (
           <Link
             href="/login"
-            className="transition-colors hover:text-foreground/80"
+            className={cn(
+              'text-foreground/60 transition-colors hover:text-foreground/80 md:text-background/60 md:hover:text-background/80',
+            )}
             prefetch
           >
             Login
           </Link>
         )}
-        {authenticated ? <ProfileButton /> : null}
       </div>
     </div>
   );

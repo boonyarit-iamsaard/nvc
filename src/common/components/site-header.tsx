@@ -1,3 +1,7 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+
 import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
 import { Menu } from 'lucide-react';
 
@@ -12,21 +16,41 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '~/common/components/ui/drawer';
+import { cn } from '~/common/helpers/cn';
 import { env } from '~/core/configs/app.env';
 
 export function SiteHeader() {
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    function handleScroll() {
+      setIsScrolled(window.scrollY > 56);
+    }
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <header className="fixed top-0 z-50 w-full bg-transparent">
+    <header
+      className={cn(
+        'fixed top-0 z-50 w-full bg-transparent transition-colors duration-200',
+        isScrolled &&
+          'bg-foreground backdrop-blur supports-[backdrop-filter]:bg-foreground/85',
+      )}
+    >
       <ContentContainer className="flex h-14 items-center">
         <div className="flex md:hidden">
           <Drawer direction="left">
             <DrawerTrigger asChild>
               <Button variant="ghost" size="icon">
-                <Menu className="h-5 w-5" />
+                <Menu className="size-5 text-background/60 hover:text-background/80" />
                 <span className="sr-only">Toggle menu</span>
               </Button>
             </DrawerTrigger>
-            <DrawerContent className="h-full w-[80%] rounded-r-lg rounded-tl-none border-r">
+            <DrawerContent className="h-full w-[80%] rounded-none border-r">
               <VisuallyHidden.Root asChild>
                 <DrawerHeader>
                   <DrawerTitle>
