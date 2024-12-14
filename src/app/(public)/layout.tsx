@@ -1,5 +1,7 @@
+import { Suspense } from 'react';
 import type { ReactNode } from 'react';
 
+import { LoadingSpinner } from '~/common/components/loading-spinner';
 import { SiteHeader } from '~/common/components/site-header';
 
 type PublicLayoutProps = {
@@ -12,7 +14,9 @@ export default function PublicLayout({
   return (
     <>
       <SiteHeader />
-      <main className="flex-1">{children}</main>
+      <main className="flex-1">
+        <Suspense fallback={<LoadingSpinner />}>{children}</Suspense>
+      </main>
     </>
   );
 }

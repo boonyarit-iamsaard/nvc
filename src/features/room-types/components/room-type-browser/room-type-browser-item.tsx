@@ -25,7 +25,7 @@ export function RoomTypeBrowserItem({
   onChooseRoom,
 }: RoomTypeBrowserItemProps) {
   return (
-    <li className="overflow-hidden rounded-lg border bg-card text-card-foreground shadow-sm">
+    <li className="overflow-hidden border border-border bg-card text-card-foreground">
       <div className="flex flex-col md:flex-row">
         <div className="relative grid aspect-[3/2] w-full place-items-center bg-muted md:aspect-square md:w-1/4">
           <ImageIcon className="size-20 text-border" />
@@ -72,6 +72,7 @@ export function RoomTypeBrowserItem({
                 onClick={() => onChooseRoom(roomType.id)}
                 disabled={hasFilter && roomType.rooms.length === 0}
                 variant={hasFilter ? 'default' : 'secondary'}
+                appearance="luxury"
               >
                 {!hasFilter
                   ? 'Select dates'

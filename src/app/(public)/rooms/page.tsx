@@ -1,7 +1,7 @@
 import { ContentContainer } from '~/common/components/content-container';
 import { HeroSectionPlaceholder } from '~/common/components/hero-section-placeholder';
 import { api, HydrateClient } from '~/core/trpc/server';
-import { RoomTypeBrowser } from '~/features/room-types/components/room-type-browser';
+import { RoomTypeBrowserWithFilterParams } from '~/features/room-types/components/room-type-browser';
 
 export default async function Page() {
   void api.roomTypes.getRoomTypeList.prefetch({});
@@ -10,7 +10,7 @@ export default async function Page() {
     <HydrateClient>
       <HeroSectionPlaceholder title="Our Rooms" />
       <ContentContainer className="relative" layout="header">
-        <RoomTypeBrowser />
+        <RoomTypeBrowserWithFilterParams />
       </ContentContainer>
     </HydrateClient>
   );

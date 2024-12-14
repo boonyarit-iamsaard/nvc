@@ -16,7 +16,7 @@ import { env } from '~/core/configs/app.env';
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-50 w-full border-border/40 bg-muted/80 backdrop-blur supports-[backdrop-filter]:bg-muted/60">
+    <header className="fixed top-0 z-50 w-full bg-transparent">
       <ContentContainer className="flex h-14 items-center">
         <div className="flex md:hidden">
           <Drawer direction="left">

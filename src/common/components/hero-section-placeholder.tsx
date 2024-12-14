@@ -4,8 +4,12 @@ interface HeroSectionPlaceholderProps {
 
 export function HeroSectionPlaceholder({ title }: HeroSectionPlaceholderProps) {
   return (
-    <div className="flex h-80 flex-col items-center justify-center space-y-4 bg-gradient-to-b from-muted/60 via-muted/30 to-background">
-      <h1 className="font-serif text-4xl font-bold text-foreground">{title}</h1>
+    <div className="bg-gradient-to-b from-foreground/80 via-foreground/60 to-foreground/40 pt-14">
+      <div className="flex h-80 flex-col items-center justify-center space-y-4">
+        <h1 className="font-serif text-4xl font-bold text-background">
+          {title}
+        </h1>
+      </div>
     </div>
   );
 }
