@@ -6,29 +6,26 @@ import { ContentContainer } from '~/common/components/content-container';
 import { RoomTypeFilterForm } from '~/common/components/room-type-filter-form';
 import { cn } from '~/common/helpers/cn';
 
-type HeaderState = 'initial' | 'solid' | 'transparent' | 'transitioning';
-
 export default function Page() {
+  const [isHeaderFixed, setIsHeaderFixed] = useState(false);
+  const [isHeaderSliding, setIsHeaderSliding] = useState(false);
   const HEADER_HEIGHT = 56;
-
-  const [headerState, setHeaderState] = useState<HeaderState>('initial');
 
   useEffect(() => {
     function handleScroll() {
       const currentScrollY = window.scrollY;
       if (currentScrollY === 0) {
-        setHeaderState('transparent');
+        setIsHeaderFixed(false);
+        setIsHeaderSliding(false);
 
         return;
       }
 
-      if (
-        (headerState === 'initial' || headerState === 'transparent') &&
-        currentScrollY >= HEADER_HEIGHT
-      ) {
-        setHeaderState('transitioning');
+      if (!isHeaderFixed && currentScrollY >= HEADER_HEIGHT) {
+        setIsHeaderSliding(true);
         setTimeout(() => {
-          setHeaderState('solid');
+          setIsHeaderFixed(true);
+          setIsHeaderSliding(false);
         }, 300);
       }
     }
@@ -36,22 +33,17 @@ export default function Page() {
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [headerState]);
+  }, [isHeaderFixed]);
 
   return (
     <div className="grid min-h-screen auto-rows-min bg-indigo-50">
       <header
         className={cn(
-          'fixed top-0 z-50 col-start-1 row-start-1 flex h-14 w-full items-center bg-indigo-100 transition-all duration-300',
-          headerState === 'solid' && 'translate-y-0',
-          headerState === 'transitioning' && '-translate-y-full',
-          headerState === 'transparent' && 'bg-transparent',
+          'z-50 col-start-1 row-start-1 h-14 bg-indigo-100 transition-all duration-300',
+          isHeaderFixed && 'fixed top-0 w-full translate-y-0',
+          isHeaderSliding && '-translate-y-full',
         )}
-      >
-        <ContentContainer className="flex items-center">
-          <p className="text-foreground">Header</p>
-        </ContentContainer>
-      </header>
+      ></header>
 
       <section className="col-start-1 row-start-1 grid h-[60vh] place-items-center bg-indigo-200">
         <h1 className="text-2xl font-bold">Title</h1>
