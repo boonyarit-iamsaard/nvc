@@ -19,26 +19,46 @@ import {
 import { cn } from '~/common/helpers/cn';
 import { env } from '~/core/configs/app.env';
 
+type HeaderState = 'initial' | 'solid' | 'transparent' | 'transitioning';
+
 export function SiteHeader() {
-  const [isScrolled, setIsScrolled] = useState(false);
+  const HEADER_HEIGHT = 56;
+
+  const [headerState, setHeaderState] = useState<HeaderState>('initial');
 
   useEffect(() => {
     function handleScroll() {
-      setIsScrolled(window.scrollY > 56);
+      const currentScrollY = window.scrollY;
+      if (currentScrollY === 0) {
+        setHeaderState('transparent');
+
+        return;
+      }
+
+      if (
+        (headerState === 'initial' || headerState === 'transparent') &&
+        currentScrollY >= HEADER_HEIGHT
+      ) {
+        setHeaderState('transitioning');
+        setTimeout(() => {
+          setHeaderState('solid');
+        }, 300);
+      }
     }
 
-    window.addEventListener('scroll', handleScroll);
-    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
 
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [headerState]);
 
   return (
     <header
       className={cn(
-        'fixed top-0 z-50 w-full bg-transparent transition-colors duration-200',
-        isScrolled &&
-          'bg-foreground backdrop-blur supports-[backdrop-filter]:bg-foreground/85',
+        'fixed top-0 z-50 w-full transition-all duration-300',
+        headerState === 'solid' &&
+          'translate-y-0 bg-foreground backdrop-blur supports-[backdrop-filter]:bg-foreground/85',
+        headerState === 'transitioning' && '-translate-y-full',
+        headerState === 'transparent' && 'bg-transparent',
       )}
     >
       <ContentContainer className="flex h-14 items-center">
