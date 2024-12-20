@@ -32,7 +32,7 @@ function RoomTypeBrowser({ filterParams }: WithFilterParamsProps) {
 
   // TODO: implement error states
   const { data: roomTypes, isLoading: isLoadingRoomTypes } =
-    api.roomTypes.getRoomTypeList.useQuery({ filter: filterParams });
+    api.roomTypes.listRoomTypes.useQuery({ filter: filterParams });
   const { data: memberships, isLoading: isLoadingMemberships } =
     api.memberships.getMemberships.useQuery();
 
@@ -67,7 +67,7 @@ function RoomTypeBrowser({ filterParams }: WithFilterParamsProps) {
 
   function handleClear() {
     setOverlappedBookings(0);
-    void utils.roomTypes.getRoomTypeList.reset();
+    void utils.roomTypes.listRoomTypes.reset();
     void utils.memberships.getMemberships.reset();
   }
 

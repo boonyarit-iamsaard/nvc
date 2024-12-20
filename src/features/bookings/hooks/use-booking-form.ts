@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 import {
-  roomTypeFilterInputSchema,
-  type RoomTypeFilterInput,
+  filterRoomTypesInputSchema,
+  type FilterRoomTypesInput,
 } from '~/common/common.schema';
 import { useUserSession } from '~/core/auth/hooks/use-user-session';
 import { api } from '~/core/trpc/react';
@@ -25,7 +25,7 @@ export function useBookingForm(): UseBookingFormResult {
   const [bookingDetails, setBookingDetails] =
     useState<CreateBookingInput | null>(null);
   const [error, setError] = useState<Error | null>(null);
-  const [filter, setFilter] = useState<RoomTypeFilterInput | undefined>(
+  const [filter, setFilter] = useState<FilterRoomTypesInput | undefined>(
     undefined,
   );
 
@@ -69,7 +69,7 @@ export function useBookingForm(): UseBookingFormResult {
       return;
     }
 
-    const { data, success } = roomTypeFilterInputSchema.safeParse({
+    const { data, success } = filterRoomTypesInputSchema.safeParse({
       checkIn,
       checkOut,
     });

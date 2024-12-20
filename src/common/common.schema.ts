@@ -1,7 +1,7 @@
 import { isAfter, setHours, startOfHour } from 'date-fns';
 import { z } from 'zod';
 
-export const roomTypeFilterInputSchema = z
+export const filterRoomTypesInputSchema = z
   .object({
     checkIn: z.coerce.date().optional(),
     checkOut: z.coerce.date().optional(),
@@ -31,4 +31,4 @@ export const roomTypeFilterInputSchema = z
     return true;
   });
 
-export type RoomTypeFilterInput = z.infer<typeof roomTypeFilterInputSchema>;
+export type FilterRoomTypesInput = z.infer<typeof filterRoomTypesInputSchema>;

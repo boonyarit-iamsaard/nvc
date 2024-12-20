@@ -1,14 +1,11 @@
 import type { PrismaClient } from '@prisma/client';
 
-import type {
-  GetRoomTypeInput,
-  GetRoomTypeListInput,
-} from './room-types.schema';
+import type { GetRoomTypeInput, ListRoomTypesInput } from './room-types.schema';
 
 export class RoomTypesRepository {
   constructor(private readonly db: PrismaClient) {}
 
-  getRoomTypeList({ filter }: GetRoomTypeListInput) {
+  listRoomTypes({ filter }: ListRoomTypesInput) {
     const { checkIn, checkOut, userId } = filter ?? {};
 
     return this.db.roomType.findMany({

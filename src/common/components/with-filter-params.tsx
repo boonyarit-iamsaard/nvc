@@ -2,13 +2,13 @@ import { useEffect, useState, type ComponentType } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 import {
-  roomTypeFilterInputSchema,
-  type RoomTypeFilterInput,
+  filterRoomTypesInputSchema,
+  type FilterRoomTypesInput,
 } from '~/common/common.schema';
 import { useUserSession } from '~/core/auth/hooks/use-user-session';
 
 export type WithFilterParamsProps = {
-  filterParams?: RoomTypeFilterInput;
+  filterParams?: FilterRoomTypesInput;
 };
 
 export function withFilterParams<P extends WithFilterParamsProps>(
@@ -20,14 +20,14 @@ export function withFilterParams<P extends WithFilterParamsProps>(
     const params = useSearchParams();
     const { data: userSession } = useUserSession();
 
-    const [filter, setFilter] = useState<RoomTypeFilterInput | undefined>(
+    const [filter, setFilter] = useState<FilterRoomTypesInput | undefined>(
       undefined,
     );
 
     useEffect(() => {
       const checkIn = params.get('check-in');
       const checkOut = params.get('check-out');
-      const { data } = roomTypeFilterInputSchema.safeParse({
+      const { data } = filterRoomTypesInputSchema.safeParse({
         checkIn,
         checkOut,
         userId: userSession?.user.id,

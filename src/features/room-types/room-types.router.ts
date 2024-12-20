@@ -2,14 +2,14 @@ import { createTRPCRouter, publicProcedure } from '~/core/server/api/trpc';
 
 import {
   getRoomTypeInputSchema,
-  getRoomTypeListInputSchema,
+  listRoomTypesInputSchema,
 } from './room-types.schema';
 
 export const roomTypesRouter = createTRPCRouter({
-  getRoomTypeList: publicProcedure
-    .input(getRoomTypeListInputSchema)
+  listRoomTypes: publicProcedure
+    .input(listRoomTypesInputSchema)
     .query(({ ctx, input }) => {
-      return ctx.services.roomTypesService.getRoomTypeList(input);
+      return ctx.services.roomTypesService.listRoomTypes(input);
     }),
 
   getRoomType: publicProcedure

@@ -1,14 +1,11 @@
 import type { RoomTypesRepository } from './room-types.repository';
-import type {
-  GetRoomTypeInput,
-  GetRoomTypeListInput,
-} from './room-types.schema';
+import type { GetRoomTypeInput, ListRoomTypesInput } from './room-types.schema';
 
 export class RoomTypesService {
   constructor(private readonly roomTypesRepository: RoomTypesRepository) {}
 
-  async getRoomTypeList(input: GetRoomTypeListInput) {
-    return this.roomTypesRepository.getRoomTypeList(input);
+  async listRoomTypes(input: ListRoomTypesInput) {
+    return this.roomTypesRepository.listRoomTypes(input);
   }
 
   async getRoomType(input: GetRoomTypeInput) {

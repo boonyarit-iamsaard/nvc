@@ -3,7 +3,7 @@
 import type { ForwardedRef } from 'react';
 import { forwardRef } from 'react';
 
-import type { RoomTypeFilterInput } from '~/common/common.schema';
+import type { FilterRoomTypesInput } from '~/common/common.schema';
 import { Button } from '~/common/components/ui/button';
 import type { DateRangePickerRef } from '~/common/components/ui/date-range-picker';
 import { DateRangePicker } from '~/common/components/ui/date-range-picker';
@@ -11,7 +11,7 @@ import { Form } from '~/common/components/ui/form';
 import { useRoomTypeFilterForm } from '~/common/hooks/use-room-type-filter-form';
 
 type RoomTypeFilterProps = Readonly<{
-  filter?: RoomTypeFilterInput;
+  filter?: FilterRoomTypesInput;
   onClear?: () => void;
   ref?: ForwardedRef<DateRangePickerRef>;
 }>;

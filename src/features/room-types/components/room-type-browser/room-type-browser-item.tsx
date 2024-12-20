@@ -6,11 +6,11 @@ import { Badge } from '~/common/components/ui/badge';
 import { Button } from '~/common/components/ui/button';
 import type { GetMembershipsResult } from '~/features/memberships/memberships.schema';
 
-import type { GetRoomTypeListResult } from '../../room-types.schema';
+import type { ListRoomTypesResult } from '../../room-types.schema';
 import { RoomTypeBrowserPrice } from './room-type-browser-price';
 
 type RoomTypeBrowserItemProps = {
-  roomType: GetRoomTypeListResult[number];
+  roomType: ListRoomTypesResult[number];
   memberships?: GetMembershipsResult;
   hasFilter: boolean;
   isLoading: boolean;

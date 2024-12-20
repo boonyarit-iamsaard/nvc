@@ -1,10 +1,10 @@
 import { formatCurrency } from '~/common/helpers/currency';
 import type { GetMembershipsResult } from '~/features/memberships/memberships.schema';
 
-import type { GetRoomTypeListResult } from '../../room-types.schema';
+import type { ListRoomTypesResult } from '../../room-types.schema';
 
 type RoomTypeBrowserPriceProps = {
-  roomType: GetRoomTypeListResult[number];
+  roomType: ListRoomTypesResult[number];
   memberships: GetMembershipsResult;
 };
 

@@ -7,15 +7,15 @@ import type { DateRange } from 'react-day-picker';
 import { useForm } from 'react-hook-form';
 
 import {
-  roomTypeFilterInputSchema,
-  type RoomTypeFilterInput,
+  filterRoomTypesInputSchema,
+  type FilterRoomTypesInput,
 } from '~/common/common.schema';
 
-export function useRoomTypeFilterForm(filter?: RoomTypeFilterInput) {
+export function useRoomTypeFilterForm(filter?: FilterRoomTypesInput) {
   const router = useRouter();
 
-  const form = useForm<RoomTypeFilterInput>({
-    resolver: zodResolver(roomTypeFilterInputSchema),
+  const form = useForm<FilterRoomTypesInput>({
+    resolver: zodResolver(filterRoomTypesInputSchema),
   });
   const [checkIn, checkOut] = form.watch(['checkIn', 'checkOut']);
   const disabled = !!checkIn && !!checkOut;
@@ -29,7 +29,7 @@ export function useRoomTypeFilterForm(filter?: RoomTypeFilterInput) {
     form.setValue('checkOut', range?.to);
   }
 
-  function handleSubmit(values: RoomTypeFilterInput) {
+  function handleSubmit(values: FilterRoomTypesInput) {
     const { checkIn, checkOut } = values;
     if (!checkIn || !checkOut) {
       return;
