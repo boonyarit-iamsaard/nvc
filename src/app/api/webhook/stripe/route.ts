@@ -14,15 +14,13 @@ const stripe = new Stripe(env.STRIPE_SECRET_KEY, {});
  */
 export const dynamic = 'force-dynamic';
 
-export async function POST(request: Request) {
-  const req = request as unknown as NextRequest;
-
-  if (req.method !== 'POST') {
+export async function POST(request: NextRequest) {
+  if (request.method !== 'POST') {
     return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
   }
 
   try {
-    const context = await createContext(req);
+    const context = await createContext(request);
     const event = stripe.webhooks.constructEvent(
       context.payload,
       context.signature,
