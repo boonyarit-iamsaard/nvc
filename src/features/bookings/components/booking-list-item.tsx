@@ -14,14 +14,14 @@ import {
 } from '~/common/components/ui/card';
 import { capitalize } from '~/common/helpers/string';
 
-import type { GetUserBookingListResult } from '../bookings.schema';
+import type { ListBookingsResult } from '../bookings.schema';
 import {
   getBookingPaymentStatusVariant,
   getBookingStatusVariant,
 } from '../helpers/get-status-color';
 
 type BookingListItemProps = Readonly<{
-  booking: GetUserBookingListResult[number];
+  booking: ListBookingsResult[number];
 }>;
 
 export function BookingListItem({ booking }: BookingListItemProps) {

@@ -1,16 +1,16 @@
 import type { Prisma, PrismaClient } from '@prisma/client';
 
 import type {
-  CreateBookingParams,
   GetBookingInput,
-  GetUserBookingListInput,
-  UpdateBookingStatusParams,
+  ListBookingsInput,
+  SaveBookingInput,
+  SaveBookingStatusInput,
 } from './bookings.schema';
 
 export class BookingsRepository {
   constructor(private readonly db: PrismaClient) {}
 
-  async getUserBookingList({ userId }: GetUserBookingListInput) {
+  async listUserBookings({ userId }: ListBookingsInput) {
     return this.db.booking.findMany({
       where: {
         userId,
@@ -48,7 +48,7 @@ export class BookingsRepository {
     });
   }
 
-  async createBooking(input: CreateBookingParams) {
+  async createBooking(input: SaveBookingInput) {
     return this.db.booking.create({
       data: input,
       select: {
@@ -67,7 +67,7 @@ export class BookingsRepository {
     });
   }
 
-  async updateBookingStatus(input: UpdateBookingStatusParams) {
+  async updateBookingStatus(input: SaveBookingStatusInput) {
     const { bookingNumber, bookingStatus, paymentStatus, stripeCustomerId } =
       input;
 

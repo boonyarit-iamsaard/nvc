@@ -1,42 +1,21 @@
-import {
-  BookingPaymentStatus,
-  BookingStatus,
-  type Prisma,
-} from '@prisma/client';
-import { addDays, startOfDay } from 'date-fns';
+import type { Prisma } from '@prisma/client';
+import { BookingPaymentStatus, BookingStatus } from '@prisma/client';
 import { z } from 'zod';
 
 import type { BookingsService } from './bookings.service';
 
-export const bookingDateRangeSchema = z
-  .object({
-    checkIn: z.coerce.date(),
-    checkOut: z.coerce.date(),
-  })
-  .refine(
-    (value) => {
-      const checkIn = startOfDay(new Date(value.checkIn));
-      const tomorrow = startOfDay(addDays(new Date(), 1));
+export const listBookingsInputSchema = z.object({
+  userId: z.string().uuid(),
+});
 
-      return checkIn >= tomorrow;
-    },
-    {
-      message: 'Check-in date should not be earlier than tomorrow',
-      path: ['checkIn'],
-    },
-  )
-  .refine(
-    (value) => {
-      const checkIn = startOfDay(new Date(value.checkIn));
-      const checkOut = startOfDay(new Date(value.checkOut));
-
-      return checkOut > checkIn;
-    },
-    {
-      message: 'Check-out date should be later than check-in date',
-      path: ['checkOut'],
-    },
-  );
+export const getBookingInputSchema = z.union([
+  z.object({
+    bookingNumber: z.string().min(1),
+  }),
+  z.object({
+    id: z.string().uuid(),
+  }),
+]);
 
 export const createBookingInputSchema = z.object({
   userId: z.string().uuid(),
@@ -73,53 +52,35 @@ export const createBookingInputSchema = z.object({
     .optional()
     .default(BookingPaymentStatus.PENDING),
 });
-
-export const createBookingParamsSchema = createBookingInputSchema.extend({
+export const saveBookingInputSchema = createBookingInputSchema.extend({
   bookingNumber: z.string().min(1),
 });
-
-export const getUserBookingListInputSchema = z.object({
-  userId: z.string().uuid(),
-});
-
-export const getBookingInputSchema = z.union([
-  z.object({
-    bookingNumber: z.string().min(1),
-  }),
-  z.object({
-    id: z.string().uuid(),
-  }),
-]);
 
 export const updateBookingStatusInputSchema = z.object({
   bookingNumber: z.string().min(1),
   amount: z.number().int().nonnegative(),
   stripeCustomerId: z.string().min(1),
 });
-
-export const updateBookingStatusParamsSchema = z.object({
+export const saveBookingStatusInputSchema = z.object({
   bookingNumber: z.string().min(1),
   bookingStatus: z.nativeEnum(BookingStatus),
   paymentStatus: z.nativeEnum(BookingPaymentStatus),
   stripeCustomerId: z.string().min(1),
 });
 
-export type BookingDateRange = z.infer<typeof bookingDateRangeSchema>;
-
 export type CreateBookingInput = z.infer<typeof createBookingInputSchema>;
-export type CreateBookingParams = z.infer<typeof createBookingParamsSchema>;
+export type SaveBookingInput = z.infer<typeof saveBookingInputSchema>;
 
-export type GetUserBookingListInput = z.infer<
-  typeof getUserBookingListInputSchema
+export type ListBookingsInput = z.infer<typeof listBookingsInputSchema>;
+export type ListBookingsResult = Prisma.PromiseReturnType<
+  BookingsService['listUserBookings']
 >;
+
 export type GetBookingInput = z.infer<typeof getBookingInputSchema>;
-export type GetUserBookingListResult = Prisma.PromiseReturnType<
-  BookingsService['getUserBookingList']
->;
 
 export type UpdateBookingStatusInput = z.infer<
   typeof updateBookingStatusInputSchema
 >;
-export type UpdateBookingStatusParams = z.infer<
-  typeof updateBookingStatusParamsSchema
+export type SaveBookingStatusInput = z.infer<
+  typeof saveBookingStatusInputSchema
 >;

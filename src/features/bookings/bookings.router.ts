@@ -11,15 +11,15 @@ import {
 import {
   createBookingInputSchema,
   getBookingInputSchema,
-  getUserBookingListInputSchema,
+  listBookingsInputSchema,
   updateBookingStatusInputSchema,
 } from './bookings.schema';
 
 export const bookingRouter = createTRPCRouter({
-  getUserBookingList: publicProcedure
-    .input(getUserBookingListInputSchema)
+  listBookings: publicProcedure
+    .input(listBookingsInputSchema)
     .query(({ ctx, input }) => {
-      return ctx.services.bookingsService.getUserBookingList(input);
+      return ctx.services.bookingsService.listUserBookings(input);
     }),
 
   getBooking: publicProcedure

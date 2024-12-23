@@ -8,7 +8,7 @@ import type { BookingsRepository } from './bookings.repository';
 import type {
   CreateBookingInput,
   GetBookingInput,
-  GetUserBookingListInput,
+  ListBookingsInput,
   UpdateBookingStatusInput,
 } from './bookings.schema';
 
@@ -18,8 +18,8 @@ export class BookingsService {
     private readonly emailsService: EmailsService,
   ) {}
 
-  async getUserBookingList(input: GetUserBookingListInput) {
-    return this.bookingsRepository.getUserBookingList(input);
+  async listUserBookings(input: ListBookingsInput) {
+    return this.bookingsRepository.listUserBookings(input);
   }
 
   async getBooking(input: GetBookingInput) {
