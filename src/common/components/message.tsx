@@ -75,7 +75,11 @@ export function Message({
 }: MessageProps) {
   return (
     <Card
-      className={cn(messageVariants({ variant }), 'border', className)}
+      className={cn(
+        messageVariants({ variant }),
+        'rounded-none border',
+        className,
+      )}
       {...props}
     >
       <CardHeader className="flex flex-col items-center space-y-3 p-6 text-center">
@@ -98,6 +102,7 @@ export function Message({
             {onCancel && (
               <Button
                 size="sm"
+                appearance="luxury"
                 variant="outline"
                 onClick={onCancel}
                 className={cn(
@@ -111,6 +116,7 @@ export function Message({
             {onConfirm && (
               <Button
                 size="sm"
+                appearance="luxury"
                 variant={variant === 'error' ? 'destructive' : 'default'}
                 onClick={onConfirm}
                 className={cn(
