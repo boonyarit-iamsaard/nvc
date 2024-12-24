@@ -1,5 +1,5 @@
-import { HeroSectionPlaceholder } from '~/common/components/hero-section-placeholder';
+import { PageHeader } from '~/common/components/page-header';
 
 export default async function Page() {
-  return <HeroSectionPlaceholder title="About" />;
+  return <PageHeader title="About" />;
 }
