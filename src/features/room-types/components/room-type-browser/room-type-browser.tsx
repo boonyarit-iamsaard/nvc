@@ -23,7 +23,7 @@ import { api } from '~/core/trpc/react';
 import { RoomTypeBrowserItem } from './room-type-browser-item';
 import { RoomTypeBrowserPlaceholder } from './room-type-browser-placeholder';
 
-function RoomTypeBrowser({ filterParams }: WithFilterParamsProps) {
+function RoomTypeBrowser({ filterParams }: Readonly<WithFilterParamsProps>) {
   const filterRef = useRef<DateRangePickerRef>(null);
   const router = useRouter();
   const utils = api.useUtils();
