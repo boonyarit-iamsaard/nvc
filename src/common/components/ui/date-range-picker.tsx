@@ -107,7 +107,6 @@ export const DateRangePicker = forwardRef<
           <Calendar
             initialFocus
             mode="range"
-            appearance="luxury"
             defaultMonth={dateRange?.from}
             selected={dateRange}
             onSelect={handleDateRangeChange}

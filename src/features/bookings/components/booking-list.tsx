@@ -36,7 +36,7 @@ export function BookingList() {
         message="We encountered an error while loading your bookings. This could be due to a network issue or the bookings may be temporarily unavailable."
       >
         <div className="flex justify-center">
-          <Button asChild appearance="luxury" size="sm">
+          <Button asChild size="sm">
             <Link href="/">Return Home</Link>
           </Button>
         </div>
@@ -64,7 +64,7 @@ export function BookingList() {
       message="You don't have any bookings yet. Find a room to make your first reservation."
     >
       <div className="flex justify-center">
-        <Button asChild appearance="luxury" size="sm">
+        <Button asChild size="sm">
           <Link href="/rooms">Find a Room</Link>
         </Button>
       </div>

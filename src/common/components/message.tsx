@@ -101,8 +101,6 @@ export function Message({
           <div className="grid w-full gap-3 sm:grid-cols-6">
             {onCancel && (
               <Button
-                size="sm"
-                appearance="luxury"
                 variant="outline"
                 onClick={onCancel}
                 className={cn(
@@ -115,8 +113,6 @@ export function Message({
             )}
             {onConfirm && (
               <Button
-                size="sm"
-                appearance="luxury"
                 variant={variant === 'error' ? 'destructive' : 'default'}
                 onClick={onConfirm}
                 className={cn(

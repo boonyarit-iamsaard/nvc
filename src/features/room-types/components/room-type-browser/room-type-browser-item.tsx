@@ -72,7 +72,6 @@ export function RoomTypeBrowserItem({
                 onClick={() => onChooseRoom(roomType.id)}
                 disabled={hasFilter && roomType.rooms.length === 0}
                 variant={hasFilter ? 'default' : 'secondary'}
-                appearance="luxury"
               >
                 {!hasFilter
                   ? 'Select dates'
