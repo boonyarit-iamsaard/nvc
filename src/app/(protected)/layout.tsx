@@ -7,22 +7,22 @@ import { SiteHeader } from '~/common/components/site-header';
 import { Button } from '~/common/components/ui/button';
 import { getServerAuthSession } from '~/core/auth/auth.config';
 
-type ProtectedLayoutProps = {
+type ProtectedLayoutProps = Readonly<{
   children: ReactNode;
-};
+}>;
 
 export default async function ProtectedLayout({
   children,
-}: Readonly<ProtectedLayoutProps>) {
+}: ProtectedLayoutProps) {
   const session = await getServerAuthSession();
 
   return (
     <>
-      <SiteHeader />
+      <SiteHeader enableHeaderTransition={false} />
       <main className="flex-1">
-        <div className="relative">
-          <div className="absolute inset-x-0 top-0 h-[35vh] bg-gradient-to-b from-muted/60 via-muted/30 to-background" />
-          <ContentContainer className="relative" layout="header" size="lg">
+        <div className="relative pt-14">
+          <div className="absolute inset-x-0 top-0 h-[35vh] bg-gradient-to-b from-muted/80 via-muted/40 to-background" />
+          <ContentContainer layout="header" size="lg" className="relative">
             {session ? (
               children
             ) : (

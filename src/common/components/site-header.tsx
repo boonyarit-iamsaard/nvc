@@ -21,12 +21,30 @@ import { env } from '~/core/configs/app.env';
 
 type HeaderState = 'initial' | 'solid' | 'transparent' | 'transitioning';
 
-export function SiteHeader() {
+type SiteHeaderProps = Readonly<{
+  enableHeaderTransition?: boolean;
+}>;
+
+export function SiteHeader({ enableHeaderTransition = true }: SiteHeaderProps) {
   const HEADER_HEIGHT = 56;
 
   const [headerState, setHeaderState] = useState<HeaderState>('initial');
 
+  const headerStateStyles: Record<HeaderState, string> = {
+    initial: '',
+    solid:
+      'translate-y-0 bg-foreground backdrop-blur supports-[backdrop-filter]:bg-foreground/85',
+    transitioning: '-translate-y-full',
+    transparent: 'bg-transparent',
+  };
+
   useEffect(() => {
+    if (!enableHeaderTransition) {
+      setHeaderState('solid');
+
+      return;
+    }
+
     function handleScroll() {
       const currentScrollY = window.scrollY;
       if (currentScrollY === 0) {
@@ -49,16 +67,13 @@ export function SiteHeader() {
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [headerState]);
+  }, [enableHeaderTransition, headerState]);
 
   return (
     <header
       className={cn(
         'fixed top-0 z-50 w-full transition-all duration-300',
-        headerState === 'solid' &&
-          'translate-y-0 bg-foreground backdrop-blur supports-[backdrop-filter]:bg-foreground/85',
-        headerState === 'transitioning' && '-translate-y-full',
-        headerState === 'transparent' && 'bg-transparent',
+        headerStateStyles[headerState],
       )}
     >
       <ContentContainer className="flex h-14 items-center">
