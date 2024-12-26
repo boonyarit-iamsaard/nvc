@@ -21,6 +21,7 @@ function MainNaveItem({ href, title, active }: MainNavItemProps) {
   return (
     <Link
       href={href}
+      scroll={false}
       className={cn(
         'inline-flex items-center font-medium text-foreground/60 transition-colors hover:text-foreground/80 md:h-full md:text-background/60 md:hover:text-background/80',
         active && 'text-foreground/80 md:text-background/80',
@@ -36,7 +37,6 @@ export function MainNav() {
   const { status, hasAdministrativeRights, handleSignOut } = useUserSession();
 
   const authenticated = status === 'authenticated';
-  const isLoginPage = pathname.includes('/login');
 
   return (
     <div className="flex flex-1 flex-col gap-4 md:flex-row">
@@ -85,19 +85,19 @@ export function MainNav() {
                 active={pathname === '/admin'}
               />
             ) : null}
-            <Button appearance="luxury" size="sm" onClick={handleSignOut}>
+            <Button size="sm" onClick={handleSignOut}>
               Logout
             </Button>
           </>
         ) : (
-          <Button appearance="luxury" size="sm" asChild>
+          <Button size="sm" asChild>
             <Link href="/login">Login</Link>
           </Button>
         )}
       </nav>
 
       <div className="mt-4 hidden flex-1 items-center text-sm md:mt-0 md:flex md:justify-end">
-        {isLoginPage ? null : authenticated ? (
+        {authenticated ? (
           <ProfileButton />
         ) : (
           <Link
