@@ -1,6 +1,6 @@
 'use client';
 
-import type { HTMLAttributes } from 'react';
+import type { HTMLAttributes, ReactNode } from 'react';
 
 import type { VariantProps } from 'class-variance-authority';
 import { cva } from 'class-variance-authority';
@@ -43,7 +43,7 @@ export type MessageProps = HTMLAttributes<HTMLDivElement> &
     onCancel?: () => void;
   };
 
-const iconVariants = {
+const iconStyles: Record<NonNullable<MessageProps['variant']>, string> = {
   success:
     'text-[hsl(var(--chart-2))] dark:text-[hsl(var(--chart-2))] dark:brightness-90',
   error: 'text-destructive/90',
@@ -53,12 +53,12 @@ const iconVariants = {
   action: 'text-foreground/80',
 };
 
-const iconMap = {
-  success: <CheckCircle2 className={cn('size-12', iconVariants.success)} />,
-  error: <AlertCircle className={cn('size-12', iconVariants.error)} />,
-  warning: <AlertCircle className={cn('size-12', iconVariants.warning)} />,
-  info: <Info className={cn('size-12', iconVariants.info)} />,
-  action: <Info className={cn('size-12', iconVariants.action)} />,
+const iconVariants: Record<NonNullable<MessageProps['variant']>, ReactNode> = {
+  success: <CheckCircle2 className={cn('size-12', iconStyles.success)} />,
+  error: <AlertCircle className={cn('size-12', iconStyles.error)} />,
+  warning: <AlertCircle className={cn('size-12', iconStyles.warning)} />,
+  info: <Info className={cn('size-12', iconStyles.info)} />,
+  action: <Info className={cn('size-12', iconStyles.action)} />,
 };
 
 export function Message({
@@ -83,7 +83,7 @@ export function Message({
       {...props}
     >
       <CardHeader className="flex flex-col items-center space-y-3 p-6 text-center">
-        {iconMap[variant ?? 'info']}
+        {iconVariants[variant ?? 'info']}
         <h3 className="text-lg font-semibold leading-none tracking-tight">
           {title}
         </h3>
