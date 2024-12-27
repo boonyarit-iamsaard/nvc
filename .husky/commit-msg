@@ -1,6 +1,6 @@
 # Check for commit message formatting
 echo "🔎 Checking commit message formatting...";
-npx --no -- commitlint --edit "$1" ||
+bunx --no -- commitlint --edit "$1" ||
 (
   echo "❌ Commit message formatting errors detected. Please fix and commit again.";
   false;
